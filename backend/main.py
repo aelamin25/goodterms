@@ -220,6 +220,14 @@ def _swiped(rid):
         rows = c.execute("SELECT listing_id, liked FROM swipes WHERE renter_id=?", (rid,)).fetchall()
     return {r["listing_id"] for r in rows}, {r["listing_id"] for r in rows if r["liked"]}
 
+@app.get("/api/renters/latest")
+def latest_renter():
+    """The most recent renter profile. The landlord demo phone uses it to list a home that matches what the renter just asked for."""
+    with db() as c:
+        row = c.execute("SELECT id, profile FROM renters ORDER BY id DESC LIMIT 1").fetchone()
+    if not row: return {}
+    prof = json.loads(row["profile"]); prof["renter_id"] = row["id"]; return prof
+
 @app.get("/api/renters/{rid}/deck")
 def deck(rid: int, n: int = 10):
     prof = _renter(rid); swiped, liked_ids = _swiped(rid)
