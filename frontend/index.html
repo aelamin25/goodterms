@@ -124,15 +124,20 @@ input[type=range]{width:100%;accent-color:var(--brand1)}
  <div class="mt-5 text-sm font-bold">Income at least <span id="l-mult-v" class="grad-text">2.5×</span> rent</div>
  <input type="range" min="2" max="3.5" step="0.25" value="2.5" oninput="document.getElementById('l-mult-v').textContent=this.value+'×'">
  <div class="flex flex-wrap gap-2 mt-5"><button class="chipbtn sel">Referencing required</button><button class="chipbtn sel">Guarantor accepted</button><button class="chipbtn">Pets with £40/mo fee</button><button class="chipbtn sel">12-month minimum</button></div>
- <button class="bigbtn grad w-full mt-10" onclick="alert('Landlord side: coming in the next build. For the demo, landlord rules are already attached to every home.')">See who's interested</button>
+ <button class="bigbtn grad w-full mt-10" onclick="renderInterested();go('s-interested')">See who's interested</button>
  <button class="mt-3 text-[var(--mute)] text-sm" onclick="go('s-role')">← Back</button>
 </section>
 
+<!-- LANDLORD: INTERESTED -->
+<section id="s-interested" class="screen">
+ <header class="flex items-center gap-3 px-5 pt-5 pb-2"><button onclick="go('s-landlord')" class="text-2xl">‹</button><div><div class="font-black text-2xl">Interested & qualified</div><div class="text-xs text-[var(--mute)]">Only renters who pass your rules can like you. Sorted by reliability.</div></div></header>
+ <div class="flex-1 overflow-y-auto px-5 py-2 space-y-3" id="i-list"></div>
+</section>
 <!-- SWIPE -->
 <section id="s-swipe" class="screen">
  <header class="flex items-center justify-between px-5 pt-4 pb-1">
   <div class="font-black text-xl">Project <span class="grad-text">Name</span></div>
-  <div class="text-xs font-bold text-[var(--mute)]" id="hdr-info"></div>
+  <div class="flex items-center gap-2"><span class="pill" id="likes-pill">♥ 5 left</span><span class="pill text-[#4cc9ff]" id="super-pill">★ 1</span></div>
  </header>
  <div class="deck" id="deck"></div>
  <div class="flex justify-center items-center gap-4 py-4">
@@ -142,6 +147,7 @@ input[type=range]{width:100%;accent-color:var(--brand1)}
   <button class="act text-[var(--ok)]" id="b-like">♥</button>
   <button class="act small text-[#b24cff]" id="b-info" title="More">i</button>
  </div>
+ <p class="text-center text-[11px] text-[var(--mute)] -mt-2 pb-2">5 likes a day. A like means “I'd move in here.” <span id="hdr-info"></span></p>
  <nav class="flex border-t border-[#1d1a27]"><button class="tab on" data-s="s-swipe">🔥<br>Swipe</button><button class="tab" data-s="s-matches">💬<br>Matches <span id="mcount" class="pill ml-1" style="padding:.05rem .45rem">0</span></button><button class="tab" data-s="s-you">🧳<br>You</button></nav>
 </section>
 
@@ -159,6 +165,7 @@ input[type=range]{width:100%;accent-color:var(--brand1)}
 <section id="s-chat" class="screen">
  <header class="flex items-center gap-3 px-4 pt-4 pb-3 border-b border-[#1d1a27]"><button onclick="go('s-matches')" class="text-2xl">‹</button><div class="w-10 h-10 rounded-full grad grid place-items-center text-lg">🔑</div><div><div class="font-bold" id="c-title">Landlord</div><div class="text-xs text-[var(--mute)]" id="c-sub"></div></div></header>
  <div class="flex-1 overflow-y-auto p-4 space-y-2" id="c-log"></div>
+ <div class="flex gap-2 px-3 pb-1 overflow-x-auto" id="c-slots"></div>
  <form class="flex gap-2 p-3 border-t border-[#1d1a27]" id="c-form"><input class="input" style="padding:.7rem 1rem;font-size:1rem" placeholder="Say hi…" id="c-in"><button class="act small grad">➤</button></form>
 </section>
 
@@ -176,8 +183,10 @@ input[type=range]{width:100%;accent-color:var(--brand1)}
   <div class="text-5xl font-black italic grad-text" id="ov-title">It's a match!</div>
   <div class="flex justify-center items-center gap-3 mt-6"><div class="w-24 h-24 rounded-full bg-[#15131d] border-4 border-white grid place-items-center text-4xl">🧳</div><div class="text-3xl">💞</div><div class="w-24 h-24 rounded-full grad border-4 border-white grid place-items-center text-4xl">🏠</div></div>
   <p class="mt-5 text-[#e7e3f3]" id="ov-body"></p>
-  <button class="bigbtn w-full mt-7 bg-white text-black" id="ov-chat">Send a message</button>
-  <button class="mt-3 text-[#cfc9e0] font-bold" id="ov-close">Keep swiping</button>
+  <div class="mt-6 text-xs font-bold tracking-widest text-[#ffd6da]">YOUR MOVE · BOOK A VIEWING</div>
+  <div class="flex gap-2 justify-center mt-2" id="ov-slots"></div>
+  <button class="mt-4 text-white font-bold underline" id="ov-chat">Or send a message</button>
+  <div><button class="mt-3 text-[#cfc9e0] text-sm" id="ov-close">Keep swiping · match expires in 24h</button></div>
  </div>
 </div>
 <div id="ov-no" class="hidden absolute inset-0 z-50 flex flex-col items-center justify-center text-center p-8" style="background:rgba(11,10,16,.94)">
@@ -242,24 +251,35 @@ function attachDrag(el,l){let sx=0,sy=0,dx=0,down=false,moved=false;
  el.onpointerup=e=>{down=false;el.classList.remove('drag');
   if(!moved){const r=el.getBoundingClientRect();const i=panelIdx[l.id]||0;setPanel(el,l,(e.clientX-r.left)<r.width/2?Math.max(0,i-1):Math.min(2,i+1));return}
   if(dx>100)decide(true);else if(dx<-100)decide(false);else{el.style.transform='';el.querySelectorAll('.stamp').forEach(s=>s.style.opacity=0)}dx=0};}
-async function decide(liked,superlike=false){if(!deck.length)return;const l=deck.shift();history.push(l);const el=$('#deck .card:last-child');
+let likesLeft=5,supersLeft=1;function updateBudget(){$('#likes-pill').textContent=`♥ ${likesLeft} left`;$('#super-pill').textContent=`★ ${supersLeft}`;$('#likes-pill').style.opacity=likesLeft?1:.5}
+function outOfLikes(){$('#ovn-body').innerHTML=`<b>No likes left today.</b><br>Likes are rationed so landlords only hear from people who mean it. Super-likes: ${supersLeft}. Keep browsing, likes reset at midnight.`;$('#ov-no').classList.remove('hidden')}
+async function decide(liked,superlike=false){if(!deck.length)return;if(liked&&!superlike&&likesLeft<=0)return outOfLikes();if(superlike&&supersLeft<=0)return outOfLikes();if(liked){superlike?supersLeft--:likesLeft--;updateBudget()}const l=deck.shift();history.push(l);const el=$('#deck .card:last-child');
  if(el){el.style.transform=`translate(${liked?520:-520}px, ${superlike?-300:40}px) rotate(${liked?22:-22}deg)`;el.style.opacity=0}
  const r=await fetch(`/api/renters/${renterId}/swipes`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({listing_id:l.id,liked})}).then(r=>r.json());
- if(liked&&r.matched){matches.unshift(l);$('#mcount').textContent=matches.length;chats[l.id]=[{me:false,t:`Hi! Thanks for the like. You pass my checks, so you're first in the queue. When could you view? 🔑`}];
+ if(liked&&r.matched){l.matchedAt=Date.now();l.expiresAt=Date.now()+24*36e5;l.superlike=superlike;matches.unshift(l);$('#mcount').textContent=matches.length;chats[l.id]=[{me:false,t:`Hi! Thanks for the ${superlike?'super-like ★':'like'}. You pass my checks, so you're first in the queue. When could you view? 🔑`}];
+  $('#ov-slots').innerHTML=SLOTS.map(sl=>`<button class="chipbtn bg-white/10 border-white/30 text-white" data-slot="${sl}">📅 ${sl}</button>`).join('');$$('#ov-slots button').forEach(b=>b.onclick=()=>{bookViewing(l,b.dataset.slot);$('#ov').classList.add('hidden');openChat(l)});
   $('#ov-body').textContent=`You and the landlord of the ${l.bedrooms===0?'studio':l.bedrooms+'-bed'} in ${l.outcode} both said yes. ${gbp(l.rent)}/mo, you pass every rule.`;$('#ov-chat').onclick=()=>{$('#ov').classList.add('hidden');openChat(l)};$('#ov').classList.remove('hidden');try{window.confetti&&confetti({particleCount:160,spread:80,origin:{y:.55},colors:['#ff5f6d','#ff8a3d','#b24cff','#fff']})}catch(e){}}
  else if(liked){$('#ovn-body').textContent=`You liked it, but ${blockText[r.block_reason]||r.block_reason}. In real life you'd never hear back. Here, at least you know why.`;$('#ov-no').classList.remove('hidden')}
  setTimeout(()=>{render();refill()},260)}
 $('#b-like').onclick=()=>decide(true);$('#b-nope').onclick=()=>decide(false);$('#b-super').onclick=()=>decide(true,true);
 $('#b-info').onclick=()=>{const el=$('#deck .card:last-child');if(!el)return;const l=deck[0];setPanel(el,l,((panelIdx[l.id]||0)+1)%3)};
-$('#b-rewind').onclick=()=>{if(!history.length)return;deck.unshift(history.pop());render()};
+$('#b-rewind').onclick=()=>{if(!history.length)return;deck.unshift(history.pop());render()};updateBudget();
 $('#ov-close').onclick=()=>$('#ov').classList.add('hidden');
 document.addEventListener('keydown',e=>{if(!$('#s-swipe').classList.contains('on')||!$('#ov').classList.contains('hidden'))return;if(e.key==='ArrowRight')decide(true);if(e.key==='ArrowLeft')decide(false);if(e.key==='ArrowUp')decide(true,true)});
 
-function renderMatches(){$('#m-row').innerHTML=matches.map(l=>`<button onclick="openChatId(${l.id})" class="flex flex-col items-center gap-1 shrink-0"><div class="w-16 h-16 rounded-full grad grid place-items-center text-2xl border-2 border-white">🏠</div><span class="text-xs font-semibold">${l.outcode}</span></button>`).join('')||'<span class="text-sm text-[var(--mute)]">Swipe right on a home you qualify for.</span>';
- $('#m-list').innerHTML=matches.map(l=>{const c=chats[l.id];const last=c[c.length-1];return `<button onclick="openChatId(${l.id})" class="w-full text-left flex gap-3 items-center p-3 rounded-2xl bg-[#15131d] border border-[#2b2838]"><div class="w-12 h-12 rounded-full grad grid place-items-center text-xl shrink-0">🔑</div><div class="min-w-0"><div class="font-bold">${l.bedrooms===0?'Studio':l.bedrooms+' bed'} · ${l.ward} · ${gbp(l.rent)}</div><div class="text-sm text-[var(--mute)] truncate">${last.me?'You: ':''}${last.t}</div></div></button>`}).join('')}
+function timeLeft(l){const ms=l.expiresAt-Date.now();if(ms<=0)return 'expired';const h=Math.floor(ms/36e5),m=Math.floor(ms%36e5/6e4);return `${h}h ${String(m).padStart(2,'0')}m`}
+function statusLine(l){if(l.viewing)return `<span class="text-[var(--ok)] font-bold">📅 Viewing booked · ${l.viewing}</span>`;if(l.replied)return `<span class="text-[var(--ok)] font-bold">Replied · landlord's turn</span>`;return `<span class="text-[#ffb347] font-bold">⏳ Your move · ${timeLeft(l)} left</span>`}
+function renderMatches(){$('#m-row').innerHTML=matches.map(l=>`<button onclick="openChatId(${l.id})" class="flex flex-col items-center gap-1 shrink-0"><div class="w-16 h-16 rounded-full grad grid place-items-center text-2xl border-2 ${l.viewing||l.replied?'border-white':'border-[#ffb347]'}">🏠</div><span class="text-xs font-semibold">${l.outcode}</span></button>`).join('')||'<span class="text-sm text-[var(--mute)]">Swipe right on a home you qualify for.</span>';
+ $('#m-list').innerHTML=matches.map(l=>{const c=chats[l.id];const last=c[c.length-1];return `<button onclick="openChatId(${l.id})" class="w-full text-left flex gap-3 items-center p-3 rounded-2xl bg-[#15131d] border border-[#2b2838]"><div class="w-12 h-12 rounded-full grad grid place-items-center text-xl shrink-0">🔑</div><div class="min-w-0 flex-1"><div class="font-bold">${l.bedrooms===0?'Studio':l.bedrooms+' bed'} · ${l.ward} · ${gbp(l.rent)}</div><div class="text-xs mt-.5">${statusLine(l)}</div><div class="text-sm text-[var(--mute)] truncate">${last.me?'You: ':''}${last.t}</div></div></button>`}).join('')}
+setInterval(()=>{if($('#s-matches').classList.contains('on'))renderMatches()},30000);
+const SLOTS=['Sat 11:00','Sat 14:30','Sun 10:00'];
+function bookViewing(l,slot){l.viewing=slot;l.replied=true;chats[l.id].push({me:true,t:`Can I view ${slot}?`});chats[l.id].push({me:false,t:`${slot} is booked ✅ I'll send the address once referencing starts. Please let me know if you can't make it.`});}
 function openChatId(id){openChat(matches.find(m=>m.id===id))}
 let chatL=null;function openChat(l){chatL=l;$('#c-title').textContent=`Landlord · ${l.outcode}`;$('#c-sub').textContent=`${l.bedrooms===0?'Studio':l.bedrooms+' bed'} ${l.type_name.toLowerCase()} · ${gbp(l.rent)}/mo`;go('s-chat');renderChat()}
-function renderChat(){$('#c-log').innerHTML=chats[chatL.id].map(m=>`<div class="flex ${m.me?'justify-end':''}"><div class="bubble ${m.me?'grad':'bg-[#1f1c2a]'}">${m.t}</div></div>`).join('');$('#c-log').scrollTop=1e6}
-$('#c-form').onsubmit=e=>{e.preventDefault();const t=$('#c-in').value.trim();if(!t)return;chats[chatL.id].push({me:true,t});$('#c-in').value='';renderChat();setTimeout(()=>{chats[chatL.id].push({me:false,t:["Saturday 11am works. I'll send the address once referencing starts.","Deposit is 5 weeks' rent, capped by law. Any questions before the viewing?","Great. Bring ID and a payslip and we can move fast."][chats[chatL.id].length%3]});renderChat()},900)}
-function renderYou(){$('#you-card').innerHTML=`<div class="text-sm text-[var(--mute)]">Looking for</div><div class="text-2xl font-black">${P.bedrooms===0?'Studio':P.bedrooms+' bed'} · up to ${gbp(P.budget)}/mo</div><div class="mt-3 text-sm text-[var(--mute)]">Near</div><div class="font-bold">${P.work_postcode} · within ${P.max_commute_km} km</div><div class="mt-3 text-sm text-[var(--mute)]">Landlords see</div><div class="font-bold">${gbp(P.annual_income)}/yr · ${P.passes_referencing?'passes referencing':'referencing risk'} · ${P.has_guarantor?'has guarantor':'no guarantor'}${P.has_pets?' · pet':''}</div>`}
+function renderChat(){$('#c-log').innerHTML=chats[chatL.id].map(m=>`<div class="flex ${m.me?'justify-end':''}"><div class="bubble ${m.me?'grad':'bg-[#1f1c2a]'}">${m.t}</div></div>`).join('');$('#c-log').scrollTop=1e6;
+ $('#c-slots').innerHTML=chatL.viewing?`<span class="pill text-[var(--ok)]">📅 Viewing ${chatL.viewing}</span>`:SLOTS.map(sl=>`<button class="chipbtn text-sm" data-slot="${sl}">📅 ${sl}</button>`).join('');$$('#c-slots button').forEach(b=>b.onclick=()=>{bookViewing(chatL,b.dataset.slot);renderChat()})}
+$('#c-form').onsubmit=e=>{e.preventDefault();const t=$('#c-in').value.trim();if(!t)return;chatL.replied=true;chats[chatL.id].push({me:true,t});$('#c-in').value='';renderChat();setTimeout(()=>{chats[chatL.id].push({me:false,t:["Saturday 11am works. I'll send the address once referencing starts.","Deposit is 5 weeks' rent, capped by law. Any questions before the viewing?","Great. Bring ID and a payslip and we can move fast."][chats[chatL.id].length%3]});renderChat()},900)}
+const INTERESTED=[{n:'Priya, 29',job:'NHS nurse · £46k',rel:'Replies in 1h · 4/4 viewings',score:98,tag:'★ Super-liked you'},{n:'Tom & Aisha, 31',job:'Teacher + designer · £71k',rel:'Replies in 3h · 2/2 viewings',score:94,tag:'Liked 2h ago'},{n:'Marcus, 24',job:'Grad analyst · £38k + guarantor',rel:'Replies in 6h · 1/2 viewings · 1 no-show',score:71,tag:'Liked yesterday'}];
+function renderInterested(){$('#i-list').innerHTML=INTERESTED.map((r,i)=>`<div class="rounded-3xl bg-[#15131d] border border-[#2b2838] p-4 fade"><div class="flex justify-between items-start"><div><div class="font-black text-lg">${r.n} <span class="pill text-[var(--ok)] ml-1">✓ Verified</span></div><div class="text-sm text-[var(--mute)]">${r.job}</div></div><div class="text-right"><div class="text-2xl font-black grad-text">${r.score}</div><div class="text-[10px] text-[var(--mute)] -mt-1">reliability</div></div></div><div class="text-sm mt-2">${r.rel}</div><div class="text-xs text-[var(--mute)] mt-1">${r.tag} · passes income, referencing${i===2?', with guarantor':''}</div><div class="flex gap-2 mt-3"><button class="chipbtn flex-1 text-center" onclick="this.textContent='Passed';this.disabled=true">Pass</button><button class="chipbtn sel flex-1 text-center" onclick="this.textContent='✓ Matched · viewing request sent';this.disabled=true;this.parentElement.firstElementChild.remove()">Accept</button></div></div>`).join('')}
+function renderYou(){$('#you-card').innerHTML=`<div class="flex items-center justify-between"><span class="pill text-[var(--ok)]">✓ Verified renter</span><span class="pill">⚡ Replies in 2h</span></div><div class="mt-3 text-sm text-[var(--mute)]">Reliability</div><div class="font-bold">3 of 3 viewings attended · 0 no-shows · 0 expired matches</div><div class="text-xs text-[var(--mute)] mt-1">Landlords see this before they say yes. Ghosting lowers it.</div><hr class="border-[#2b2838] my-4"><div class="text-sm text-[var(--mute)]">Looking for</div><div class="text-2xl font-black">${P.bedrooms===0?'Studio':P.bedrooms+' bed'} · up to ${gbp(P.budget)}/mo</div><div class="mt-3 text-sm text-[var(--mute)]">Near</div><div class="font-bold">${P.work_postcode} · within ${P.max_commute_km} km</div><div class="mt-3 text-sm text-[var(--mute)]">Landlords see</div><div class="font-bold">${gbp(P.annual_income)}/yr · ${P.passes_referencing?'passes referencing':'referencing risk'} · ${P.has_guarantor?'has guarantor':'no guarantor'}${P.has_pets?' · pet':''}</div>`}
 </script></body></html>
