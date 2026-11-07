@@ -1,25 +1,7 @@
-INFO:     Started server process [65666]
+INFO:     Started server process [65995]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
 INFO:     Uvicorn running on http://127.0.0.1:8765 (Press CTRL+C to quit)
 ranker not loaded, using v1 scoring: No module named 'backend.model'
-INFO:     127.0.0.1:62294 - "GET /api/splash HTTP/1.1" 200 OK
-INFO:     127.0.0.1:62307 - "GET /demo.html HTTP/1.1" 200 OK
-INFO:     127.0.0.1:62309 - "GET /?name=Ahmed HTTP/1.1" 200 OK
-INFO:     127.0.0.1:62307 - "GET /?name=Hassan HTTP/1.1" 200 OK
-INFO:     127.0.0.1:62307 - "GET /api/meta HTTP/1.1" 200 OK
-INFO:     127.0.0.1:62309 - "GET /api/renters/0/deck HTTP/1.1" 404 Not Found
-INFO:     127.0.0.1:62311 - "GET /api/splash HTTP/1.1" 200 OK
-INFO:     127.0.0.1:62307 - "GET /api/meta HTTP/1.1" 200 OK
-INFO:     127.0.0.1:62313 - "GET /api/renters/0/deck HTTP/1.1" 404 Not Found
-INFO:     127.0.0.1:62315 - "GET /api/splash HTTP/1.1" 200 OK
-INFO:     127.0.0.1:62329 - "GET /api/splash HTTP/1.1" 200 OK
-INFO:     127.0.0.1:62337 - "GET /demo.html HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:62339 - "GET /?name=Ahmed HTTP/1.1" 200 OK
-INFO:     127.0.0.1:62337 - "GET /?name=Hassan HTTP/1.1" 200 OK
-INFO:     127.0.0.1:62337 - "GET /api/meta HTTP/1.1" 200 OK
-INFO:     127.0.0.1:62341 - "GET /api/splash HTTP/1.1" 200 OK
-INFO:     127.0.0.1:62339 - "GET /api/renters/0/deck HTTP/1.1" 404 Not Found
-INFO:     127.0.0.1:62337 - "GET /api/meta HTTP/1.1" 200 OK
-INFO:     127.0.0.1:62343 - "GET /api/splash HTTP/1.1" 200 OK
-INFO:     127.0.0.1:62341 - "GET /api/renters/0/deck HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:62454 - "GET /api/price_guide?postcode=E2%207DG&bedrooms=1&rent=1750 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62458 - "GET /api/price_guide?postcode=SE15&bedrooms=2&radius_km=2&budget=1900 HTTP/1.1" 200 OK

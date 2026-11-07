@@ -72,6 +72,38 @@ scoring.geocode = geocode
 def meta():
     return {**META, "ranker": "lightgbm" if MODEL is not None else "v1-weighted", "boroughs": sorted(LISTINGS.borough.unique().tolist())}
 
+@app.get("/api/price_guide")
+def price_guide(postcode: str, bedrooms: int = 1, radius_km: float = 1.5, budget: float | None = None, rent: float | None = None):
+    """AutoTrader-style second opinion: comparables from the real stock near the postcode, plus the ONS borough figure."""
+    lat, lon = geocode(postcode)
+    L = listings()
+    if lat is None: return {"error": "postcode not found"}
+    km = np.hypot((L.lat - lat) * 110.57, (L.lon - lon) * 69.4)
+    comps = L[(L.bedrooms == bedrooms) & (km <= radius_km)]
+    r = radius_km
+    while len(comps) < 12 and r < 6:
+        r *= 1.6; comps = L[(L.bedrooms == bedrooms) & (km <= r)]
+    out = {"n": int(len(comps)), "radius_km": round(r, 1), "low": int(comps.rent.quantile(.25)) if len(comps) else None, "typical": int(comps.rent.median()) if len(comps) else None, "high": int(comps.rent.quantile(.75)) if len(comps) else None}
+    near = L[km <= r]; b = near.borough.mode().iloc[0] if len(near) else None
+    if b is not None:
+        same = comps[comps.borough == b]
+        row = same.iloc[0] if len(same) else (comps.iloc[0] if len(comps) else near.iloc[0])
+        out["borough"] = b; out["borough_typical"] = int(row.borough_typical_rent) if "borough_typical_rent" in row else None; out["borough_growth_pct"] = float(row.borough_rent_growth_pct) if "borough_rent_growth_pct" in row else None
+    if budget is not None and len(comps):
+        out["share_within_budget"] = round(float((comps.rent <= budget).mean()) * 100)
+    if rent is not None and len(comps):
+        out["pct_vs_typical"] = round((rent / out["typical"] - 1) * 100) if out["typical"] else None
+        out["share_cheaper"] = round(float((comps.rent < rent).mean()) * 100)
+        # how many verified renters in this session's database could afford and pass at this rent
+        with db() as c:
+            rows = c.execute("SELECT profile FROM renters").fetchall()
+        n_ok = 0
+        for rw in rows:
+            p = json.loads(rw["profile"])
+            if p.get("budget", 0) * 1.05 >= rent and (p.get("annual_income", 0) >= 2.5 * rent * 12 or p.get("has_guarantor")): n_ok += 1
+        out["renters_on_app_who_qualify"] = n_ok
+    return out
+
 @app.get("/api/splash")
 def splash():
     picks = listings().sample(3, random_state=int(time.time()) // 60)
