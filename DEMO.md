@@ -2,11 +2,11 @@
 
 Open the link on the projector. It shows two phones: landlord on the left, renter on the right. Someone from the audience is the renter.
 
-**0:00 Renter, 35 seconds.** Right phone, Start as renter. They type their name. Area, budget, bedrooms. Income screen, leave it or move it. Show my homes. The scan runs: "969,825 London homes, then area, budget, size, and finally the ones whose landlord would accept you. That last number is the product. Ranked by a gradient-boosted model trained on 1.28 million real sales."
+**0:00 Renter, 35 seconds.** Right phone, Start as renter. Name and email are already there. They type an area (S1 is fine, it becomes SE1), set the budget, keep 2 beds, keep the £80,000 income, tap Non-smoker if they like, Show my homes. The scan runs: "969,825 London homes, then area, budget, size, the ones whose landlord would accept you, and finally how many are listed by a real landlord right now: zero." The phone settles on "No landlord has listed a home that fits you yet. The moment one does, it appears here."
 
-**0:35 Landlord, 25 seconds.** Left phone, Start as landlord. Continue. The form fills itself from what the renter just asked for: same area, same bedrooms, a rent they can afford, rules they pass. Photos and description are already in. Scroll to the Guarantee block if you have time. Publish. "Shown first to matching renters near N16."
+**0:35 Landlord, 25 seconds.** Left phone, Start as landlord, Continue. The form fills itself from what the renter just asked for: same area, same bedrooms, a rent they can afford, rules they pass. Photos and description are already in. Publish.
 
-**1:00 The match, 30 seconds.** Right phone, tap Not for me. The next card is the landlord's home, "Listed by Hassan, just now". "It is first because the renter passes every rule the landlord set. No form, no agent, no referencing fee spent on a home that was never going to say yes." Tap Request a viewing, pick a reason and a time. Left phone, scroll down: the request is there with the ticks. Offer a viewing. Done.
+**1:00 The match, 30 seconds.** Say nothing. Within three seconds the renter's phone changes on its own: the home appears, "Listed by Hassan, just now". "It is there because the renter passes every rule the landlord set. No form, no agent, no referencing fee spent on a home that was never going to say yes." Request a viewing, pick a reason and a time. Left phone, scroll down: the request with the ticks. Offer a viewing. Done.
 
 ## Before you go on stage
 

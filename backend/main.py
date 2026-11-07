@@ -207,7 +207,8 @@ def create_renter(p: Profile):
         cur = c.execute("INSERT INTO renters(created, profile) VALUES(?,?)", (time.time(), json.dumps(prof)))
         rid = cur.lastrowid
     swiped = set(); ranked = scoring.rank(prof, listings(), swiped, prof.get("work_lat"), prof.get("work_lon"), None, MODEL)
-    return {"renter_id": rid, "profile": prof, "n_available": int(len(ranked)), "max_rent_income_rule": round(scoring.max_rent_for(prof)), "funnel": scoring.LAST_FUNNEL.get("last", []), "source_dwellings": META["source_dwellings"]}
+    n_live = int(ranked.live.fillna(False).astype(bool).sum()) if "live" in ranked.columns else 0
+    return {"renter_id": rid, "profile": prof, "n_available": int(len(ranked)), "n_live": n_live, "max_rent_income_rule": round(scoring.max_rent_for(prof)), "funnel": scoring.LAST_FUNNEL.get("last", []), "source_dwellings": META["source_dwellings"]}
 
 def _renter(rid):
     with db() as c:
@@ -256,10 +257,11 @@ def latest_renter():
     prof = json.loads(row["profile"]); prof["renter_id"] = row["id"]; return prof
 
 @app.get("/api/renters/{rid}/deck")
-def deck(rid: int, n: int = 10):
+def deck(rid: int, n: int = 10, live_only: int = 0):
     prof = _renter(rid); swiped, liked_ids = _swiped(rid)
     liked = listings()[listings().id.isin(liked_ids)]
     ranked = scoring.rank(prof, listings(), swiped, prof.get("work_lat"), prof.get("work_lon"), liked, MODEL)
+    if live_only and "live" in ranked.columns: ranked = ranked[ranked.live.fillna(False).astype(bool)]  # only homes a real landlord has listed
     cols = [c for c in ["id","borough","ward","outcode","lat","lon","type_name","propertytype","bedrooms","tfarea","numberrooms","epc","age_band","rent","transport_score","safety_score","environment_score","imd_decile","housing_barriers_decile","pet_fee","furnished","min_tenancy_months","min_income_multiple","referencing_required","guarantor_accepted","area_label","score","eligible","block_reason","homes_approved_600m","schemes_approved_600m","applications_since_2024_600m","nearest_big_scheme_km","nearest_big_scheme_homes","nearest_big_scheme_desc","private_rented_pct","social_rented_pct","owned_pct","ptal_level","borough_typical_rent","rent_vs_typical_pct","borough_rent_growth_pct","demand_tightness","demand_tightness_pct","available_from","live","verified","landlord_name","value_estimate","rent_ons_lookup","no_smoking","max_occupants"] if c in ranked.columns]
     if ranked.empty: return []
     cols = cols + (["commute_km"] if "commute_km" in ranked.columns else [])
