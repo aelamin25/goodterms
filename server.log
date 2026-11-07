@@ -15,3 +15,11 @@ INFO:     127.0.0.1:61072 - "GET /api/renters/14/deck?n=8 HTTP/1.1" 200 OK
 INFO:     127.0.0.1:61080 - "POST /api/renters/14/swipes HTTP/1.1" 200 OK
 INFO:     127.0.0.1:61084 - "GET / HTTP/1.1" 304 Not Modified
 INFO:     127.0.0.1:61084 - "GET /api/meta HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61132 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61132 - "GET /api/meta HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61132 - "POST /api/renters HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61132 - "GET /api/renters/15/deck?n=8 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61132 - "POST /api/renters/15/swipes HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61136 - "POST /api/renters/15/swipes HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61138 - "GET / HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:61138 - "GET /api/meta HTTP/1.1" 200 OK
