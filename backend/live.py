@@ -15,6 +15,13 @@ def init(listings: pd.DataFrame, db_path: pathlib.Path, scoring):
         CREATE TABLE IF NOT EXISTS landlords(id INTEGER PRIMARY KEY AUTOINCREMENT, created REAL, name TEXT, listing_id INT, rules TEXT);
         CREATE TABLE IF NOT EXISTS interests(id INTEGER PRIMARY KEY AUTOINCREMENT, landlord_id INT, listing_id INT, renter_id INT, liked_feature TEXT, status TEXT, slot TEXT, ts REAL, UNIQUE(listing_id, renter_id));
         """)
+        c.row_factory = sqlite3.Row
+        rows = c.execute("SELECT * FROM landlords ORDER BY id").fetchall()
+    for r in rows:  # rebuild live listings after a restart so landlord phones keep working
+        try:
+            build_listing(Listing(**json.loads(r["rules"])), listing_id=r["listing_id"])
+        except Exception as e:
+            print("could not rebuild listing", r["listing_id"], e)
 
 def db():
     c = sqlite3.connect(STATE["db"]); c.row_factory = sqlite3.Row; return c
@@ -33,21 +40,29 @@ class Listing(BaseModel):
     furnished: bool = True
     verified: bool = True
 
-@router.post("/api/landlords")
-def create_landlord(l: Listing):
-    """Create a live listing: borrow attributes from the nearest real dwelling of that size near the postcode."""
+def build_listing(l, listing_id=None):
     L = STATE["listings"]; sc = STATE["scoring"]
     lat, lon = sc.geocode(l.postcode)
     if lat is None: raise HTTPException(400, "postcode not found")
-    pool = L[L.bedrooms == l.bedrooms] if (L.bedrooms == l.bedrooms).sum() > 20 else L
+    pool = L[(L.bedrooms == l.bedrooms) & (L.live != True)] if ((L.bedrooms == l.bedrooms) & (L.live != True)).sum() > 20 else L[L.live != True]
     d = np.hypot((pool.lat - lat) * 110.57, (pool.lon - lon) * 69.4)
     base = pool.loc[d.idxmin()].to_dict()
-    new_id = int(L.id.max()) + 1
+    if listing_id is None:
+        with sqlite3.connect(STATE["db"]) as c:
+            db_max = c.execute("SELECT COALESCE(MAX(listing_id),0) FROM landlords").fetchone()[0]
+        listing_id = max(int(L.id.max()), int(db_max)) + 1
+    new_id = listing_id
     row = {**base, "id": new_id, "lat": lat, "lon": lon, "rent": int(l.rent), "bedrooms": l.bedrooms,
            "min_income_multiple": l.min_income_multiple, "referencing_required": l.referencing_required, "guarantor_accepted": l.guarantor_accepted,
            "pet_fee": l.pet_fee, "min_tenancy_months": l.min_tenancy_months, "furnished": l.furnished, "available_from": l.available_from or base.get("available_from", ""),
            "live": True, "verified": l.verified, "landlord_name": l.name}
-    STATE["listings"] = pd.concat([L, pd.DataFrame([row])], ignore_index=True)
+    STATE["listings"] = pd.concat([L[L.id != new_id], pd.DataFrame([row])], ignore_index=True)
+    return new_id, row
+
+@router.post("/api/landlords")
+def create_landlord(l: Listing):
+    """Create a live listing: borrow attributes from the nearest real dwelling of that size near the postcode."""
+    new_id, row = build_listing(l)
     with db() as c:
         cur = c.execute("INSERT INTO landlords(created, name, listing_id, rules) VALUES(?,?,?,?)", (time.time(), l.name, new_id, l.model_dump_json()))
         lid = cur.lastrowid
