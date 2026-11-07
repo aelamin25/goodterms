@@ -1,0 +1,99 @@
+{
+ "model": {
+  "trees": 751,
+  "features": [
+   "t",
+   "lat",
+   "lon",
+   "tfarea",
+   "numberrooms",
+   "CURRENT_ENERGY_EFFICIENCY",
+   "imd",
+   "crime",
+   "env",
+   "ptai",
+   "propertytype",
+   "duration",
+   "CONSTRUCTION_AGE_BAND",
+   "borough",
+   "outcode"
+  ],
+  "n_train": 1177400,
+  "train_years": "2010-2022",
+  "validate": "2023",
+  "test": "2024"
+ },
+ "validation_2023": {
+  "name": "validation 2023",
+  "n": 66016,
+  "median_ape": 10.6,
+  "mean_ape": 16.9,
+  "within_10pct": 47.5,
+  "within_20pct": 75.6,
+  "r2_log": 0.842
+ },
+ "test_2024": {
+  "name": "test 2024",
+  "n": 40282,
+  "median_ape": 10.6,
+  "mean_ape": 16.2,
+  "within_10pct": 47.6,
+  "within_20pct": 76.5,
+  "r2_log": 0.846
+ },
+ "baseline_borough_type_ppm": {
+  "validation_2023": {
+   "name": "baseline 2023",
+   "median_ape": 22.6,
+   "within_20pct": 43.9
+  },
+  "test_2024": {
+   "name": "baseline 2024",
+   "median_ape": 21.6,
+   "within_20pct": 46.0
+  }
+ },
+ "importance_gain_pct": {
+  "tfarea": 45.6,
+  "outcode": 16.6,
+  "borough": 13.1,
+  "t": 12.6,
+  "numberrooms": 3.1,
+  "CONSTRUCTION_AGE_BAND": 2.2,
+  "env": 2.1,
+  "ptai": 1.7,
+  "duration": 1.1,
+  "propertytype": 0.9,
+  "CURRENT_ENERGY_EFFICIENCY": 0.5,
+  "imd": 0.2,
+  "lon": 0.2,
+  "crime": 0.1,
+  "lat": 0.1
+ },
+ "yield_examples": {
+  "Barking and Dagenham|0": {
+   "annual_yield": 0.0779,
+   "ons_rent": 1171.3,
+   "median_value": 180388,
+   "n": 74
+  },
+  "Barking and Dagenham|1": {
+   "annual_yield": 0.0876,
+   "ons_rent": 1378.0,
+   "median_value": 188675,
+   "n": 587
+  },
+  "Barking and Dagenham|2": {
+   "annual_yield": 0.0606,
+   "ons_rent": 1723.0,
+   "median_value": 341327,
+   "n": 2196
+  },
+  "Barking and Dagenham|3": {
+   "annual_yield": 0.0595,
+   "ons_rent": 1902.0,
+   "median_value": 383885,
+   "n": 2794
+  }
+ }
+}
