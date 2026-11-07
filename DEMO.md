@@ -6,7 +6,7 @@ Open http://localhost:8765/demo.html on the laptop. Left phone is the landlord, 
 
 **0:30 Landlord lists, 45 seconds.** Left phone: I have a home to let. Name. Postcode, bedrooms, rent. Point at the fair-rent line: "that comes from a model trained on 1.3 million real London sales." Rules: income, referencing, no smoking, up to two people. Add a photo from the phone. One sentence. Publish. "Shown first to matching renters near E2."
 
-**1:15 Renter searches, 45 seconds.** Right phone: I'm looking for a home. Name. Same area, two kilometres. Budget that covers the rent, same bedrooms. Income and checks. Short profile. Show my homes. Let the scan run: "969,825 homes, then area, budget, size, date, and finally the ones whose landlord would accept you. That last number is the product."
+**1:15 Renter searches, 45 seconds.** Right phone: I'm looking for a home. Name. Same area, two kilometres. Budget that covers the rent, same bedrooms. Income and checks. Short profile. Show my homes. Let the scan run: "969,825 homes, then area, budget, size, date, and finally the ones whose landlord would accept you. That last number is the product." If the income slider is below the landlord's rule (default £55,000 vs 2.5× rent), the renter sees "Nothing fits yet" with an "Add a guarantor" button. Tap it and the flat appears. That beat is the pitch in one tap: rules first, then homes.
 
 **2:00 The match, 45 seconds.** The landlord's home is first. Tap it: real size, real EPC, real neighbourhood numbers, the landlord's own words. Request a viewing. Left phone: the request arrives with verified ticks, not documents. Offer a viewing. Right phone: it lands in chat. Make an offer. Referencing runs from the vault. Type your name to sign.
 
