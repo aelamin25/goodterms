@@ -1,4 +1,4 @@
-# ChairMatch (working name) — design, House London #3, 7 Nov 2026
+# GoodTerms — design, House London #3, 7 Nov 2026
 
 ## One line
 A matchmaking app for London renting: renters swipe on real homes, landlords set their rules,

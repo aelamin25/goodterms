@@ -66,7 +66,7 @@ def geocode(pc: str):
     return None, None
 scoring.geocode = geocode
 
-app = FastAPI(title="ChairMatch")
+app = FastAPI(title="GoodTerms")
 live.init(LISTINGS, DB, scoring)
 app.include_router(live.router)
 def listings(): return live.STATE["listings"]
