@@ -193,8 +193,7 @@ input[type=range]{width:100%;accent-color:var(--brand);height:30px}
  <div class="eyebrow" style="color:var(--accent)">Matching</div><h2 style="margin-top:8px;font-size:36px" id="scan-title">Scanning <em>London</em></h2>
  <div class="progress" style="margin-top:14px;height:6px;border-radius:6px"><i id="scan-bar" style="width:0;transition:width .5s"></i></div>
  <div style="margin-top:18px" id="scan-steps"></div>
- <div class="note" style="margin-top:18px"><b>Not Tinder.</b> Every home is matched against 969,825 real London dwellings. Rents are checked by a machine-learning model (gradient-boosted trees, the XGBoost family) trained on 1.28 million real sales. Landlord rules are applied before you see anything.</div>
-</div><div class="foot fade" id="scan-foot" style="display:none"><button class="btn" onclick="go('s-how')">How we did that</button></div></section>
+ </div><div class="foot fade" id="scan-foot" style="display:none"><button class="btn" onclick="go('s-how')">How we did that</button></div></section>
 <section id="s-how" class="screen"><div class="top"><button class="back" aria-label="Back" onclick="back()">‹</button><span class="eyebrow">How matching works</span></div><div class="content" id="how-body"></div><div class="foot"><button class="btn" onclick="enterDeck()">See my homes</button></div></section>
 <section id="s-swipe" class="screen"><div class="top" style="justify-content:space-between"><div style="display:flex;align-items:center"><button class="back" aria-label="Back" onclick="back()">‹</button><span class="ttl">GoodTerms</span></div><div style="display:flex;gap:8px;align-items:center"><button class="btn link" style="width:auto;padding:10px 10px;min-height:44px;color:var(--accent)" onclick="openRefine()">Refine</button><span class="badge" id="likes-pill" style="display:none">5 requests left</span></div></div>
  <p class="small mute" style="padding:0 20px 6px" id="deck-note"></p>
@@ -284,12 +283,12 @@ async function startSwiping(){go('s-scan');$('#scan-foot').style.display='none';
 function renderHow(){const g=lastGuideR,b=beds({bedrooms:P.bedrooms}).toLowerCase(),a=P.area_postcode.toUpperCase();
  $('#how-body').innerHTML=`<h2>Four numbers, all <em>real</em></h2>
  <div style="margin-top:16px">
- <div class="stat"><b>969,825</b><span>real London homes in our data<br><i>Size, energy rating and age from public records. Not adverts.</i></span></div>
- <div class="stat"><b>1.28m</b><span>real sales the model learned from<br><i>Gradient-boosted trees, the XGBoost family. It learned what a home is worth from its size, age, energy rating and location.</i></span></div>
- <div class="stat"><b>11%</b><span>typical error on homes it had never seen<br><i>Half its estimates land closer than that.</i></span></div>
- ${g?`<div class="stat"><b>${gbp(g.typical)}</b><span>typical rent for a ${b} near ${a}<br><i>The model values the ${g.n} homes like yours nearby. Each value becomes a rent using the borough's ONS rent rate. This is the middle one.</i></span></div>`:''}
+ <div class="stat"><b>969,825</b><span>real London homes we know about<br><i>How big each one is, how old, and how well it keeps the heat in.</i></span></div>
+ <div class="stat"><b>1.28m</b><span>real sales our model learned from<br><i>It learned what a home is worth. Bigger, newer, warmer, better placed: worth more. (Gradient-boosted trees, the XGBoost family.)</i></span></div>
+ <div class="stat"><b>11%</b><span>how far off it usually is<br><i>Say it guesses £2,000. The real figure is usually within about £220.</i></span></div>
+ ${g?`<div class="stat"><b>${gbp(g.typical)}</b><span>what a ${b} near ${a} usually rents for<br><i>We priced the ${g.n} homes like yours nearby. This is the one in the middle.</i></span></div>`:''}
  </div>
- <p style="margin-top:16px;font-size:15px">Then every landlord's rules, <b>before you see anything</b>. Then ranked by fit: transport, crime, surroundings, neighbours. All open data.</p>`}
+ <p style="margin-top:16px;font-size:15px">Then we check every landlord's rules for you. <b>You only see homes that would say yes.</b> Best fit first.</p>`}
 async function enterDeck(){deck=[];history=[];go('s-swipe');nav=['s-area','s-needs','s-verify','s-profile'];$('#deck-note').innerHTML=nAvail?`${nAvail} home${nAvail===1?'':'s'} near ${P.area_postcode.toUpperCase()} would accept you. Ranked by our XGBoost-family model, trained on 1.28 million real sales. <span class="term" onclick="go('s-about')">How it works</span>`:'';await refill();if(!window.polling){window.polling=true;pollInbox()}}
 async function pullLive(quiet){try{if(!renterId)return;const fresh=await fetch(deckUrl(6)).then(r=>r.json());const seen=new Set([...deck,...history].map(d=>d.id));const live=fresh.filter(m=>m.live&&!seen.has(m.id));if(!live.length)return;
  if(!quiet||!deck.length){deck.unshift(...live);if(quiet){nAvail=Math.max(nAvail,deck.length);$('#deck-note').innerHTML=`${deck.length} home${deck.length===1?'':'s'} near ${P.area_postcode.toUpperCase()} would accept you. <span class="term" onclick="go('s-about')">How it works</span>`;render()}}
