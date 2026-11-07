@@ -19,6 +19,11 @@ def passes_rules(renter: dict, l: pd.Series) -> tuple[bool, str]:
         return False, "referencing"
     if renter.get("has_pets") and l.pet_fee < 0:
         return False, "pets"
+    if getattr(l, "no_smoking", False) and renter.get("smoker"):
+        return False, "smoking"
+    occ = {"Just me": 1, "Couple": 2, "Two sharers": 2, "Family": 3}.get(renter.get("household", ""), 1)
+    if getattr(l, "max_occupants", 99) and occ > getattr(l, "max_occupants", 99):
+        return False, "occupants"
     return True, ""
 
 def preference_score(renter: dict, l: pd.Series, work_lat=None, work_lon=None) -> float:

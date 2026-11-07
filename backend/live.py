@@ -47,6 +47,8 @@ class Listing(BaseModel):
     pet_fee: int = -1
     min_tenancy_months: int = 12
     furnished: bool = True
+    no_smoking: bool = True
+    max_occupants: int = 2
     verified: bool = False
     photos: list = []
     description: str = ""
@@ -65,7 +67,7 @@ def build_listing(l, listing_id=None):
     new_id = listing_id
     row = {**base, "id": new_id, "lat": lat, "lon": lon, "rent": int(l.rent), "bedrooms": l.bedrooms,
            "min_income_multiple": l.min_income_multiple, "referencing_required": l.referencing_required, "guarantor_accepted": l.guarantor_accepted,
-           "pet_fee": l.pet_fee, "min_tenancy_months": l.min_tenancy_months, "furnished": l.furnished, "available_from": l.available_from or base.get("available_from", ""),
+           "pet_fee": l.pet_fee, "min_tenancy_months": l.min_tenancy_months, "furnished": l.furnished, "no_smoking": l.no_smoking, "max_occupants": l.max_occupants, "available_from": l.available_from or base.get("available_from", ""),
            "live": True, "verified": l.verified, "landlord_name": l.name}
     STATE["listings"] = pd.concat([L[L.id != new_id], pd.DataFrame([row])], ignore_index=True)
     return new_id, row

@@ -20,6 +20,7 @@ try:
     print("listings re-priced from the valuation model")
 except Exception as e:
     valuation = None; print("valuation model not loaded:", e)
+LISTINGS["no_smoking"] = _rng.random(len(LISTINGS)) < 0.55; LISTINGS["max_occupants"] = (LISTINGS.bedrooms.clip(lower=1) + 1).astype(int)
 LISTINGS["live"] = False; LISTINGS["verified"] = (LISTINGS.id % 4 != 0); LISTINGS["landlord_name"] = ""
 PHOTOS = ["1502672260266-1c1ef2d93688", "1522708323590-d24dbb6b0267", "1484154218962-a197022b5858", "1493809842364-78817add7ffb", "1560448204-e02f11c3d0e2", "1554995207-c18c203602cb", "1600607687939-ce8a6c25118c", "1600210492486-724fe5c67fb0", "1588854337115-1c67d9247e4d", "1505693416388-ac5ce068fe85", "1540518614846-7eded433c457", "1513694203232-719a280e022f", "1567767292278-a4f21aa2d36e", "1536376072261-38c75010e6c9", "1502005229762-cf1b2da7c5d6", "1556911220-bff31c812dba", "1565182999561-18d7dc61c393", "1555041469-a586c61ea9bc", "1507089947368-19c1da9775ae", "1595526114035-0d45ed16cfbf"]
 META = json.load(open(ROOT / "data/processed/meta.json"))
@@ -59,6 +60,7 @@ class Profile(BaseModel):
     furnished_pref: str = "any"
     min_area: float = 0
     min_epc: str = ""
+    smoker: bool = False
     lifestyle: list = []
     wants: list = []
     dealbreakers: list = []
@@ -204,7 +206,7 @@ def deck(rid: int, n: int = 10):
     prof = _renter(rid); swiped, liked_ids = _swiped(rid)
     liked = listings()[listings().id.isin(liked_ids)]
     ranked = scoring.rank(prof, listings(), swiped, prof.get("work_lat"), prof.get("work_lon"), liked, MODEL)
-    cols = [c for c in ["id","borough","ward","outcode","lat","lon","type_name","propertytype","bedrooms","tfarea","numberrooms","epc","age_band","rent","transport_score","safety_score","environment_score","imd_decile","housing_barriers_decile","pet_fee","furnished","min_tenancy_months","min_income_multiple","referencing_required","guarantor_accepted","area_label","score","eligible","block_reason","homes_approved_600m","schemes_approved_600m","applications_since_2024_600m","nearest_big_scheme_km","nearest_big_scheme_homes","nearest_big_scheme_desc","private_rented_pct","social_rented_pct","owned_pct","ptal_level","borough_typical_rent","rent_vs_typical_pct","borough_rent_growth_pct","demand_tightness","demand_tightness_pct","available_from","live","verified","landlord_name","value_estimate","rent_ons_lookup"] if c in ranked.columns]
+    cols = [c for c in ["id","borough","ward","outcode","lat","lon","type_name","propertytype","bedrooms","tfarea","numberrooms","epc","age_band","rent","transport_score","safety_score","environment_score","imd_decile","housing_barriers_decile","pet_fee","furnished","min_tenancy_months","min_income_multiple","referencing_required","guarantor_accepted","area_label","score","eligible","block_reason","homes_approved_600m","schemes_approved_600m","applications_since_2024_600m","nearest_big_scheme_km","nearest_big_scheme_homes","nearest_big_scheme_desc","private_rented_pct","social_rented_pct","owned_pct","ptal_level","borough_typical_rent","rent_vs_typical_pct","borough_rent_growth_pct","demand_tightness","demand_tightness_pct","available_from","live","verified","landlord_name","value_estimate","rent_ons_lookup","no_smoking","max_occupants"] if c in ranked.columns]
     if ranked.empty: return []
     cols = cols + (["commute_km"] if "commute_km" in ranked.columns else [])
     out = ranked.head(n)[cols].copy()
