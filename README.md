@@ -14,8 +14,7 @@ Today a London rental gets about 8 enquiries. Each one is a form, a wait for an 
 ```sh
 ./run.sh
 ```
-Then open http://localhost:8765 on your laptop, or http://YOUR-LAPTOP-IP:8765 on a phone on the same Wi-Fi.
-Two phones side by side on one screen: http://localhost:8765/demo.html
+Then open http://localhost:8765. On a laptop or projector it shows two iPhones side by side, landlord on the left, renter on the right. On a real phone it opens the app on its own (http://YOUR-LAPTOP-IP:8765 on the same Wi-Fi).
 
 ## The demo, step by step
 1. **Phone 1, the landlord.** Tap "I have a home to let". Postcode, bedrooms, rent (the app tells you if it is fair for that street), when it is free, your rules. Add a photo and a sentence. Publish.
@@ -41,7 +40,7 @@ Foundations (foreman.house-london.uk, House London), the House London Data Asset
 
 ## Layout
 - `backend/` FastAPI: matching (`scoring.py`), live two-sided layer (`live.py`), valuation (`valuation.py`)
-- `frontend/` one HTML file, no build step; `demo.html` shows two phones
+- `frontend/` one HTML file, no build step; `demo.html` is the two-phone landing page
 - `scripts/` data pipeline: fetch homes, build listings, enrich, train the price model
 - `data/processed/` the listings table and the trained model (raw inputs are not committed; the scripts fetch them)
 
@@ -53,7 +52,7 @@ Foundations (foreman.house-london.uk, House London), the House London Data Asset
 2. Accept the blueprint. It builds from the Dockerfile and gives you a permanent `https://goodterms-….onrender.com` address.
 3. Share that link. It works from any phone, anywhere, with no laptop involved.
 
-The free tier sleeps after 15 minutes idle and takes about a minute to wake, so open the link once before you go on stage. Two phones side by side: add `/demo.html` to the address.
+The free tier sleeps after 15 minutes idle and takes about a minute to wake, so open the link once before you go on stage.
 
 ## Team
 Ahmed Elamin, Hassan. Built with Claude Code. House London #3.

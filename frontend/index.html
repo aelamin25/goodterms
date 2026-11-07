@@ -63,8 +63,8 @@ input[type=range]{width:100%;accent-color:var(--brand);height:30px}
  <div style="position:absolute;left:22px;right:22px;bottom:0;padding-bottom:calc(22px + env(safe-area-inset-bottom));color:#fff" class="fade">
   <div class="badge" style="background:rgba(255,255,255,.18);color:#fff;backdrop-filter:blur(8px)" id="hero-tag">London</div>
   <h1 style="margin-top:12px;font-size:52px;color:#fff">Rent London.<br><em style="color:#f3d9c8">Say yes.</em></h1>
-  <p style="margin-top:10px;font-size:15px;color:#e8e2d8">Only homes that would accept you. Matched by data from 969,825 real London homes, not by swiping luck.</p>
-  <button class="btn" style="margin-top:18px;background:#fff;color:#17171a" onclick="go('s-role')">Start</button>
+  <p id="splash-copy" style="margin-top:10px;font-size:15px;color:#e8e2d8">Only homes that would accept you. Matched by data from 969,825 real London homes, not by swiping luck.</p>
+  <button id="splash-start" class="btn" style="margin-top:18px;background:#fff;color:#17171a" onclick="go('s-role')">Start</button>
  </div>
 </section>
 <section id="s-role" class="screen" style="background:var(--bg)">
@@ -220,6 +220,8 @@ const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const gbp=n=>'£'+Math.round(n).toLocaleString();
 const show=id=>$('#'+id).style.display='flex', hide=id=>$('#'+id).style.display='none';
 const qs=new URLSearchParams(location.search);
+// On a laptop or projector the link opens the two-phone demo; on a real phone, or inside a frame, it opens the app.
+if(window===window.top&&!qs.get('role')&&matchMedia('(min-width:900px)').matches)location.replace('/demo.html');
 let role=qs.get('role')||'renter', renterId=null, deck=[], history=[], matches=[], chats={}, nAvail=0, nav=[], photoIdx={};
 const P={name:qs.get('name')||'',budget:1900,bedrooms:1,has_pets:false,area_postcode:'',radius_km:2,work_postcode:null,max_commute_km:10,move_in:'',annual_income:55000,passes_referencing:true,has_guarantor:false,household:'Just me',job:'',lifestyle:[],wants:[],dealbreakers:[],home_type:'any',furnished_pref:'any',min_area:0,min_epc:'',weights:{transport:3,safety:3,green:2,energy:2}};
 const LL={name:qs.get('name')||'Landlord',postcode:'E2 7DG',bedrooms:1,rent:1750,available_from:'2026-11-14',min_income_multiple:2.5,referencing_required:true,guarantor_accepted:true,pet_fee:-1,furnished:true,no_smoking:true,max_occupants:2,verified:false};
@@ -369,5 +371,10 @@ async function submitGuarantee(){const scheme=($$('#g-scheme .chip.sel')[0]||{})
 let lastRows='';async function pollInterested(){if(!landlordId||!$('#s-interested').classList.contains('on')){setTimeout(pollInterested,2000);return}try{const rows=await fetch(`/api/landlords/${landlordId}/interested`).then(r=>r.json());const key=landlordId+':'+JSON.stringify(rows);if(key===lastRows){setTimeout(pollInterested,2000);return}lastRows=key;if(rows.length)renderLandlordHome();if(rows.length)$('#i-list').innerHTML=rows.map(r=>{const p=r.profile;const cap=p.annual_income/(12*LL.min_income_multiple);return `<div class="fade" style="border:1px solid var(--line);border-radius:18px;padding:14px"><div style="display:flex;justify-content:space-between;align-items:flex-start"><div><div style="font-weight:800;font-size:17px">${p.name||'Renter'} <span class="badge ok">Verified</span></div><div class="small mute">${[p.household,p.job].filter(Boolean).join(' · ')||'Tenant profile'}</div></div><div style="text-align:right"><span class="badge">New to the app</span></div></div><div class="small" style="margin-top:8px">${p.lifestyle&&p.lifestyle.length?p.lifestyle.join(' · ')+'<br>':''}Income ${gbp(p.annual_income)} · ${p.passes_referencing?'clean referencing':'referencing at risk'}${p.has_guarantor?' · guarantor':''}${p.has_pets?' · pet':''} · move in ${p.move_in?fmtDate(p.move_in):'asap'}</div><div class="small mute" style="margin-top:4px">Liked ${r.liked_feature?'the '+r.liked_feature.toLowerCase():'your home'}.</div><div class="chips" style="margin-top:8px">${['Identity','Income above your minimum','Credit check','Right to Rent'].map(x=>`<span class="badge ok" style="font-size:11px">✓ ${x}</span>`).join('')}${p.has_guarantor?'<span class="badge ok" style="font-size:11px">✓ Guarantor</span>':''}<span class="badge" style="font-size:11px">Landlord reference: on request</span></div><div class="small mute" style="margin-top:6px">Checked by us. You see the ticks, not the documents. Your address is shown only after a renter you've met makes an offer.</div>${r.status==='viewing_offered'?`<div style="margin-top:10px"><span class="badge ok">Viewing offered · ${r.slot}</span></div>`:r.status==='passed'?`<div style="margin-top:10px"><span class="badge">Passed</span></div>`:`<div style="display:flex;gap:8px;margin-top:12px"><button class="chip" style="flex:1" onclick="decideInterest(${r.interest_id},'pass')">Not this one</button><button class="chip sel" style="flex:1" onclick="decideInterest(${r.interest_id},'offer_viewing')">Offer a viewing</button></div>`}</div>`}).join('')}catch(e){}setTimeout(pollInterested,2000)}
 async function decideInterest(iid,action){await fetch(`/api/interests/${iid}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action,slot:'Sat 11:00'})});}
 window.dbg={get P(){return P},get LL(){return LL},get deck(){return deck},get matches(){return matches},get chats(){return chats},get landlordId(){return landlordId},setLikes(v){likesLeft=v},decide,startSwiping,publishListing,decideInterest};
-if(qs.get('role')){pickRole(qs.get('role'));nav=['s-splash']}
+const presetRole=qs.get('role');
+if(presetRole==='landlord'||presetRole==='renter'){
+ $('#splash-copy').textContent=presetRole==='landlord'?'Set your rules once. Hear only from verified renters who already pass them. No agency.':'Only homes that would accept you. Matched by data from 969,825 real London homes, not by swiping luck.';
+ $('#splash-start').textContent=presetRole==='landlord'?'Start as landlord':'Start as renter';
+ $('#splash-start').onclick=()=>pickRole(presetRole);
+}
 </script></body></html>
