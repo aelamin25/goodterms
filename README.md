@@ -7,6 +7,9 @@ Built in one day at House London #3, 7 November 2026, Newspeak House.
 ## Why this matters
 Today a London rental gets about 8 enquiries. Each one is a form, a wait for an agent, and a referencing check that costs £50 to £150. Most die on income or referencing after everyone's time is spent, and the home sits empty for about 19 days. GoodTerms flips the order: check first, match second. Fewer dead viewings, fewer empty weeks, fewer renters in limbo.
 
+## Watch it
+![GoodTerms demo: landlord lists on the left, renter finds it on the right](docs/goodterms-demo.gif)
+
 ## Try it in two minutes
 ```sh
 ./run.sh
