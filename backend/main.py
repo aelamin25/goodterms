@@ -39,6 +39,32 @@ with db() as c:
     CREATE TABLE IF NOT EXISTS renters(id INTEGER PRIMARY KEY AUTOINCREMENT, created REAL, profile TEXT);
     CREATE TABLE IF NOT EXISTS swipes(id INTEGER PRIMARY KEY AUTOINCREMENT, renter_id INT, listing_id INT, liked INT, matched INT, reason TEXT, ts REAL);
     """)
+    c.execute("DELETE FROM swipes WHERE id NOT IN (SELECT MIN(id) FROM swipes GROUP BY renter_id, listing_id)")
+    c.execute("CREATE UNIQUE INDEX IF NOT EXISTS ux_swipe ON swipes(renter_id, listing_id)")
+
+import re as _re, functools
+_OUTCODE_CENTROIDS = LISTINGS.groupby("outcode")[["lat", "lon"]].mean()
+@functools.lru_cache(maxsize=4096)
+def geocode(pc: str):
+    """Postcode, outcode, or a place name like Chelsea. Falls back to our own outcode centroids if the lookup is unreachable."""
+    q = (pc or "").strip()
+    if not q: return None, None
+    is_pc = bool(_re.fullmatch(r"[A-Za-z]{1,2}\d[A-Za-z\d]?\s*(\d[A-Za-z]{2})?", q))
+    try:
+        if is_pc:
+            r = requests.get(f"https://api.postcodes.io/postcodes/{q.replace(' ', '')}", timeout=4).json().get("result")
+            if not r: r = requests.get(f"https://api.postcodes.io/outcodes/{q.replace(' ', '')}", timeout=4).json().get("result")
+            if r: return r["latitude"], r["longitude"]
+        pl = requests.get("https://api.postcodes.io/places", params={"q": q, "limit": 5}, timeout=4).json().get("result") or []
+        pl = [p for p in pl if p.get("region") in ("London", "Greater London") or (p.get("county_unitary") or "").endswith("London")] or pl
+        if pl: return pl[0]["latitude"], pl[0]["longitude"]
+    except Exception:
+        pass
+    oc = q.upper().split(" ")[0] if is_pc else None
+    if oc in _OUTCODE_CENTROIDS.index:
+        row = _OUTCODE_CENTROIDS.loc[oc]; return float(row.lat), float(row.lon)
+    return None, None
+scoring.geocode = geocode
 
 app = FastAPI(title="ChairMatch")
 live.init(LISTINGS, DB, scoring)
@@ -72,22 +98,7 @@ class Profile(BaseModel):
     has_pets: bool = False
     weights: dict = {}
 
-import re as _re
-def geocode(pc: str):
-    """Postcode, outcode, or a place name like Chelsea or Peckham Rye."""
-    try:
-        q = pc.strip()
-        if _re.fullmatch(r"[A-Za-z]{1,2}\d[A-Za-z\d]?\s*(\d[A-Za-z]{2})?", q):
-            r = requests.get(f"https://api.postcodes.io/postcodes/{q.replace(' ', '')}", timeout=5).json().get("result")
-            if not r: r = requests.get(f"https://api.postcodes.io/outcodes/{q.replace(' ', '')}", timeout=5).json().get("result")
-            if r: return r["latitude"], r["longitude"]
-        pl = requests.get("https://api.postcodes.io/places", params={"q": q, "limit": 5}, timeout=5).json().get("result") or []
-        pl = [p for p in pl if p.get("region") in ("London", "Greater London") or (p.get("county_unitary") or "").endswith("London")] or pl
-        if pl: return pl[0]["latitude"], pl[0]["longitude"]
-        return None, None
-    except Exception:
-        return None, None
-scoring.geocode = geocode
+
 
 @app.get("/api/meta")
 def meta():
@@ -122,6 +133,7 @@ def price_guide(postcode: str, bedrooms: int = 1, radius_km: float = 1.5, budget
     L = listings()
     if lat is None: return {"error": "postcode not found"}
     km = np.hypot((L.lat - lat) * 110.57, (L.lon - lon) * 69.4)
+    radius_km = max(float(radius_km), 0.25)
     comps = L[(L.bedrooms == bedrooms) & (km <= radius_km)]
     r = radius_km
     while len(comps) < 12 and r < 6:
@@ -129,9 +141,8 @@ def price_guide(postcode: str, bedrooms: int = 1, radius_km: float = 1.5, budget
     out = {"n": int(len(comps)), "radius_km": round(r, 1), "low": int(comps.rent.quantile(.25)) if len(comps) else None, "typical": int(comps.rent.median()) if len(comps) else None, "high": int(comps.rent.quantile(.75)) if len(comps) else None}
     near = L[km <= r]; b = near.borough.mode().iloc[0] if len(near) else None
     if b is not None:
-        same = comps[comps.borough == b]
-        row = same.iloc[0] if len(same) else (comps.iloc[0] if len(comps) else near.iloc[0])
-        out["borough"] = b; out["borough_typical"] = int(row.borough_typical_rent) if "borough_typical_rent" in row else None; out["borough_growth_pct"] = float(row.borough_rent_growth_pct) if "borough_rent_growth_pct" in row else None
+        same = L[(L.borough == b) & (L.bedrooms == bedrooms)]
+        out["borough"] = b; out["borough_typical"] = int(same.borough_typical_rent.iloc[0]) if len(same) else None; out["borough_growth_pct"] = float(same.borough_rent_growth_pct.iloc[0]) if len(same) else None
     if budget is not None and len(comps):
         out["share_within_budget"] = round(float((comps.rent <= budget).mean()) * 100)
     if rent is not None and len(comps):
@@ -145,6 +156,8 @@ def price_guide(postcode: str, bedrooms: int = 1, radius_km: float = 1.5, budget
         n_ok = 0
         for rw in rows:
             p = json.loads(rw["profile"])
+            if p.get("bedrooms") != bedrooms: continue
+            if p.get("area_lat") is not None and np.hypot((p["area_lat"] - lat) * 110.57, (p["area_lon"] - lon) * 69.4) > max(float(p.get("radius_km", 3)), 2) * 1.5: continue
             if p.get("budget", 0) * 1.05 >= rent and (p.get("annual_income", 0) >= 2.5 * rent * 12 or p.get("has_guarantor")): n_ok += 1
         out["renters_on_app_who_qualify"] = n_ok
     return out
@@ -157,8 +170,9 @@ def nudge(postcode: str, bedrooms: int, budget: float, radius_km: float = 2):
     if lat is None: return {"error": "postcode not found"}
     km = np.hypot((L.lat - lat) * 110.57, (L.lon - lon) * 69.4)
     here = L[(L.bedrooms == bedrooms) & (km <= radius_km)]
+    budget = budget * 1.05
     share = float((here.rent <= budget).mean()) if len(here) else 0.0
-    out = {"share_here": round(share * 100), "n_here": int(len(here)), "unrealistic": bool(len(here) >= 5 and share < 0.15)}
+    out = {"share_here": round(share * 100), "n_here": int(len(here)), "no_data": bool(len(here) < 5), "unrealistic": bool(len(here) >= 5 and share < 0.15)}
     if not out["unrealistic"]: return out
     alts = []
     if bedrooms > 0:
@@ -168,6 +182,10 @@ def nudge(postcode: str, bedrooms: int, budget: float, radius_km: float = 2):
     near = L[(L.bedrooms == bedrooms) & (km > radius_km) & (km <= 7)].assign(km=km)
     g = near.groupby("outcode").agg(n=("rent", "size"), share=("rent", lambda r: (r <= budget).mean()), typical=("rent", "median"), dist=("km", "median"))
     g = g[(g.n >= 5) & (g.share >= 0.3)].sort_values(["share", "dist"], ascending=[False, True]).head(3)
+    if not len(g) and not alts:
+        near = L[(L.bedrooms == bedrooms) & (km > radius_km) & (km <= 12)].assign(km=km)
+        g = near.groupby("outcode").agg(n=("rent", "size"), share=("rent", lambda r: (r <= budget).mean()), typical=("rent", "median"), dist=("km", "median"))
+        g = g[(g.n >= 5) & (g.share > 0)].sort_values(["share", "dist"], ascending=[False, True]).head(3)
     for oc, r in g.iterrows():
         alts.append({"kind": "area", "outcode": oc, "share": round(float(r.share) * 100), "typical": int(r.typical), "km": round(float(r.dist), 1)})
     out["alternatives"] = alts
@@ -227,9 +245,10 @@ def swipe(rid: int, s: Swipe):
     prof = _renter(rid); l = listings()[listings().id == s.listing_id]
     if l.empty: raise HTTPException(404, "listing not found")
     ok, reason = scoring.passes_rules(prof, l.iloc[0])
+    if ok and float(l.iloc[0].rent) > float(prof.get("budget", 0)) * 1.05: ok, reason = False, "budget"
     matched = bool(s.liked and ok)
     with db() as c:
-        c.execute("INSERT INTO swipes(renter_id, listing_id, liked, matched, reason, ts) VALUES(?,?,?,?,?,?)", (rid, s.listing_id, int(s.liked), int(matched), reason, time.time()))
+        c.execute("INSERT OR IGNORE INTO swipes(renter_id, listing_id, liked, matched, reason, ts) VALUES(?,?,?,?,?,?)", (rid, s.listing_id, int(s.liked), int(matched), reason, time.time()))
     if s.liked: live.record_interest(s.listing_id, rid, s.liked_feature, matched)
     return {"matched": matched, "landlord_ok": ok, "block_reason": reason}
 

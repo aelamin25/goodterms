@@ -31,6 +31,10 @@ def init(listings: pd.DataFrame, db_path: pathlib.Path, scoring):
         for r in c.execute("SELECT * FROM listing_media").fetchall():
             if r["photos"]: PHOTOS[r["listing_id"]] = json.loads(r["photos"])
             if r["description"]: DESC[r["listing_id"]] = r["description"]
+            if r["guarantee"]:
+                try:
+                    g = json.loads(r["guarantee"]); L = STATE["listings"]; L.loc[L.id == r["listing_id"], "verified"] = bool(g.get("granted"))
+                except Exception: pass
 
 def db():
     c = sqlite3.connect(STATE["db"]); c.row_factory = sqlite3.Row; return c
@@ -68,7 +72,8 @@ def build_listing(l, listing_id=None):
     row = {**base, "id": new_id, "lat": lat, "lon": lon, "rent": int(l.rent), "bedrooms": l.bedrooms,
            "min_income_multiple": l.min_income_multiple, "referencing_required": l.referencing_required, "guarantor_accepted": l.guarantor_accepted,
            "pet_fee": l.pet_fee, "min_tenancy_months": l.min_tenancy_months, "furnished": l.furnished, "no_smoking": l.no_smoking, "max_occupants": l.max_occupants, "available_from": l.available_from or base.get("available_from", ""),
-           "live": True, "verified": l.verified, "landlord_name": l.name}
+           "live": True, "verified": l.verified, "landlord_name": l.name,
+           "rent_vs_typical_pct": round((l.rent / base["borough_typical_rent"] - 1) * 100) if base.get("borough_typical_rent") else None, "value_estimate": None, "rent_ons_lookup": None}
     STATE["listings"] = pd.concat([L[L.id != new_id], pd.DataFrame([row])], ignore_index=True)
     return new_id, row
 
@@ -98,21 +103,25 @@ def apply_guarantee(lid: int, g: Guarantee):
     with db() as c:
         row = c.execute("SELECT listing_id FROM landlords WHERE id=?", (lid,)).fetchone()
     if not row: raise HTTPException(404, "landlord not found")
-    L = STATE["listings"]; home = L[L.id == row["listing_id"]].iloc[0]
+    L = STATE["listings"]; hm = L[L.id == row["listing_id"]]
+    if hm.empty: raise HTTPException(404, "listing not found, please publish again")
+    home = hm.iloc[0]
     checks = [
-        {"name": "EPC on the national register", "ok": bool(home.epc in list("ABCDEFG")), "detail": f"Rating {home.epc}, {int(home.tfarea)} m², built {home.age_band}"},
-        {"name": "Title on the Land Registry", "ok": True, "detail": "Dwelling found in Land Registry records for this postcode"},
+        {"name": "EPC on the national register", "ok": bool(home.epc in list("ABCDEFG")), "detail": f"Nearest certificate at this postcode: rating {home.epc}, {int(home.tfarea)} m², built {home.age_band}. Matched to your exact address at verification."},
+        {"name": "Title on the Land Registry", "ok": True, "detail": "A dwelling at this postcode is in Land Registry sales records. Ownership is matched to your identity at verification."},
     ]
     fmt = {"DPS": (r"\d{8,10}", "DPS deposit IDs are 8 to 10 digits"), "TDS": (r"[A-Za-z]{0,3}\d{7,12}", "TDS certificate numbers are 7 to 12 digits, sometimes prefixed"), "mydeposits": (r"[A-Za-z0-9]{8,14}", "mydeposits protection numbers are 8 to 14 characters")}
-    pat, hint = fmt.get(g.deposit_scheme, (None, "Choose one of the three government-approved schemes"))
-    dep_ok = bool(pat and re.fullmatch(pat, (g.deposit_ref or "").replace(" ", "")))
+    scheme = {k.lower(): k for k in fmt}.get((g.deposit_scheme or "").lower(), g.deposit_scheme)
+    pat, hint = fmt.get(scheme, (None, "Choose one of the three government-approved schemes"))
+    ref = (g.deposit_ref or "").replace(" ", "")
+    dep_ok = bool(pat and re.fullmatch(pat, ref) and len(set(re.sub(r"\D", "", ref))) > 1)
     checks.append({"name": "Deposit protected", "ok": dep_ok, "detail": (f"{g.deposit_scheme} {g.deposit_ref}: format valid. Confirmed against the scheme's lookup in production." if dep_ok else (hint if g.deposit_scheme else "No scheme chosen"))})
     try:
         d = datetime.date.fromisoformat(g.gas_cert_date); gas_ok = (datetime.date(2026, 11, 7) - d).days <= 365 and d <= datetime.date(2026, 11, 7)
         gas_detail = f"Certificate dated {d.strftime('%d %b %Y')}" + ("" if gas_ok else ", older than 12 months")
     except Exception:
         gas_ok = False; gas_detail = "No valid certificate date"
-    eng_ok = bool(re.fullmatch(r"\d{6,7}", (g.gas_engineer_id or "").strip()))
+    eng = (g.gas_engineer_id or "").strip(); eng_ok = bool(re.fullmatch(r"\d{6,7}", eng) and len(set(eng)) > 1)
     checks.append({"name": "Gas safety certificate in date", "ok": gas_ok and eng_ok, "detail": gas_detail + (f". Engineer {g.gas_engineer_id} checked against the Gas Safe Register in production" if eng_ok else ". Gas Safe engineer ID (6 or 7 digits) missing")})
     if not (g.deposit_scheme or g.deposit_ref):  # no tenant yet: deposit protection is checked when a deposit is paid
         checks = [c_ for c_ in checks if c_["name"] != "Deposit protected"] + [{"name": "Deposit protection", "ok": True, "detail": "Checked once a tenant pays a deposit"}]
@@ -132,7 +141,8 @@ def landlord_home(lid: int):
         n_int = c.execute("SELECT COUNT(*) FROM interests WHERE landlord_id=?", (lid,)).fetchone()[0]
         n_view = c.execute("SELECT COUNT(*) FROM interests WHERE landlord_id=? AND status='viewing_offered'", (lid,)).fetchone()[0]
     L = STATE["listings"]; home = L[L.id == row["listing_id"]]
-    out = json.loads(home.iloc[0].to_json()) if len(home) else {}
+    if home.empty: raise HTTPException(404, "listing not found, please publish again")
+    out = json.loads(home.iloc[0].to_json())
     out["photos"] = PHOTOS.get(row["listing_id"], []); out["description"] = DESC.get(row["listing_id"], "")
     out["guarantee"] = json.loads(media["guarantee"]) if media and media["guarantee"] else None
     out["stats"] = {"shown_to": len(VIEWS.get(row["listing_id"], set())), "requests": n_int, "viewings": n_view}
