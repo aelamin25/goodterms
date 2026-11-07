@@ -5,3 +5,4 @@ __pycache__/
 wheretobuild*
 server.log
 publish.sh
+tunnel.sh
