@@ -180,7 +180,7 @@ function cardHTML(l){return `<div class="hero" id="map-${l.id}"></div>
   <div class="small" style="margin-top:10px">${vsLine(l)}</div>
   <div class="small" style="margin-top:4px">${Math.round(l.tfarea)} m² · EPC ${l.epc}${l.commute_km!=null?` · ${l.commute_km} km from ${P.work_postcode}`:''}</div>
   <div class="small" style="margin-top:4px">${ptalWord[l.ptal_level]||'transport n/a'} · ${crimeWord(l.safety_score)} · ${Math.round(l.private_rented_pct)}% renters here</div>
-  <div style="margin-top:auto;padding-top:10px;display:flex;gap:6px;align-items:center"><span class="badge ok">You pass this landlord's rules</span>${l.id%4?'<span class="badge">Verified</span>':''}<span class="small mute" style="margin-left:auto">Tap for details</span></div>
+  <div style="margin-top:auto;padding-top:10px;display:flex;gap:6px;align-items:center"><span class="badge ok">You qualify</span>${l.id%4?'<span class="badge">Verified</span>':''}<span class="small mute" style="margin-left:auto">Tap for details</span></div>
  </div>
  <div class="stamp like">LIKE</div><div class="stamp nope">PASS</div>`}
 function sheetHTML(l){const v=l.id%4!==0;return `

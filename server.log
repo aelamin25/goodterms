@@ -24,3 +24,7 @@ INFO:     127.0.0.1:61584 - "GET /api/renters/30/deck?n=8 HTTP/1.1" 200 OK
 INFO:     127.0.0.1:61594 - "POST /api/renters/30/swipes HTTP/1.1" 200 OK
 INFO:     127.0.0.1:61594 - "POST /api/renters HTTP/1.1" 200 OK
 INFO:     127.0.0.1:61594 - "GET /api/renters/31/deck?n=8 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61600 - "POST /api/renters HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61600 - "GET /api/renters/32/deck?n=8 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61600 - "GET / HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:61600 - "GET /api/meta HTTP/1.1" 200 OK
