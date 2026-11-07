@@ -1,99 +1,265 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ChairMatch</title>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Project Name</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 <style>
- body{background:#0f1115;color:#f3f4f6;font-family:ui-sans-serif,system-ui}
- .card{position:absolute;inset:0;border-radius:1.25rem;overflow:hidden;background:#1b1f27;box-shadow:0 20px 60px rgba(0,0,0,.5);touch-action:none;user-select:none;transition:transform .25s ease, opacity .25s}
- .card.drag{transition:none}
- .stamp{position:absolute;top:1.5rem;padding:.25rem .75rem;border:4px solid;border-radius:.5rem;font-weight:900;font-size:1.75rem;transform:rotate(-12deg);opacity:0}
- .like{left:1.25rem;color:#34d399;border-color:#34d399}.nope{right:1.25rem;color:#f87171;border-color:#f87171;transform:rotate(12deg)}
- .leaflet-container{background:#1b1f27}
- .dark-tiles{filter:invert(1) hue-rotate(180deg) brightness(.85) contrast(.9) saturate(.6)}
- .chip{font-size:.72rem;padding:.2rem .55rem;border-radius:999px;background:#2a2f3a}
- input,select{background:#1b1f27;border:1px solid #2a2f3a;border-radius:.6rem;padding:.5rem .7rem;width:100%}
- label{font-size:.78rem;color:#9ca3af}
+:root{--bg:#0b0a10;--card:#15131d;--ink:#fff;--mute:#9a94ad;--brand1:#ff5f6d;--brand2:#ff8a3d;--brand3:#b24cff;--ok:#2ee59d}
+*{box-sizing:border-box}html,body{height:100%}
+body{margin:0;background:radial-gradient(1200px 700px at 20% -10%,#2a1030 0%,transparent 60%),radial-gradient(900px 600px at 110% 110%,#0d2b2a 0%,transparent 60%),var(--bg);color:var(--ink);font-family:Outfit,ui-sans-serif,system-ui;-webkit-font-smoothing:antialiased}
+.phone{width:min(430px,100vw);height:min(900px,100vh);margin:0 auto;position:relative;display:flex;flex-direction:column;overflow:hidden;background:var(--bg)}
+@media(min-width:480px){.phone{height:min(880px,calc(100vh - 32px));margin-top:16px;border-radius:44px;border:1px solid #2b2838;box-shadow:0 40px 120px rgba(0,0,0,.7),inset 0 0 0 10px #000}}
+.grad{background:linear-gradient(135deg,var(--brand1),var(--brand2) 50%,var(--brand3))}
+.grad-text{background:linear-gradient(135deg,var(--brand1),var(--brand2) 50%,var(--brand3));-webkit-background-clip:text;background-clip:text;color:transparent}
+.screen{position:absolute;inset:0;display:none;flex-direction:column}.screen.on{display:flex}
+.chipbtn{border:1.5px solid #2b2838;border-radius:999px;padding:.6rem 1rem;font-weight:600;color:#ddd;background:#15131d;transition:.15s}
+.chipbtn.sel,.chipbtn:active{border-color:var(--brand1);background:linear-gradient(135deg,rgba(255,95,109,.25),rgba(178,76,255,.25));color:#fff}
+.bigbtn{border-radius:18px;padding:1rem;font-weight:800;font-size:1.05rem;color:#fff}
+.deck{position:relative;flex:1;margin:8px 14px 0}
+.card{position:absolute;inset:0;border-radius:28px;overflow:hidden;background:var(--card);box-shadow:0 30px 60px rgba(0,0,0,.55);touch-action:none;user-select:none;transition:transform .3s cubic-bezier(.2,.8,.2,1),opacity .3s;will-change:transform}
+.card.drag{transition:none}
+.hero{position:absolute;inset:0;z-index:0;pointer-events:none}.hero .leaflet-container{width:100%;height:100%;background:#15131d}
+.dark-tiles{filter:invert(1) hue-rotate(190deg) brightness(.8) contrast(.95) saturate(.5)}
+.shade{position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(0,0,0,.15) 0%,rgba(0,0,0,0) 35%,rgba(11,10,16,.55) 62%,rgba(11,10,16,.97) 100%);z-index:1;pointer-events:none}
+.stamp{position:absolute;top:28px;padding:.3rem .9rem;border:4px solid;border-radius:10px;font-weight:900;font-size:2rem;letter-spacing:.05em;opacity:0;z-index:4}
+.like{left:22px;color:var(--ok);border-color:var(--ok);transform:rotate(-14deg)}.nope{right:22px;color:#ff4d6d;border-color:#ff4d6d;transform:rotate(14deg)}
+.dots{position:absolute;top:12px;left:14px;right:14px;display:flex;gap:4px;z-index:3}.dots i{flex:1;height:3px;border-radius:3px;background:rgba(255,255,255,.3)}.dots i.on{background:#fff}
+.panel{position:absolute;inset:0;z-index:2;display:none;flex-direction:column;justify-content:flex-end;padding:18px}.panel.on{display:flex}
+.pill{display:inline-flex;align-items:center;gap:.35rem;background:rgba(255,255,255,.1);backdrop-filter:blur(8px);border-radius:999px;padding:.3rem .7rem;font-size:.8rem;font-weight:600}
+.bar{height:8px;border-radius:8px;background:#2b2838;overflow:hidden}.bar b{display:block;height:100%;border-radius:8px}
+.act{width:60px;height:60px;border-radius:50%;display:grid;place-items:center;font-size:1.5rem;background:#17151f;border:1px solid #2b2838;box-shadow:0 10px 24px rgba(0,0,0,.4);transition:transform .1s}.act:active{transform:scale(.9)}
+.act.small{width:48px;height:48px;font-size:1.1rem}
+.tab{flex:1;text-align:center;padding:.6rem 0 .9rem;color:var(--mute);font-size:.72rem;font-weight:600}.tab.on{color:#fff}
+.fade{animation:fade .35s ease both}@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.pop{animation:pop .6s cubic-bezier(.2,1.4,.3,1) both}@keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+.hero-slide2{background:radial-gradient(500px 300px at 30% 20%,rgba(255,95,109,.35),transparent 60%),radial-gradient(500px 300px at 80% 80%,rgba(178,76,255,.35),transparent 60%),#15131d}
+input[type=range]{width:100%;accent-color:var(--brand1)}
+.input{background:#15131d;border:1.5px solid #2b2838;border-radius:16px;padding:.9rem 1rem;width:100%;font-size:1.1rem;font-weight:600;color:#fff;outline:none}.input:focus{border-color:var(--brand1)}
+.bubble{max-width:80%;padding:.6rem .9rem;border-radius:18px;font-size:.92rem;line-height:1.3}
 </style></head>
-<body class="min-h-screen">
-<header class="flex items-center justify-between px-5 py-3 border-b border-white/5">
- <div class="flex items-center gap-2"><span class="text-2xl">🪑</span><span class="font-black tracking-tight text-lg">ChairMatch</span><span class="chip ml-2" id="ranker">…</span></div>
- <nav class="flex gap-3 text-sm"><button data-view="profile" class="nav">Profile</button><button data-view="swipe" class="nav">Swipe</button><button data-view="matches" class="nav">Matches <span id="mcount" class="chip">0</span></button></nav>
-</header>
+<body>
+<div class="phone">
 
-<main id="profile" class="view max-w-xl mx-auto p-5">
- <h1 class="text-3xl font-black mb-1">Find a chair.</h1>
- <p class="text-gray-400 mb-5 text-sm">Real London homes, rents at <span id="rentmonth"></span> levels. Tell us what you want and what a landlord will see.</p>
- <form id="pform" class="grid grid-cols-2 gap-3">
-  <div class="col-span-2"><label>Your name</label><input name="name" value="Ahmed"></div>
-  <div><label>Monthly budget (£)</label><input name="budget" type="number" value="1900"></div>
-  <div><label>Bedrooms</label><select name="bedrooms"><option value="0">Studio</option><option value="1" selected>1</option><option value="2">2</option><option value="3">3</option><option value="4">4+</option></select></div>
-  <div><label>Work postcode</label><input name="work_postcode" value="E2 7DG"></div>
-  <div><label>Max commute (km, straight line)</label><input name="max_commute_km" type="number" value="8"></div>
-  <div class="col-span-2 mt-2 text-xs uppercase tracking-wide text-gray-500">What matters to you (0–5)</div>
-  <div><label>Transport</label><input name="w_transport" type="range" min="0" max="5" value="4"></div>
-  <div><label>Safety</label><input name="w_safety" type="range" min="0" max="5" value="3"></div>
-  <div><label>Green & quiet</label><input name="w_green" type="range" min="0" max="5" value="2"></div>
-  <div><label>Energy bills (EPC)</label><input name="w_energy" type="range" min="0" max="5" value="2"></div>
-  <div class="col-span-2 mt-2 text-xs uppercase tracking-wide text-gray-500">What the landlord's rules check</div>
-  <div><label>Annual income (£)</label><input name="annual_income" type="number" value="55000"></div>
-  <div class="flex flex-col gap-2 pt-4 text-sm">
-   <label class="flex gap-2 items-center text-gray-200"><input type="checkbox" name="has_guarantor" class="w-4">I can offer a guarantor</label>
-   <label class="flex gap-2 items-center text-gray-200"><input type="checkbox" name="passes_referencing" class="w-4" checked>I'd pass referencing (no CCJs)</label>
-   <label class="flex gap-2 items-center text-gray-200"><input type="checkbox" name="has_pets" class="w-4">I have a pet</label>
-  </div>
-  <button class="col-span-2 mt-3 bg-emerald-400 text-black font-bold rounded-xl py-3">Start swiping →</button>
- </form>
-</main>
-
-<main id="swipe" class="view hidden max-w-md mx-auto p-4">
- <div id="deck" class="relative h-[560px]"></div>
- <div class="flex justify-center gap-6 mt-5">
-  <button id="btn-nope" class="w-16 h-16 rounded-full bg-[#1b1f27] text-3xl shadow-lg">✕</button>
-  <button id="btn-like" class="w-16 h-16 rounded-full bg-emerald-400 text-black text-3xl shadow-lg">♥</button>
+<!-- SPLASH -->
+<section id="s-splash" class="screen on items-center justify-center text-center p-8">
+ <div class="fade">
+  <div class="text-7xl mb-3">🔥🏠</div>
+  <h1 class="text-4xl font-black leading-tight">Project Name</h1>
+  <p class="text-[var(--mute)] mt-3 text-base">Swipe right on your next London home.<br>Matches only happen when the landlord says yes too.</p>
+  <button onclick="go('s-role')" class="bigbtn grad w-full mt-8">Let's go</button>
+  <p class="text-xs text-[var(--mute)] mt-4" id="splash-meta">Real London homes · rents at latest ONS levels</p>
  </div>
- <p class="text-center text-xs text-gray-500 mt-3">Swipe right to like. A match needs the landlord's rules to pass too.</p>
-</main>
+</section>
 
-<main id="matches" class="view hidden max-w-xl mx-auto p-5">
- <h2 class="text-2xl font-black mb-3">Your matches</h2><div id="mlist" class="grid gap-3"></div>
-</main>
+<!-- ROLE -->
+<section id="s-role" class="screen p-7 justify-center">
+ <h2 class="text-3xl font-black fade">I'm here to…</h2>
+ <button class="bigbtn mt-6 text-left bg-[#15131d] border border-[#2b2838] fade" onclick="role='renter';go('s-q1')"><div class="text-2xl">🧳 Find a place to rent</div><div class="text-sm font-medium text-[var(--mute)] mt-1">Set what you want, swipe real homes, match when the landlord's rules pass.</div></button>
+ <button class="bigbtn mt-3 text-left bg-[#15131d] border border-[#2b2838] fade" onclick="role='landlord';go('s-landlord')"><div class="text-2xl">🔑 Rent out my place</div><div class="text-sm font-medium text-[var(--mute)] mt-1">Set your rules once. See who's interested and already qualifies.</div></button>
+</section>
 
-<div id="modal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center p-6 z-50">
- <div class="bg-[#1b1f27] rounded-3xl p-8 max-w-sm w-full text-center">
-  <div class="text-6xl mb-2" id="m-emoji">🎉</div><h3 class="text-2xl font-black" id="m-title">It's a match!</h3>
-  <p class="text-gray-400 text-sm mt-2" id="m-body"></p>
-  <div class="flex gap-2 mt-5"><button id="m-chat" class="flex-1 bg-emerald-400 text-black font-bold rounded-xl py-2">Message landlord</button><button id="m-close" class="flex-1 bg-white/10 rounded-xl py-2">Keep swiping</button></div>
+<!-- ONBOARDING STEPS -->
+<section id="s-q1" class="screen p-7 justify-center">
+ <div class="text-xs font-bold text-[var(--mute)] tracking-widest">STEP 1 OF 5</div>
+ <h2 class="text-3xl font-black mt-2">What's your monthly budget?</h2>
+ <div class="text-6xl font-black grad-text mt-6" id="q-budget-v">£1,900</div>
+ <input type="range" min="700" max="5000" step="50" value="1900" class="mt-4" id="q-budget" oninput="P.budget=+this.value;document.getElementById('q-budget-v').textContent=gbp(P.budget)">
+ <div class="flex justify-between text-xs text-[var(--mute)]"><span>£700</span><span>£5,000</span></div>
+ <button class="bigbtn grad w-full mt-10" onclick="go('s-q2')">Next</button>
+</section>
+
+<section id="s-q2" class="screen p-7 justify-center">
+ <div class="text-xs font-bold text-[var(--mute)] tracking-widest">STEP 2 OF 5</div>
+ <h2 class="text-3xl font-black mt-2">How many bedrooms?</h2>
+ <div class="flex flex-wrap gap-2 mt-6" id="q-beds">
+  <button class="chipbtn" data-v="0">Studio</button><button class="chipbtn sel" data-v="1">1 bed</button><button class="chipbtn" data-v="2">2 bed</button><button class="chipbtn" data-v="3">3 bed</button><button class="chipbtn" data-v="4">4+ bed</button>
+ </div>
+ <h2 class="text-xl font-black mt-8">Anyone else moving in?</h2>
+ <div class="flex flex-wrap gap-2 mt-3" id="q-pets"><button class="chipbtn sel" data-v="0">Just me / us</button><button class="chipbtn" data-v="1">🐾 A pet</button></div>
+ <button class="bigbtn grad w-full mt-10" onclick="go('s-q3')">Next</button>
+</section>
+
+<section id="s-q3" class="screen p-7 justify-center">
+ <div class="text-xs font-bold text-[var(--mute)] tracking-widest">STEP 3 OF 5</div>
+ <h2 class="text-3xl font-black mt-2">Where do you need to get to?</h2>
+ <p class="text-[var(--mute)] mt-1">Work, uni, your mum's. We'll show distance on every card.</p>
+ <input class="input mt-6" id="q-work" value="E2 7DG" placeholder="Postcode">
+ <div class="mt-5 text-sm font-bold">Max distance <span id="q-km-v" class="grad-text">8 km</span></div>
+ <input type="range" min="2" max="25" value="8" id="q-km" oninput="P.max_commute_km=+this.value;document.getElementById('q-km-v').textContent=this.value+' km'">
+ <button class="bigbtn grad w-full mt-10" onclick="P.work_postcode=document.getElementById('q-work').value;go('s-q4')">Next</button>
+</section>
+
+<section id="s-q4" class="screen p-7 justify-center">
+ <div class="text-xs font-bold text-[var(--mute)] tracking-widest">STEP 4 OF 5</div>
+ <h2 class="text-3xl font-black mt-2">What do you care about?</h2>
+ <p class="text-[var(--mute)] mt-1">Tap to turn up the volume on what matters.</p>
+ <div class="mt-6 space-y-4" id="q-w">
+  <div><div class="flex justify-between font-bold"><span>🚇 Transport</span><span data-v="transport">4</span></div><input type="range" min="0" max="5" value="4" data-k="transport"></div>
+  <div><div class="flex justify-between font-bold"><span>🛡️ Safety</span><span data-v="safety">3</span></div><input type="range" min="0" max="5" value="3" data-k="safety"></div>
+  <div><div class="flex justify-between font-bold"><span>🌳 Green & quiet</span><span data-v="green">2</span></div><input type="range" min="0" max="5" value="2" data-k="green"></div>
+  <div><div class="flex justify-between font-bold"><span>⚡ Low bills (EPC)</span><span data-v="energy">2</span></div><input type="range" min="0" max="5" value="2" data-k="energy"></div>
+ </div>
+ <button class="bigbtn grad w-full mt-10" onclick="go('s-q5')">Next</button>
+</section>
+
+<section id="s-q5" class="screen p-7 justify-center">
+ <div class="text-xs font-bold text-[var(--mute)] tracking-widest">STEP 5 OF 5 · WHAT LANDLORDS CHECK</div>
+ <h2 class="text-3xl font-black mt-2">The boring bit that decides everything.</h2>
+ <p class="text-[var(--mute)] mt-1">Landlords don't pick on vibes. They check these. We only show you homes where you'd pass.</p>
+ <div class="mt-5 text-sm font-bold">Household income <span id="q-inc-v" class="grad-text">£55,000</span>/yr</div>
+ <input type="range" min="15000" max="200000" step="1000" value="55000" id="q-inc" oninput="P.annual_income=+this.value;document.getElementById('q-inc-v').textContent=gbp(P.annual_income)">
+ <div class="flex flex-wrap gap-2 mt-5" id="q-flags">
+  <button class="chipbtn sel" data-k="passes_referencing">✅ I'd pass referencing</button>
+  <button class="chipbtn" data-k="has_guarantor">🤝 I have a guarantor</button>
+ </div>
+ <button class="bigbtn grad w-full mt-10" onclick="startSwiping()">Show me homes 🔥</button>
+</section>
+
+<!-- LANDLORD -->
+<section id="s-landlord" class="screen p-7 justify-center">
+ <h2 class="text-3xl font-black">Your rules, once.</h2>
+ <p class="text-[var(--mute)] mt-1">Only what the law lets you check. Renters who pass can match with you.</p>
+ <div class="mt-5 text-sm font-bold">Income at least <span id="l-mult-v" class="grad-text">2.5×</span> rent</div>
+ <input type="range" min="2" max="3.5" step="0.25" value="2.5" oninput="document.getElementById('l-mult-v').textContent=this.value+'×'">
+ <div class="flex flex-wrap gap-2 mt-5"><button class="chipbtn sel">Referencing required</button><button class="chipbtn sel">Guarantor accepted</button><button class="chipbtn">Pets with £40/mo fee</button><button class="chipbtn sel">12-month minimum</button></div>
+ <button class="bigbtn grad w-full mt-10" onclick="alert('Landlord side: coming in the next build. For the demo, landlord rules are already attached to every home.')">See who's interested</button>
+ <button class="mt-3 text-[var(--mute)] text-sm" onclick="go('s-role')">← Back</button>
+</section>
+
+<!-- SWIPE -->
+<section id="s-swipe" class="screen">
+ <header class="flex items-center justify-between px-5 pt-4 pb-1">
+  <div class="font-black text-xl">Project <span class="grad-text">Name</span></div>
+  <div class="text-xs font-bold text-[var(--mute)]" id="hdr-info"></div>
+ </header>
+ <div class="deck" id="deck"></div>
+ <div class="flex justify-center items-center gap-4 py-4">
+  <button class="act small" id="b-rewind" title="Rewind">↶</button>
+  <button class="act text-[#ff4d6d]" id="b-nope">✕</button>
+  <button class="act small text-[#4cc9ff]" id="b-super" title="Super like">★</button>
+  <button class="act text-[var(--ok)]" id="b-like">♥</button>
+  <button class="act small text-[#b24cff]" id="b-info" title="More">i</button>
+ </div>
+ <nav class="flex border-t border-[#1d1a27]"><button class="tab on" data-s="s-swipe">🔥<br>Swipe</button><button class="tab" data-s="s-matches">💬<br>Matches <span id="mcount" class="pill ml-1" style="padding:.05rem .45rem">0</span></button><button class="tab" data-s="s-you">🧳<br>You</button></nav>
+</section>
+
+<!-- MATCHES -->
+<section id="s-matches" class="screen">
+ <header class="px-5 pt-5 pb-2"><div class="font-black text-2xl">Matches</div></header>
+ <div class="px-5 text-xs font-bold text-[var(--mute)] tracking-widest">NEW MATCHES</div>
+ <div class="flex gap-3 px-5 py-3 overflow-x-auto" id="m-row"></div>
+ <div class="px-5 text-xs font-bold text-[var(--mute)] tracking-widest">MESSAGES</div>
+ <div class="flex-1 overflow-y-auto px-5 py-2 space-y-2" id="m-list"></div>
+ <nav class="flex border-t border-[#1d1a27]"><button class="tab" data-s="s-swipe">🔥<br>Swipe</button><button class="tab on" data-s="s-matches">💬<br>Matches</button><button class="tab" data-s="s-you">🧳<br>You</button></nav>
+</section>
+
+<!-- CHAT -->
+<section id="s-chat" class="screen">
+ <header class="flex items-center gap-3 px-4 pt-4 pb-3 border-b border-[#1d1a27]"><button onclick="go('s-matches')" class="text-2xl">‹</button><div class="w-10 h-10 rounded-full grad grid place-items-center text-lg">🔑</div><div><div class="font-bold" id="c-title">Landlord</div><div class="text-xs text-[var(--mute)]" id="c-sub"></div></div></header>
+ <div class="flex-1 overflow-y-auto p-4 space-y-2" id="c-log"></div>
+ <form class="flex gap-2 p-3 border-t border-[#1d1a27]" id="c-form"><input class="input" style="padding:.7rem 1rem;font-size:1rem" placeholder="Say hi…" id="c-in"><button class="act small grad">➤</button></form>
+</section>
+
+<!-- YOU -->
+<section id="s-you" class="screen p-6">
+ <div class="font-black text-2xl">You</div>
+ <div class="mt-4 rounded-3xl bg-[#15131d] border border-[#2b2838] p-5" id="you-card"></div>
+ <button class="bigbtn grad w-full mt-5" onclick="go('s-q1')">Edit preferences</button>
+ <div class="mt-auto"><nav class="flex border-t border-[#1d1a27] -mx-6"><button class="tab" data-s="s-swipe">🔥<br>Swipe</button><button class="tab" data-s="s-matches">💬<br>Matches</button><button class="tab on" data-s="s-you">🧳<br>You</button></nav></div>
+</section>
+
+<!-- MATCH OVERLAY -->
+<div id="ov" class="hidden absolute inset-0 z-50 flex flex-col items-center justify-center text-center p-8" style="background:radial-gradient(600px 500px at 50% 30%,rgba(255,95,109,.55),rgba(11,10,16,.96) 70%)">
+ <div class="pop">
+  <div class="text-5xl font-black italic grad-text" id="ov-title">It's a match!</div>
+  <div class="flex justify-center items-center gap-3 mt-6"><div class="w-24 h-24 rounded-full bg-[#15131d] border-4 border-white grid place-items-center text-4xl">🧳</div><div class="text-3xl">💞</div><div class="w-24 h-24 rounded-full grad border-4 border-white grid place-items-center text-4xl">🏠</div></div>
+  <p class="mt-5 text-[#e7e3f3]" id="ov-body"></p>
+  <button class="bigbtn w-full mt-7 bg-white text-black" id="ov-chat">Send a message</button>
+  <button class="mt-3 text-[#cfc9e0] font-bold" id="ov-close">Keep swiping</button>
  </div>
 </div>
+<div id="ov-no" class="hidden absolute inset-0 z-50 flex flex-col items-center justify-center text-center p-8" style="background:rgba(11,10,16,.94)">
+ <div class="pop"><div class="text-6xl">🚪</div><div class="text-3xl font-black mt-3">Liked, but no match</div><p class="mt-3 text-[var(--mute)]" id="ovn-body"></p><button class="bigbtn grad w-full mt-7" onclick="document.getElementById('ov-no').classList.add('hidden')">Keep swiping</button></div>
+</div>
 
+</div>
 <script>
-const $=s=>document.querySelector(s); let renterId=null, deck=[], maps={}, matchCount=0;
-fetch('/api/meta').then(r=>r.json()).then(m=>{$('#ranker').textContent=m.ranker==='lightgbm'?'LightGBM ranker':'v1 ranker';$('#rentmonth').textContent=m.rent_month;});
-function show(v){document.querySelectorAll('.view').forEach(e=>e.classList.add('hidden'));$('#'+v).classList.remove('hidden');if(v==='matches')loadMatches();}
-document.querySelectorAll('.nav').forEach(b=>b.onclick=()=>show(b.dataset.view));
-$('#pform').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.target);const p={name:f.get('name'),budget:+f.get('budget'),bedrooms:+f.get('bedrooms'),work_postcode:f.get('work_postcode'),max_commute_km:+f.get('max_commute_km'),annual_income:+f.get('annual_income'),has_guarantor:!!f.get('has_guarantor'),passes_referencing:!!f.get('passes_referencing'),has_pets:!!f.get('has_pets'),weights:{transport:+f.get('w_transport'),safety:+f.get('w_safety'),green:+f.get('w_green'),energy:+f.get('w_energy')}};
- const r=await fetch('/api/renters',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(p)}).then(r=>r.json());renterId=r.renter_id;show('swipe');await refill();};
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const gbp=n=>'£'+Math.round(n).toLocaleString();
+let role='renter', renterId=null, deck=[], history=[], maps={}, matches=[], chats={}, panelIdx={};
+const P={name:'You',budget:1900,bedrooms:1,has_pets:false,work_postcode:'E2 7DG',max_commute_km:8,annual_income:55000,passes_referencing:true,has_guarantor:false,weights:{transport:4,safety:3,green:2,energy:2}};
+
+function go(id){$$('.screen').forEach(s=>s.classList.remove('on'));$('#'+id).classList.add('on');if(id==='s-matches')renderMatches();if(id==='s-you')renderYou();}
+$$('.tab').forEach(t=>t.onclick=()=>go(t.dataset.s));
+function chipGroup(sel,onpick,multi=false){$$(sel+' .chipbtn').forEach(b=>b.onclick=()=>{if(!multi)$$(sel+' .chipbtn').forEach(x=>x.classList.remove('sel'));b.classList.toggle('sel');onpick(b)})}
+chipGroup('#q-beds',b=>P.bedrooms=+b.dataset.v); chipGroup('#q-pets',b=>P.has_pets=b.dataset.v==='1');
+chipGroup('#q-flags',b=>P[b.dataset.k]=b.classList.contains('sel'),true);
+$$('#q-w input').forEach(r=>r.oninput=()=>{P.weights[r.dataset.k]=+r.value;$(`#q-w [data-v=${r.dataset.k}]`).textContent=r.value});
+fetch('/api/meta').then(r=>r.json()).then(m=>{$('#splash-meta').textContent=`${m.n_listings.toLocaleString()} real London homes · rents at ${m.rent_month} levels`;$('#hdr-info').textContent=m.ranker==='lightgbm'?'LightGBM ranker':'';});
+
+async function startSwiping(){const r=await fetch('/api/renters',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(P)}).then(r=>r.json());renterId=r.renter_id;deck=[];history=[];go('s-swipe');await refill();}
 async function refill(){if(deck.length>3)return;const more=await fetch(`/api/renters/${renterId}/deck?n=8`).then(r=>r.json());const have=new Set(deck.map(d=>d.id));deck.push(...more.filter(m=>!have.has(m.id)));render();}
-const gbp=n=>'£'+n.toLocaleString();
-function render(){const d=$('#deck');d.innerHTML='';deck.slice(0,3).reverse().forEach((l,i,arr)=>{const top=i===arr.length-1;const el=document.createElement('div');el.className='card';el.style.transform=`scale(${1-(arr.length-1-i)*.04}) translateY(${(arr.length-1-i)*10}px)`;el.dataset.id=l.id;
- el.innerHTML=`<div class="h-[52%]" id="map-${l.id}"></div>
- <div class="p-4"><div class="flex justify-between items-baseline"><div class="text-2xl font-black">${gbp(l.rent)}<span class="text-sm font-normal text-gray-400">/mo</span></div><div class="text-sm text-gray-300">${l.bedrooms===0?'Studio':l.bedrooms+' bed'} · ${l.type_name} · ${Math.round(l.tfarea)} m²</div></div>
- <div class="text-gray-300 mt-1">${l.area_label}</div>
- <div class="flex flex-wrap gap-1.5 mt-3"><span class="chip">EPC ${l.epc}</span><span class="chip">Built ${l.age_band}</span><span class="chip">🚇 ${l.transport_score}/10</span><span class="chip">🛡 ${l.safety_score}/10</span><span class="chip">🌳 ${l.environment_score}/10</span>${l.commute_km!=null?`<span class="chip">🧭 ${l.commute_km} km to work</span>`:''}${l.furnished?'<span class="chip">Furnished</span>':''}${l.pet_fee>=0?`<span class="chip">🐾 pets ok${l.pet_fee?' +£'+l.pet_fee:''}</span>`:'<span class="chip">🐾 no pets</span>'}</div>
- <div class="mt-3 text-xs text-gray-500">Landlord asks: income ≥ ${l.min_income_multiple}× rent${l.referencing_required?' · referencing':''}${l.guarantor_accepted?' · guarantor ok':''} · <span class="${l.eligible?'text-emerald-400':'text-amber-400'}">${l.eligible?'you qualify':'you may not qualify ('+l.block_reason+')'}</span></div></div>
- <div class="stamp like">LIKE</div><div class="stamp nope">NOPE</div>`;d.appendChild(el);
- setTimeout(()=>{if(maps[l.id])return;const m=L.map('map-'+l.id,{zoomControl:false,attributionControl:false,dragging:false,scrollWheelZoom:false}).setView([l.lat,l.lon],15);L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{className:'dark-tiles'}).addTo(m);L.circle([l.lat,l.lon],{radius:160,color:'#34d399',fillOpacity:.25}).addTo(m);maps[l.id]=m;},0);
- if(top)attachDrag(el,l);});}
-function attachDrag(el,l){let sx=0,dx=0,down=false;el.onpointerdown=e=>{down=true;sx=e.clientX;el.classList.add('drag');el.setPointerCapture(e.pointerId)};el.onpointermove=e=>{if(!down)return;dx=e.clientX-sx;el.style.transform=`translateX(${dx}px) rotate(${dx/18}deg)`;el.querySelector('.like').style.opacity=Math.min(1,dx/80);el.querySelector('.nope').style.opacity=Math.min(1,-dx/80)};
- el.onpointerup=()=>{down=false;el.classList.remove('drag');if(dx>110)decide(true);else if(dx<-110)decide(false);else{el.style.transform='';el.querySelectorAll('.stamp').forEach(s=>s.style.opacity=0)}dx=0};}
-async function decide(liked){const l=deck.shift();const el=$('#deck .card:last-child');if(el){el.style.transform=`translateX(${liked?600:-600}px) rotate(${liked?25:-25}deg)`;el.style.opacity=0}
+
+const blockText={income:"income is below their multiple of the rent",guarantor:"they don't accept guarantors",referencing:"they require referencing",pets:"they don't take pets"};
+function scoreBar(label,v,emoji){return `<div class="flex items-center gap-3 text-sm"><span class="w-28 font-semibold">${emoji} ${label}</span><div class="bar flex-1"><b class="grad" style="width:${v*10}%"></b></div><span class="w-8 text-right font-bold">${v}</span></div>`}
+function cardHTML(l){const beds=l.bedrooms===0?'Studio':l.bedrooms+' bed';const title=`${beds} ${l.type_name.toLowerCase()} in ${l.ward}`;
+ return `<div class="dots"><i class="on"></i><i></i><i></i></div>
+ <div class="hero" id="map-${l.id}"></div><div class="shade"></div>
+ <div class="panel on" data-p="0">
+  <div class="text-3xl font-black leading-tight">${title}</div>
+  <div class="text-[var(--mute)] font-semibold mt-1">${l.outcode} · ${l.borough}${l.commute_km!=null?` · ${l.commute_km} km from you`:''}</div>
+  <div class="flex items-end justify-between mt-3"><div class="text-4xl font-black grad-text">${gbp(l.rent)}<span class="text-base text-[var(--mute)] font-semibold">/mo</span></div><div class="text-right text-sm text-[var(--mute)]">${Math.round(l.tfarea)} m² · EPC ${l.epc}</div></div>
+  <div class="flex flex-wrap gap-1.5 mt-3"><span class="pill">🚇 ${l.transport_score}</span><span class="pill">🛡️ ${l.safety_score}</span><span class="pill">🌳 ${l.environment_score}</span>${l.furnished?'<span class="pill">🛋️ Furnished</span>':''}${l.pet_fee>=0?'<span class="pill">🐾 Pets ok</span>':''}<span class="pill ${l.eligible?'text-[var(--ok)]':'text-[#ffb347]'}">${l.eligible?'✓ You qualify':'⚠ Rules may block'}</span></div>
+ </div>
+ <div class="panel hero-slide2" data-p="1">
+  <div class="text-xs font-bold text-[var(--mute)] tracking-widest">THE VIBE</div><div class="text-2xl font-black mt-1 mb-4">How the area scores</div>
+  <div class="space-y-3">${scoreBar('Transport',l.transport_score,'🚇')}${scoreBar('Safety',l.safety_score,'🛡️')}${scoreBar('Green & quiet',l.environment_score,'🌳')}${scoreBar('Bills (EPC '+l.epc+')',{A:10,B:9,C:7.5,D:5,E:3,F:1.5,G:.5}[l.epc]||5,'⚡')}</div>
+  <div class="text-xs text-[var(--mute)] mt-4">Built ${l.age_band} · scores from IoD 2025 and TfL PTAL · ${l.borough}</div>
+ </div>
+ <div class="panel hero-slide2" data-p="2">
+  <div class="text-xs font-bold text-[var(--mute)] tracking-widest">THE LANDLORD'S RULES</div><div class="text-2xl font-black mt-1 mb-3">What it takes to match</div>
+  <div class="space-y-2 text-sm">
+   <div class="pill w-full justify-between"><span>Income at least ${l.min_income_multiple}× rent</span><b>${gbp(l.min_income_multiple*l.rent*12)}/yr</b></div>
+   <div class="pill w-full justify-between"><span>Referencing</span><b>${l.referencing_required?'Required':'Not required'}</b></div>
+   <div class="pill w-full justify-between"><span>Guarantor</span><b>${l.guarantor_accepted?'Accepted':'Not accepted'}</b></div>
+   <div class="pill w-full justify-between"><span>Pets</span><b>${l.pet_fee<0?'No':(l.pet_fee?'Yes, +£'+l.pet_fee+'/mo':'Yes')}</b></div>
+  </div>
+  <div class="mt-4 font-bold ${l.eligible?'text-[var(--ok)]':'text-[#ffb347]'}">${l.eligible?'✓ You pass. Swipe right and it\'s a match.':'⚠ You might not pass: '+(blockText[l.block_reason]||l.block_reason)+'.'}</div>
+ </div>
+ <div class="stamp like">LIKE</div><div class="stamp nope">NOPE</div>`}
+
+function render(){const d=$('#deck');d.innerHTML='';const show=deck.slice(0,3).reverse();
+ show.forEach((l,i)=>{const top=i===show.length-1;const el=document.createElement('div');el.className='card';el.dataset.id=l.id;const depth=show.length-1-i;el.style.transform=`scale(${1-depth*.05}) translateY(${depth*14}px)`;el.innerHTML=cardHTML(l);d.appendChild(el);
+  setTimeout(()=>{if(maps[l.id]||!document.getElementById('map-'+l.id))return;const m=L.map('map-'+l.id,{zoomControl:false,attributionControl:false,dragging:false,scrollWheelZoom:false,doubleClickZoom:false,touchZoom:false}).setView([l.lat+0.0012,l.lon],16);L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{className:'dark-tiles'}).addTo(m);L.circle([l.lat,l.lon],{radius:120,color:'#ff5f6d',weight:3,fillColor:'#ff5f6d',fillOpacity:.25}).addTo(m);maps[l.id]=m;},0);
+  if(top)attachDrag(el,l);});
+ if(!deck.length)d.innerHTML='<div class="absolute inset-0 grid place-items-center text-center text-[var(--mute)]">No more homes nearby.<br>Loosen your budget or distance.</div>';}
+function setPanel(el,l,i){panelIdx[l.id]=i;el.querySelectorAll('.panel').forEach(p=>p.classList.toggle('on',+p.dataset.p===i));el.querySelectorAll('.dots i').forEach((d,j)=>d.classList.toggle('on',j===i));}
+function attachDrag(el,l){let sx=0,sy=0,dx=0,down=false,moved=false;
+ el.onpointerdown=e=>{down=true;moved=false;sx=e.clientX;sy=e.clientY;el.classList.add('drag');el.setPointerCapture(e.pointerId)};
+ el.onpointermove=e=>{if(!down)return;dx=e.clientX-sx;if(Math.abs(dx)>6||Math.abs(e.clientY-sy)>6)moved=true;el.style.transform=`translateX(${dx}px) rotate(${dx/16}deg)`;el.querySelector('.like').style.opacity=Math.min(1,dx/70);el.querySelector('.nope').style.opacity=Math.min(1,-dx/70)};
+ el.onpointerup=e=>{down=false;el.classList.remove('drag');
+  if(!moved){const r=el.getBoundingClientRect();const i=panelIdx[l.id]||0;setPanel(el,l,(e.clientX-r.left)<r.width/2?Math.max(0,i-1):Math.min(2,i+1));return}
+  if(dx>100)decide(true);else if(dx<-100)decide(false);else{el.style.transform='';el.querySelectorAll('.stamp').forEach(s=>s.style.opacity=0)}dx=0};}
+async function decide(liked,superlike=false){if(!deck.length)return;const l=deck.shift();history.push(l);const el=$('#deck .card:last-child');
+ if(el){el.style.transform=`translate(${liked?520:-520}px, ${superlike?-300:40}px) rotate(${liked?22:-22}deg)`;el.style.opacity=0}
  const r=await fetch(`/api/renters/${renterId}/swipes`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({listing_id:l.id,liked})}).then(r=>r.json());
- if(liked){if(r.matched){matchCount++;$('#mcount').textContent=matchCount;$('#m-emoji').textContent='🎉';$('#m-title').textContent="It's a match!";$('#m-body').textContent=`You liked the ${l.bedrooms===0?'studio':l.bedrooms+'-bed'} in ${l.outcode} and you pass the landlord's rules. ${gbp(l.rent)}/mo.`;}
-  else{$('#m-emoji').textContent='🚪';$('#m-title').textContent='Liked, but not a match';$('#m-body').textContent=`The landlord's rules block this one: ${({income:'income below their multiple of rent',guarantor:'they do not accept guarantors',referencing:'referencing required',pets:'no pets'})[r.block_reason]||r.block_reason}.`}
-  $('#modal').classList.remove('hidden')}
- setTimeout(()=>{render();refill()},250)}
-$('#btn-like').onclick=()=>decide(true);$('#btn-nope').onclick=()=>decide(false);$('#m-close').onclick=()=>$('#modal').classList.add('hidden');$('#m-chat').onclick=()=>{alert('Chat is a stub for the demo.');};
-document.addEventListener('keydown',e=>{if($('#swipe').classList.contains('hidden'))return;if(e.key==='ArrowRight')decide(true);if(e.key==='ArrowLeft')decide(false)});
-async function loadMatches(){const ms=await fetch(`/api/renters/${renterId}/matches`).then(r=>r.json());$('#mlist').innerHTML=ms.length?ms.map(l=>`<div class="rounded-2xl p-4 ${l.matched?'bg-emerald-400/10 border border-emerald-400/30':'bg-white/5'}"><div class="flex justify-between"><b>${l.matched?'✅ Match':'🚪 Blocked: '+l.block_reason}</b><span>${gbp(l.rent)}/mo</span></div><div class="text-sm text-gray-300">${l.bedrooms===0?'Studio':l.bedrooms+' bed'} ${l.type_name.toLowerCase()} · ${l.area_label}</div></div>`).join(''):'<p class="text-gray-500">No likes yet.</p>'}
+ if(liked&&r.matched){matches.unshift(l);$('#mcount').textContent=matches.length;chats[l.id]=[{me:false,t:`Hi! Thanks for the like. You pass my checks, so you're first in the queue. When could you view? 🔑`}];
+  $('#ov-body').textContent=`You and the landlord of the ${l.bedrooms===0?'studio':l.bedrooms+'-bed'} in ${l.outcode} both said yes. ${gbp(l.rent)}/mo, you pass every rule.`;$('#ov-chat').onclick=()=>{$('#ov').classList.add('hidden');openChat(l)};$('#ov').classList.remove('hidden');try{window.confetti&&confetti({particleCount:160,spread:80,origin:{y:.55},colors:['#ff5f6d','#ff8a3d','#b24cff','#fff']})}catch(e){}}
+ else if(liked){$('#ovn-body').textContent=`You liked it, but ${blockText[r.block_reason]||r.block_reason}. In real life you'd never hear back. Here, at least you know why.`;$('#ov-no').classList.remove('hidden')}
+ setTimeout(()=>{render();refill()},260)}
+$('#b-like').onclick=()=>decide(true);$('#b-nope').onclick=()=>decide(false);$('#b-super').onclick=()=>decide(true,true);
+$('#b-info').onclick=()=>{const el=$('#deck .card:last-child');if(!el)return;const l=deck[0];setPanel(el,l,((panelIdx[l.id]||0)+1)%3)};
+$('#b-rewind').onclick=()=>{if(!history.length)return;deck.unshift(history.pop());render()};
+$('#ov-close').onclick=()=>$('#ov').classList.add('hidden');
+document.addEventListener('keydown',e=>{if(!$('#s-swipe').classList.contains('on')||!$('#ov').classList.contains('hidden'))return;if(e.key==='ArrowRight')decide(true);if(e.key==='ArrowLeft')decide(false);if(e.key==='ArrowUp')decide(true,true)});
+
+function renderMatches(){$('#m-row').innerHTML=matches.map(l=>`<button onclick="openChatId(${l.id})" class="flex flex-col items-center gap-1 shrink-0"><div class="w-16 h-16 rounded-full grad grid place-items-center text-2xl border-2 border-white">🏠</div><span class="text-xs font-semibold">${l.outcode}</span></button>`).join('')||'<span class="text-sm text-[var(--mute)]">Swipe right on a home you qualify for.</span>';
+ $('#m-list').innerHTML=matches.map(l=>{const c=chats[l.id];const last=c[c.length-1];return `<button onclick="openChatId(${l.id})" class="w-full text-left flex gap-3 items-center p-3 rounded-2xl bg-[#15131d] border border-[#2b2838]"><div class="w-12 h-12 rounded-full grad grid place-items-center text-xl shrink-0">🔑</div><div class="min-w-0"><div class="font-bold">${l.bedrooms===0?'Studio':l.bedrooms+' bed'} · ${l.ward} · ${gbp(l.rent)}</div><div class="text-sm text-[var(--mute)] truncate">${last.me?'You: ':''}${last.t}</div></div></button>`}).join('')}
+function openChatId(id){openChat(matches.find(m=>m.id===id))}
+let chatL=null;function openChat(l){chatL=l;$('#c-title').textContent=`Landlord · ${l.outcode}`;$('#c-sub').textContent=`${l.bedrooms===0?'Studio':l.bedrooms+' bed'} ${l.type_name.toLowerCase()} · ${gbp(l.rent)}/mo`;go('s-chat');renderChat()}
+function renderChat(){$('#c-log').innerHTML=chats[chatL.id].map(m=>`<div class="flex ${m.me?'justify-end':''}"><div class="bubble ${m.me?'grad':'bg-[#1f1c2a]'}">${m.t}</div></div>`).join('');$('#c-log').scrollTop=1e6}
+$('#c-form').onsubmit=e=>{e.preventDefault();const t=$('#c-in').value.trim();if(!t)return;chats[chatL.id].push({me:true,t});$('#c-in').value='';renderChat();setTimeout(()=>{chats[chatL.id].push({me:false,t:["Saturday 11am works. I'll send the address once referencing starts.","Deposit is 5 weeks' rent, capped by law. Any questions before the viewing?","Great. Bring ID and a payslip and we can move fast."][chats[chatL.id].length%3]});renderChat()},900)}
+function renderYou(){$('#you-card').innerHTML=`<div class="text-sm text-[var(--mute)]">Looking for</div><div class="text-2xl font-black">${P.bedrooms===0?'Studio':P.bedrooms+' bed'} · up to ${gbp(P.budget)}/mo</div><div class="mt-3 text-sm text-[var(--mute)]">Near</div><div class="font-bold">${P.work_postcode} · within ${P.max_commute_km} km</div><div class="mt-3 text-sm text-[var(--mute)]">Landlords see</div><div class="font-bold">${gbp(P.annual_income)}/yr · ${P.passes_referencing?'passes referencing':'referencing risk'} · ${P.has_guarantor?'has guarantor':'no guarantor'}${P.has_pets?' · pet':''}</div>`}
 </script></body></html>
