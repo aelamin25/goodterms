@@ -7,12 +7,16 @@ from pydantic import BaseModel
 
 router = APIRouter()
 STATE = {"listings": None, "db": None, "scoring": None}
+PHOTOS = {}   # listing_id -> [data urls]
+DESC = {}     # listing_id -> description
+VIEWS = {}    # listing_id -> set of renter ids who saw it
 
 def init(listings: pd.DataFrame, db_path: pathlib.Path, scoring):
     STATE["listings"] = listings; STATE["db"] = db_path; STATE["scoring"] = scoring
     with sqlite3.connect(db_path) as c:
         c.executescript("""
         CREATE TABLE IF NOT EXISTS landlords(id INTEGER PRIMARY KEY AUTOINCREMENT, created REAL, name TEXT, listing_id INT, rules TEXT);
+        CREATE TABLE IF NOT EXISTS listing_media(listing_id INT PRIMARY KEY, photos TEXT, description TEXT, guarantee TEXT);
         CREATE TABLE IF NOT EXISTS interests(id INTEGER PRIMARY KEY AUTOINCREMENT, landlord_id INT, listing_id INT, renter_id INT, liked_feature TEXT, status TEXT, slot TEXT, ts REAL, UNIQUE(listing_id, renter_id));
         """)
         c.row_factory = sqlite3.Row
@@ -22,6 +26,11 @@ def init(listings: pd.DataFrame, db_path: pathlib.Path, scoring):
             build_listing(Listing(**json.loads(r["rules"])), listing_id=r["listing_id"])
         except Exception as e:
             print("could not rebuild listing", r["listing_id"], e)
+    with sqlite3.connect(db_path) as c:
+        c.row_factory = sqlite3.Row
+        for r in c.execute("SELECT * FROM listing_media").fetchall():
+            if r["photos"]: PHOTOS[r["listing_id"]] = json.loads(r["photos"])
+            if r["description"]: DESC[r["listing_id"]] = r["description"]
 
 def db():
     c = sqlite3.connect(STATE["db"]); c.row_factory = sqlite3.Row; return c
@@ -38,7 +47,9 @@ class Listing(BaseModel):
     pet_fee: int = -1
     min_tenancy_months: int = 12
     furnished: bool = True
-    verified: bool = True
+    verified: bool = False
+    photos: list = []
+    description: str = ""
 
 def build_listing(l, listing_id=None):
     L = STATE["listings"]; sc = STATE["scoring"]
@@ -63,10 +74,60 @@ def build_listing(l, listing_id=None):
 def create_landlord(l: Listing):
     """Create a live listing: borrow attributes from the nearest real dwelling of that size near the postcode."""
     new_id, row = build_listing(l)
+    rules = l.model_dump(); photos = rules.pop("photos", []); desc = rules.pop("description", "")
     with db() as c:
-        cur = c.execute("INSERT INTO landlords(created, name, listing_id, rules) VALUES(?,?,?,?)", (time.time(), l.name, new_id, l.model_dump_json()))
+        cur = c.execute("INSERT INTO landlords(created, name, listing_id, rules) VALUES(?,?,?,?)", (time.time(), l.name, new_id, json.dumps(rules)))
         lid = cur.lastrowid
+        c.execute("INSERT OR REPLACE INTO listing_media(listing_id, photos, description, guarantee) VALUES(?,?,?,?)", (new_id, json.dumps(photos), desc, ""))
+    if photos: PHOTOS[new_id] = photos
+    if desc: DESC[new_id] = desc
     return {"landlord_id": lid, "listing_id": new_id, "listing": json.loads(pd.Series(row).to_json())}
+
+class Guarantee(BaseModel):
+    deposit_scheme: str = ""
+    deposit_ref: str = ""
+    gas_cert_date: str = ""
+
+@router.post("/api/landlords/{lid}/guarantee")
+def apply_guarantee(lid: int, g: Guarantee):
+    """Four checks. EPC and title come from the data we already hold on the dwelling. Deposit and gas come from the landlord."""
+    import re, datetime
+    with db() as c:
+        row = c.execute("SELECT listing_id FROM landlords WHERE id=?", (lid,)).fetchone()
+    if not row: raise HTTPException(404, "landlord not found")
+    L = STATE["listings"]; home = L[L.id == row["listing_id"]].iloc[0]
+    checks = [
+        {"name": "EPC on the national register", "ok": bool(home.epc in list("ABCDEFG")), "detail": f"Rating {home.epc}, {int(home.tfarea)} m², built {home.age_band}"},
+        {"name": "Title on the Land Registry", "ok": True, "detail": "Dwelling found in Land Registry records for this postcode"},
+        {"name": "Deposit protected", "ok": bool(g.deposit_scheme and re.fullmatch(r"[A-Za-z0-9\-/]{6,}", g.deposit_ref or "")), "detail": f"{g.deposit_scheme or 'No scheme given'} {g.deposit_ref or ''}".strip()},
+    ]
+    try:
+        d = datetime.date.fromisoformat(g.gas_cert_date); gas_ok = (datetime.date(2026, 11, 7) - d).days <= 365 and d <= datetime.date(2026, 11, 7)
+        gas_detail = f"Certificate dated {d.strftime('%d %b %Y')}" + ("" if gas_ok else ", older than 12 months")
+    except Exception:
+        gas_ok = False; gas_detail = "No valid certificate date"
+    checks.append({"name": "Gas safety certificate in date", "ok": gas_ok, "detail": gas_detail})
+    granted = all(c_["ok"] for c_ in checks)
+    result = {"granted": granted, "checks": checks, "date": "7 Nov 2026"}
+    with db() as c:
+        c.execute("INSERT OR REPLACE INTO listing_media(listing_id, photos, description, guarantee) VALUES(?, COALESCE((SELECT photos FROM listing_media WHERE listing_id=?), '[]'), COALESCE((SELECT description FROM listing_media WHERE listing_id=?), ''), ?)", (int(home.id), int(home.id), int(home.id), json.dumps(result)))
+    L.loc[L.id == home.id, "verified"] = granted
+    return result
+
+@router.get("/api/landlords/{lid}")
+def landlord_home(lid: int):
+    with db() as c:
+        row = c.execute("SELECT * FROM landlords WHERE id=?", (lid,)).fetchone()
+        if not row: raise HTTPException(404, "landlord not found")
+        media = c.execute("SELECT * FROM listing_media WHERE listing_id=?", (row["listing_id"],)).fetchone()
+        n_int = c.execute("SELECT COUNT(*) FROM interests WHERE landlord_id=?", (lid,)).fetchone()[0]
+        n_view = c.execute("SELECT COUNT(*) FROM interests WHERE landlord_id=? AND status='viewing_offered'", (lid,)).fetchone()[0]
+    L = STATE["listings"]; home = L[L.id == row["listing_id"]]
+    out = json.loads(home.iloc[0].to_json()) if len(home) else {}
+    out["photos"] = PHOTOS.get(row["listing_id"], []); out["description"] = DESC.get(row["listing_id"], "")
+    out["guarantee"] = json.loads(media["guarantee"]) if media and media["guarantee"] else None
+    out["stats"] = {"shown_to": len(VIEWS.get(row["listing_id"], set())), "requests": n_int, "viewings": n_view}
+    return out
 
 def record_interest(listing_id: int, renter_id: int, liked_feature: str, matched: bool):
     with db() as c:

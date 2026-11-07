@@ -55,6 +55,10 @@ class Profile(BaseModel):
     radius_km: float = 3
     household: str = ""
     job: str = ""
+    home_type: str = "any"
+    furnished_pref: str = "any"
+    min_area: float = 0
+    min_epc: str = ""
     lifestyle: list = []
     wants: list = []
     dealbreakers: list = []
@@ -197,7 +201,10 @@ def deck(rid: int, n: int = 10):
     cols = cols + (["commute_km"] if "commute_km" in ranked.columns else [])
     out = ranked.head(n)[cols].copy()
     recs = json.loads(out.to_json(orient="records"))
-    for r in recs: r["photos"] = photos_for(r["id"])
+    for r in recs:
+        lp = live.PHOTOS.get(r["id"]); r["photos"] = lp if lp else photos_for(r["id"])
+        r["description"] = live.DESC.get(r["id"], "")
+        if r.get("live"): live.VIEWS[r["id"]] = live.VIEWS.get(r["id"], set()) | {rid}
     return recs
 
 class Swipe(BaseModel):

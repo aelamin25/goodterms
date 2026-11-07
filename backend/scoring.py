@@ -52,6 +52,16 @@ def rank(renter: dict, listings: pd.DataFrame, swiped_ids: set, work_lat=None, w
         df = in_area if len(in_area) >= 5 else df[df.area_km <= rad * 2]
         funnel.append((f"within {rad:g} km of {str(renter.get('area_postcode','')).upper()}", int(len(df))))
     df = df[df.rent <= budget * 1.05]; funnel.append(("within your budget", int(len(df))))
+    ht = renter.get("home_type") or "any"
+    if ht in ("flat", "house"):
+        df = df[df.propertytype == "F"] if ht == "flat" else df[df.propertytype != "F"]; funnel.append((f"{ht}s only", int(len(df))))
+    fu = renter.get("furnished_pref") or "any"
+    if fu in ("yes", "no"):
+        df = df[df.furnished == (fu == "yes")]; funnel.append(("furnished" if fu == "yes" else "unfurnished", int(len(df))))
+    if renter.get("min_area"):
+        df = df[df.tfarea >= float(renter["min_area"])]; funnel.append((f"at least {int(renter['min_area'])} m²", int(len(df))))
+    if renter.get("min_epc"):
+        df = df[df.epc <= renter["min_epc"]]; funnel.append((f"EPC {renter['min_epc']} or better", int(len(df))))
     size = df[df.bedrooms == beds]
     df = size if len(size) >= 5 else df[df.bedrooms.between(beds, beds + 1)]; funnel.append(("the right size", int(len(df))))
     if renter.get("move_in") and "available_from" in df.columns:
