@@ -1,3 +1,4 @@
+import os
 import json, pathlib, sqlite3, time, requests
 from fastapi import FastAPI, HTTPException
 from fastapi.staticfiles import StaticFiles
@@ -193,7 +194,7 @@ def nudge(postcode: str, bedrooms: int, budget: float, radius_km: float = 2):
 
 @app.get("/api/splash")
 def splash():
-    picks = listings().sample(3, random_state=int(time.time()) // 60)
+    picks = listings().sample(3, random_state=int(os.environ.get("SPLASH_SEED") or int(time.time()) // 60))
     return [{"photo": photos_for(int(r.id))[0], "bedrooms": int(r.bedrooms), "ward": r.ward, "rent": int(r.rent)} for r in picks.itertuples()]
 
 @app.post("/api/renters")

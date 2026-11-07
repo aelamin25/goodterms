@@ -64,6 +64,12 @@ def build_listing(l, listing_id=None):
     pool = L[(L.bedrooms == l.bedrooms) & (L.live != True)] if ((L.bedrooms == l.bedrooms) & (L.live != True)).sum() > 20 else L[L.live != True]
     d = np.hypot((pool.lat - lat) * 110.57, (pool.lon - lon) * 69.4)
     base = pool.loc[d.idxmin()].to_dict()
+    # a few dwellings lack area scores; borrow them from the next-nearest homes so a live listing never shows blanks
+    near = pool.loc[d.nsmallest(15).index]
+    for k in ("ptal_level", "transport_score", "safety_score", "environment_score", "imd_decile"):
+        if k in near.columns and pd.isna(base.get(k)):
+            vals = near[k].dropna()
+            if len(vals): base[k] = vals.iloc[0]
     if listing_id is None:
         with sqlite3.connect(STATE["db"]) as c:
             db_max = c.execute("SELECT COALESCE(MAX(listing_id),0) FROM landlords").fetchone()[0]
