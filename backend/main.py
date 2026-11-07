@@ -220,6 +220,16 @@ def _swiped(rid):
         rows = c.execute("SELECT listing_id, liked FROM swipes WHERE renter_id=?", (rid,)).fetchall()
     return {r["listing_id"] for r in rows}, {r["listing_id"] for r in rows if r["liked"]}
 
+@app.get("/api/geocode")
+def geocode_check(q: str):
+    """Where each comma-separated area lands, and whether it is inside Greater London."""
+    out = []
+    for a in [x.strip() for x in q.split(",") if x.strip()]:
+        lat, lon = geocode(a)
+        out.append({"q": a, "lat": lat, "lon": lon, "found": lat is not None,
+                    "in_london": lat is not None and 51.28 <= lat <= 51.70 and -0.52 <= lon <= 0.34})
+    return out
+
 @app.get("/api/renters/latest")
 def latest_renter():
     """The most recent renter profile. The landlord demo phone uses it to list a home that matches what the renter just asked for."""
