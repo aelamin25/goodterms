@@ -403,9 +403,8 @@ if(qs.get('demo')==='1'){addEventListener('load',async()=>{try{
   $('#l-desc').value='What stays: the sofa, the dining table and the plants. Light and noise: south-facing, quiet at night. Getting around: six minutes to the station. One honest downside: the boiler is old but serviced.';
   const files=[];for(const n of ['photo1.jpg','photo2.jpg','photo3.jpg']){const b=await fetch('/demo-images/'+n).then(r=>r.blob());files.push(new File([b],n,{type:'image/jpeg'}))}await addFiles(files);
  }else if(presetRole==='renter'){
-  $('#q-area').value='E2';const b=$('#s-needs input[type=range]');b.value=2350;b.dispatchEvent(new Event('input'));$('#q-beds .chip[data-v="2"]').click();
-  const inc=$('#s-verify input[type=range]');inc.value=72000;inc.dispatchEvent(new Event('input'));
-  $('#q-house .chip[data-v="Couple"]').click();$('#q-job').value='Data scientist at the NHS';
+  $('#q-beds .chip[data-v="2"]').click();
+  const inc=$('#s-verify input[type=range]');inc.value=80000;inc.dispatchEvent(new Event('input'));
  }}catch(e){console.warn('prefill',e)}})}
 if(presetRole==='landlord'||presetRole==='renter'){
  $('#splash-copy').textContent=presetRole==='landlord'?'Set your rules once. Hear only from verified renters who already pass them. No agency.':'Only homes that would accept you. Matched by data from 969,825 real London homes, not by swiping luck.';
