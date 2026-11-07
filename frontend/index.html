@@ -63,7 +63,7 @@ input[type=range]{width:100%;accent-color:var(--ink);height:30px}
  <div class="lbl">Name</div><input class="input" id="a-name" placeholder="Your name" style="margin-top:6px">
  <div class="lbl">Email</div><input class="input" id="a-email" placeholder="you@example.com" type="email" style="margin-top:6px">
  <p class="small mute" style="margin-top:14px">No password needed for the demo. Change role on the first screen.</p>
- </div><div class="foot"><button class="btn" id="a-continue" onclick="P.name=document.getElementById('a-name').value||'You';LL.name=P.name;go(role==='landlord'?'s-landlord':'s-area')">Continue</button></div></section>
+ </div><div class="foot"><button class="btn" id="a-continue" onclick="continueAccount()">Continue</button></div></section>
 
 <section id="s-area" class="screen"><div class="progress"><i style="width:25%"></i></div><div class="top"><button class="back" onclick="back()">‹</button><span class="eyebrow">1 of 4 · Area</span></div><div class="content">
  <h2>Where do you want to live?</h2><p class="mute small" style="margin-top:6px">Postcode, outcode or station area. This comes first, like it does for you.</p>
@@ -157,6 +157,7 @@ function back(){const prev=nav.pop();if(prev)go(prev,false);else go('s-splash',f
 $$('.tab').forEach(t=>t.onclick=()=>go(t.dataset.s));
 function chipGroup(sel,onpick,multi=false){$$(sel+' .chip').forEach(b=>b.onclick=()=>{if(!multi)$$(sel+' .chip').forEach(x=>x.classList.remove('sel'));b.classList.toggle('sel');onpick(b)})}
 const selected=sel=>$$(sel+' .chip.sel').map(b=>b.dataset.v);
+function continueAccount(){P.name=$('#a-name').value||'You';LL.name=P.name;go(userRole==='landlord'?'s-landlord':'s-area')}
 function pickRole(r){userRole=r;$('#role-badge').textContent=r==='landlord'?'Renting out a home':'Looking for a home';$('#a-continue').textContent=r==='landlord'?'Continue as landlord':'Continue as renter';try{parent.postMessage({role:r,name:$('#a-name').value},'*')}catch(e){}go('s-account')}
 $('#a-name').addEventListener('input',()=>{try{parent.postMessage({role:userRole,name:$('#a-name').value},'*')}catch(e){}});chipGroup('#q-rad',b=>P.radius_km=+b.dataset.v);chipGroup('#q-beds',b=>P.bedrooms=+b.dataset.v);chipGroup('#q-move',b=>P.move_in=b.dataset.v==='asap'?'':b.dataset.v);chipGroup('#q-pets',b=>P.has_pets=b.dataset.v==='1');
 chipGroup('#q-flags',b=>{P[b.dataset.k]=b.classList.contains('sel');updateVerify()},true);chipGroup('#q-house',b=>P.household=b.dataset.v);chipGroup('#q-life',()=>P.lifestyle=selected('#q-life'),true);chipGroup('#q-wants',()=>P.wants=selected('#q-wants'),true);chipGroup('#q-deal',()=>P.dealbreakers=selected('#q-deal'),true);

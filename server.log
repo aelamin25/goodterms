@@ -14,3 +14,12 @@ INFO:     127.0.0.1:62307 - "GET /api/meta HTTP/1.1" 200 OK
 INFO:     127.0.0.1:62313 - "GET /api/renters/0/deck HTTP/1.1" 404 Not Found
 INFO:     127.0.0.1:62315 - "GET /api/splash HTTP/1.1" 200 OK
 INFO:     127.0.0.1:62329 - "GET /api/splash HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62337 - "GET /demo.html HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:62339 - "GET /?name=Ahmed HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62337 - "GET /?name=Hassan HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62337 - "GET /api/meta HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62341 - "GET /api/splash HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62339 - "GET /api/renters/0/deck HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:62337 - "GET /api/meta HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62343 - "GET /api/splash HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62341 - "GET /api/renters/0/deck HTTP/1.1" 404 Not Found
