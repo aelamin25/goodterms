@@ -50,6 +50,15 @@ def rank(renter: dict, listings: pd.DataFrame, swiped_ids: set, work_lat=None, w
         df["commute_km"] = [round(haversine_km(r.lat, r.lon, work_lat, work_lon), 1) for r in df.itertuples()]
     else:
         df["commute_km"] = np.nan
+    if renter.get("area_lat") is not None:
+        df["area_km"] = [haversine_km(r.lat, r.lon, renter["area_lat"], renter["area_lon"]) for r in df.itertuples()]
+        rad = float(renter.get("radius_km", 3))
+        in_area = df[df.area_km <= rad]
+        df = in_area if len(in_area) >= 5 else df[df.area_km <= rad * 2]
+    if renter.get("move_in") and "available_from" in df.columns:
+        want = pd.Timestamp(renter["move_in"]); avail = pd.to_datetime(df.available_from, errors="coerce")
+        ok_date = (avail <= want + pd.Timedelta(days=21)) & (avail >= want - pd.Timedelta(days=60))
+        df = df[ok_date | avail.isna()] if ok_date.sum() >= 5 else df
     strict = df[(df.bedrooms == beds) & ((df.commute_km <= max_km) | df.commute_km.isna())]
     if len(strict) < 15:  # relax one notch, size first then distance
         strict = df[(df.bedrooms.between(beds, beds + 1)) & ((df.commute_km <= max_km * 1.5) | df.commute_km.isna())]
@@ -65,6 +74,8 @@ def rank(renter: dict, listings: pd.DataFrame, swiped_ids: set, work_lat=None, w
         bonus = df.borough.isin(liked.borough).astype(float) * 0.05 + df.propertytype.isin(liked.propertytype).astype(float) * 0.03
         bonus += (1 - (df.tfarea - liked.tfarea.mean()).abs() / max(20.0, liked.tfarea.mean())).clip(0, 1) * 0.04
         df["score"] = df["score"] + bonus
+    if "live" in df.columns:  # homes listed live in this session go first so the two-phone demo connects
+        df["score"] = df["score"] + df.live.fillna(False).astype(float) * 1.0
     return df.sort_values("score", ascending=False)
 
 def max_rent_for(renter: dict, multiple: float = 2.75) -> float:

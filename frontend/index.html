@@ -1,244 +1,244 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
 <title>Project Name</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
 :root{--ink:#111;--mute:#6f6f6f;--line:#e9e7e2;--bg:#f4f2ed;--paper:#fff;--ok:#1c7c4d;--okbg:#e6f3ec;--warn:#9a6a12;--warnbg:#fbf1dc;--no:#c0392b}
 *{box-sizing:border-box;margin:0}html,body{height:100%}
-body{background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui;-webkit-font-smoothing:antialiased;font-size:15px;line-height:1.45}
-.phone{width:min(430px,100vw);height:min(900px,100vh);margin:0 auto;position:relative;display:flex;flex-direction:column;overflow:hidden;background:var(--paper)}
-@media(min-width:480px){.phone{height:min(880px,calc(100vh - 32px));margin-top:16px;border-radius:40px;border:1px solid #d9d6cf;box-shadow:0 30px 80px rgba(0,0,0,.12)}}
+body{background:var(--paper);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui;-webkit-font-smoothing:antialiased;font-size:15px;line-height:1.45;overscroll-behavior:none}
+.phone{width:100%;height:100dvh;position:relative;display:flex;flex-direction:column;overflow:hidden;background:var(--paper)}
+@media(min-width:600px){body{background:var(--bg)}.phone{width:390px;height:844px;margin:14px auto;border-radius:44px;border:1px solid #d9d6cf;box-shadow:0 30px 80px rgba(0,0,0,.12)}}
 .screen{position:absolute;inset:0;display:none;flex-direction:column;background:var(--paper)}.screen.on{display:flex}
-h1{font-size:34px;font-weight:800;letter-spacing:-.03em;line-height:1.05}h2{font-size:26px;font-weight:800;letter-spacing:-.02em;line-height:1.15}
+.top{display:flex;align-items:center;gap:6px;padding:12px 12px 4px;min-height:52px}.top .back{width:40px;height:40px;border:0;background:none;font:inherit;font-size:26px;line-height:1;cursor:pointer;color:var(--ink);border-radius:50%}.top .back:active{background:#f1efe9}
+.top .ttl{font-weight:800;font-size:17px;letter-spacing:-.02em}
+.content{flex:1;overflow:auto;padding:8px 22px 20px;-webkit-overflow-scrolling:touch}
+.foot{padding:10px 22px calc(14px + env(safe-area-inset-bottom));border-top:1px solid var(--line);background:#fff}
+h1{font-size:32px;font-weight:800;letter-spacing:-.03em;line-height:1.05}h2{font-size:24px;font-weight:800;letter-spacing:-.02em;line-height:1.15}
 .mute{color:var(--mute)}.small{font-size:13px}.eyebrow{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
-.btn{display:block;width:100%;border:0;border-radius:999px;padding:16px 18px;font:inherit;font-weight:700;font-size:16px;background:var(--ink);color:#fff;cursor:pointer}
+.btn{display:block;width:100%;border:0;border-radius:999px;padding:15px 18px;font:inherit;font-weight:700;font-size:16px;background:var(--ink);color:#fff;cursor:pointer}
 .btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--ink)}.btn.link{background:none;color:var(--mute);font-weight:600;padding:10px}
-.chip{display:inline-block;border:1.5px solid var(--line);border-radius:999px;padding:10px 16px;font:inherit;font-weight:600;font-size:15px;background:#fff;color:var(--ink);cursor:pointer}
-.chip.sel{border-color:var(--ink);background:var(--ink);color:#fff}
-.pad{padding:28px 24px}.stack>*+*{margin-top:12px}
+.chip{display:inline-block;border:1.5px solid var(--line);border-radius:999px;padding:9px 14px;font:inherit;font-weight:600;font-size:14px;background:#fff;color:var(--ink);cursor:pointer}
+.chip.sel{border-color:var(--ink);background:var(--ink);color:#fff}.chips{display:flex;flex-wrap:wrap;gap:8px}
+.lbl{font-weight:600;margin-top:18px;display:flex;justify-content:space-between;align-items:baseline}
 input[type=range]{width:100%;accent-color:var(--ink);height:30px}
-.input{width:100%;border:1.5px solid var(--line);border-radius:14px;padding:14px 16px;font:inherit;font-size:17px;font-weight:600;outline:none}.input:focus{border-color:var(--ink)}
+.input{width:100%;border:1.5px solid var(--line);border-radius:14px;padding:13px 15px;font:inherit;font-size:16px;font-weight:600;outline:none;background:#fff}.input:focus{border-color:var(--ink)}
 .progress{height:3px;background:var(--line)}.progress i{display:block;height:100%;background:var(--ink)}
-.deck{position:relative;flex:1;margin:8px 16px 0}
-.card{position:absolute;inset:0;border-radius:24px;overflow:hidden;background:#fff;border:1px solid var(--line);box-shadow:0 18px 50px rgba(0,0,0,.14);touch-action:none;user-select:none;transition:transform .3s cubic-bezier(.2,.8,.2,1),opacity .3s;display:flex;flex-direction:column;cursor:pointer}
+.deck{position:relative;flex:1;margin:4px 14px 0;min-height:0}
+.card{position:absolute;inset:0;border-radius:22px;overflow:hidden;background:#fff;border:1px solid var(--line);box-shadow:0 14px 40px rgba(0,0,0,.14);touch-action:none;user-select:none;transition:transform .3s cubic-bezier(.2,.8,.2,1),opacity .3s;display:flex;flex-direction:column;cursor:pointer}
 .card.drag{transition:none}
-.hero{height:54%;position:relative;background:#eee;flex:none}.hero .leaflet-container{width:100%;height:100%;background:#eee;filter:saturate(.3) contrast(1.02)}
-.body{flex:1;padding:16px 20px 18px;display:flex;flex-direction:column}
-.stamp{position:absolute;top:22px;padding:6px 14px;border:3px solid;border-radius:8px;font-weight:800;font-size:26px;letter-spacing:.06em;opacity:0;z-index:5;background:rgba(255,255,255,.9)}
-.like{left:20px;color:var(--ok);border-color:var(--ok);transform:rotate(-12deg)}.nope{right:20px;color:var(--no);border-color:var(--no);transform:rotate(12deg)}
-.act{border-radius:999px;border:1.5px solid var(--line);background:#fff;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;font:inherit;font-weight:700;font-size:16px;transition:transform .1s}.act:active{transform:scale(.96)}
-.tab{flex:1;text-align:center;padding:12px 0 14px;color:var(--mute);font-size:12px;font-weight:600;background:none;border:0;font-family:inherit;cursor:pointer}.tab.on{color:var(--ink)}
-.badge{display:inline-block;font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;background:#f1efe9}.badge.ok{background:var(--okbg);color:var(--ok)}.badge.warn{background:var(--warnbg);color:var(--warn)}
+.photo{height:56%;position:relative;background:#e8e6e1;flex:none;background-size:cover;background-position:center}
+.dots{position:absolute;top:10px;left:12px;right:12px;display:flex;gap:4px}.dots i{flex:1;height:3px;border-radius:3px;background:rgba(255,255,255,.45)}.dots i.on{background:#fff}
+.ptag{position:absolute;left:12px;bottom:12px;background:rgba(17,17,17,.75);color:#fff;font-size:12px;font-weight:600;padding:5px 10px;border-radius:999px}
+.body{flex:1;padding:14px 18px 14px;display:flex;flex-direction:column;min-height:0}
+.stamp{position:absolute;top:18px;padding:5px 12px;border:3px solid;border-radius:8px;font-weight:800;font-size:24px;letter-spacing:.06em;opacity:0;z-index:5;background:rgba(255,255,255,.9)}
+.like{left:16px;color:var(--ok);border-color:var(--ok);transform:rotate(-12deg)}.nope{right:16px;color:var(--no);border-color:var(--no);transform:rotate(12deg)}
+.act{border-radius:999px;border:1.5px solid var(--line);background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;font:inherit;font-weight:700;font-size:16px;transition:transform .1s}.act:active{transform:scale(.96)}
+.tab{flex:1;text-align:center;padding:10px 0 calc(10px + env(safe-area-inset-bottom));color:var(--mute);font-size:12px;font-weight:600;background:none;border:0;font-family:inherit;cursor:pointer}.tab.on{color:var(--ink)}
+.badge{display:inline-block;font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;background:#f1efe9;white-space:nowrap}.badge.ok{background:var(--okbg);color:var(--ok)}.badge.warn{background:var(--warnbg);color:var(--warn)}
 .row{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px}.row:last-child{border:0}.row b{font-weight:700;text-align:right}.src{font-size:11px;color:var(--mute);margin-top:8px}
 .fade{animation:fade .3s ease both}@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-.sheet{position:absolute;left:0;right:0;bottom:0;top:12%;background:#fff;border-radius:24px 24px 0 0;box-shadow:0 -10px 40px rgba(0,0,0,.18);z-index:40;display:none;flex-direction:column;animation:up .25s ease both}.sheet.on{display:flex}@keyframes up{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+.sheet{position:absolute;left:0;right:0;bottom:0;top:8%;background:#fff;border-radius:22px 22px 0 0;box-shadow:0 -10px 40px rgba(0,0,0,.18);z-index:40;display:none;flex-direction:column;animation:up .25s ease both}.sheet.on{display:flex}@keyframes up{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
 .bubble{max-width:82%;padding:10px 14px;border-radius:18px;font-size:14px}.me{background:var(--ink);color:#fff;margin-left:auto}.them{background:#f1efe9}
-.list>*+*{margin-top:10px}
-.note{background:#f7f6f2;border-radius:14px;padding:12px 14px;font-size:14px}
+.list>*+*{margin-top:10px}.note{background:#f7f6f2;border-radius:14px;padding:12px 14px;font-size:14px}
+.ov{display:none;position:absolute;inset:0;z-index:50;background:#fff;flex-direction:column;justify-content:center;padding:28px 24px}
+.minimap{height:150px;border-radius:14px;overflow:hidden;margin-top:10px}.minimap .leaflet-container{height:100%;filter:saturate(.3)}
 </style></head>
 <body><div class="phone">
 
-<section id="s-splash" class="screen on pad" style="justify-content:flex-end">
- <div class="fade">
-  <div class="eyebrow">London rentals, without the agency</div>
-  <h1 style="margin-top:10px">Project Name</h1>
-  <p style="margin-top:16px;font-size:17px;line-height:1.5">You verify once. Landlords set their rules once.<br>You only see homes you'd be accepted for.<br>Landlords only hear from people who qualify.</p>
-  <button class="btn" style="margin-top:28px" onclick="go('s-account')">Get started</button>
-  <p class="small mute" style="margin-top:14px" id="splash-meta"></p>
- </div>
-</section>
+<section id="s-splash" class="screen on"><div class="content" style="display:flex;flex-direction:column;justify-content:flex-end">
+ <div class="fade"><div class="eyebrow">London rentals, without the agency</div><h1 style="margin-top:10px">Project Name</h1>
+ <p style="margin-top:14px;font-size:16px;line-height:1.5">You verify once. Landlords set their rules once.<br>You only see homes you'd be accepted for.<br>Landlords only hear from people who qualify.</p>
+ <p class="small mute" style="margin-top:12px" id="splash-meta"></p></div></div>
+ <div class="foot" style="border:0"><button class="btn" onclick="go('s-account')">Get started</button></div></section>
 
-<section id="s-account" class="screen pad" style="justify-content:center">
+<section id="s-account" class="screen"><div class="top"><button class="back" onclick="back()">‹</button></div><div class="content">
  <h2>Create your account</h2>
- <div class="stack" style="margin-top:18px">
-  <input class="input" id="a-name" placeholder="Your name" value="Ahmed">
-  <input class="input" id="a-email" placeholder="Email" value="ahmed@example.com" type="email">
- </div>
- <div class="eyebrow" style="margin-top:26px">I'm here to</div>
- <div style="display:flex;gap:8px;margin-top:10px" id="a-role"><button class="chip sel" data-v="renter">Rent a home</button><button class="chip" data-v="landlord">Let my home</button></div>
- <button class="btn" style="margin-top:26px" onclick="P.name=document.getElementById('a-name').value||'You';go(role==='landlord'?'s-landlord':'s-needs')">Continue</button>
-</section>
+ <div class="lbl">Name</div><input class="input" id="a-name" placeholder="Your name" style="margin-top:6px">
+ <div class="lbl">Email</div><input class="input" id="a-email" placeholder="you@example.com" type="email" style="margin-top:6px">
+ <div class="lbl">I'm here to</div><div class="chips" style="margin-top:8px" id="a-role"><button class="chip sel" data-v="renter">Rent a home</button><button class="chip" data-v="landlord">Let my home</button></div>
+ </div><div class="foot"><button class="btn" onclick="P.name=document.getElementById('a-name').value||'You';go(role==='landlord'?'s-landlord':'s-area')">Continue</button></div></section>
 
-<section id="s-needs" class="screen"><div class="progress"><i style="width:33%"></i></div><div class="pad" style="flex:1;display:flex;flex-direction:column;justify-content:center">
- <div class="eyebrow">1 of 3</div><h2 style="margin-top:8px">What do you need?</h2>
- <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:22px"><span style="font-weight:600">Budget</span><span style="font-size:30px;font-weight:800;letter-spacing:-.03em" id="q-budget-v">£1,900</span></div>
- <input type="range" min="700" max="5000" step="50" value="1900" oninput="P.budget=+this.value;document.getElementById('q-budget-v').textContent=gbp(P.budget)">
- <div style="font-weight:600;margin-top:16px">Bedrooms</div>
- <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px" id="q-beds"><button class="chip" data-v="0">Studio</button><button class="chip sel" data-v="1">1</button><button class="chip" data-v="2">2</button><button class="chip" data-v="3">3</button><button class="chip" data-v="4">4+</button></div>
- <div style="font-weight:600;margin-top:16px">Pets</div>
- <div style="display:flex;gap:8px;margin-top:8px" id="q-pets"><button class="chip sel" data-v="0">No</button><button class="chip" data-v="1">Yes</button></div>
- <button class="btn" style="margin-top:28px" onclick="go('s-where')">Continue</button></div></section>
+<section id="s-area" class="screen"><div class="progress"><i style="width:25%"></i></div><div class="top"><button class="back" onclick="back()">‹</button><span class="eyebrow">1 of 4 · Area</span></div><div class="content">
+ <h2>Where do you want to live?</h2><p class="mute small" style="margin-top:6px">Postcode, outcode or station area. This comes first, like it does for you.</p>
+ <input class="input" style="margin-top:14px" id="q-area" placeholder="e.g. E2, SE15, N16" value="">
+ <div class="lbl">Within</div><div class="chips" style="margin-top:8px" id="q-rad"><button class="chip" data-v="1">1 km</button><button class="chip sel" data-v="2">2 km</button><button class="chip" data-v="3">3 km</button><button class="chip" data-v="5">5 km</button></div>
+ <div class="lbl">I also need to get to <span class="small mute">optional</span></div><input class="input" style="margin-top:6px" id="q-work" placeholder="Work or uni postcode">
+ </div><div class="foot"><button class="btn" onclick="P.area_postcode=document.getElementById('q-area').value.trim();P.work_postcode=document.getElementById('q-work').value.trim()||null;if(!P.area_postcode){alert('Tell us an area first');return}go('s-needs')">Continue</button></div></section>
 
-<section id="s-where" class="screen"><div class="progress"><i style="width:66%"></i></div><div class="pad" style="flex:1;display:flex;flex-direction:column;justify-content:center">
- <div class="eyebrow">2 of 3</div><h2 style="margin-top:8px">Where do you need to be?</h2>
- <p class="mute" style="margin-top:6px">Work, uni, family. We only show homes within reach.</p>
- <input class="input" style="margin-top:18px" id="q-work" value="E2 7DG" placeholder="Postcode">
- <div style="display:flex;justify-content:space-between;margin-top:18px;font-weight:600"><span>Within</span><span id="q-km-v">8 km</span></div>
- <input type="range" min="2" max="25" value="8" oninput="P.max_commute_km=+this.value;document.getElementById('q-km-v').textContent=this.value+' km'">
- <button class="btn" style="margin-top:28px" onclick="P.work_postcode=document.getElementById('q-work').value;go('s-verify');updateVerify()">Continue</button></div></section>
+<section id="s-needs" class="screen"><div class="progress"><i style="width:50%"></i></div><div class="top"><button class="back" onclick="back()">‹</button><span class="eyebrow">2 of 4 · What you need</span></div><div class="content">
+ <div class="lbl" style="margin-top:4px"><span>Budget</span><span style="font-size:26px;font-weight:800;letter-spacing:-.03em" id="q-budget-v">£1,900</span></div>
+ <input type="range" min="600" max="5000" step="50" value="1900" oninput="P.budget=+this.value;document.getElementById('q-budget-v').textContent=gbp(P.budget)">
+ <div class="lbl">Bedrooms</div><div class="chips" style="margin-top:8px" id="q-beds"><button class="chip" data-v="0">Studio</button><button class="chip sel" data-v="1">1</button><button class="chip" data-v="2">2</button><button class="chip" data-v="3">3</button><button class="chip" data-v="4">4+</button></div>
+ <div class="lbl">Move in</div><div class="chips" style="margin-top:8px" id="q-move"><button class="chip sel" data-v="asap">As soon as possible</button><button class="chip" data-v="2026-12-01">1 Dec</button><button class="chip" data-v="2027-01-01">1 Jan</button><button class="chip" data-v="2027-02-01">1 Feb</button></div>
+ <div class="lbl">Pets</div><div class="chips" style="margin-top:8px" id="q-pets"><button class="chip sel" data-v="0">No</button><button class="chip" data-v="1">Yes</button></div>
+ </div><div class="foot"><button class="btn" onclick="go('s-verify');updateVerify()">Continue</button></div></section>
 
-<section id="s-verify" class="screen"><div class="progress"><i style="width:100%"></i></div><div class="pad" style="flex:1;display:flex;flex-direction:column;justify-content:center">
- <div class="eyebrow">3 of 3 · verify once</div><h2 style="margin-top:8px">What landlords check</h2>
- <p class="mute" style="margin-top:6px">Instead of an agency checking this for every home, you do it once here.</p>
- <div style="display:flex;justify-content:space-between;margin-top:20px;font-weight:600"><span>Household income</span><span id="q-inc-v">£55,000 a year</span></div>
+<section id="s-verify" class="screen"><div class="progress"><i style="width:75%"></i></div><div class="top"><button class="back" onclick="back()">‹</button><span class="eyebrow">3 of 4 · Verify once</span></div><div class="content">
+ <h2>What landlords check</h2><p class="mute small" style="margin-top:6px">Instead of an agency checking this for every home, you do it once here.</p>
+ <div class="lbl"><span>Household income</span><span id="q-inc-v">£55,000 a year</span></div>
  <input type="range" min="0" max="200000" step="1000" value="55000" oninput="P.annual_income=+this.value;document.getElementById('q-inc-v').textContent=gbp(P.annual_income)+' a year';updateVerify()">
- <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px" id="q-flags"><button class="chip sel" data-k="passes_referencing">Clean referencing</button><button class="chip" data-k="has_guarantor">I have a guarantor</button></div>
- <div class="note" style="margin-top:16px" id="v-note"></div>
- <button class="btn" style="margin-top:22px" onclick="startSwiping()">Show my homes</button></div></section>
+ <div class="chips" style="margin-top:8px" id="q-flags"><button class="chip sel" data-k="passes_referencing">Clean referencing</button><button class="chip" data-k="has_guarantor">I have a guarantor</button></div>
+ <div class="note" style="margin-top:14px" id="v-note"></div>
+ </div><div class="foot"><button class="btn" onclick="go('s-profile')">Continue</button></div></section>
 
-<section id="s-landlord" class="screen pad" style="justify-content:center">
- <div class="eyebrow">Landlord</div><h2 style="margin-top:8px">Set your rules once</h2>
- <p class="mute" style="margin-top:6px">No agency, no viewings for people who'd never pass. You hear only from verified renters who meet these.</p>
- <div style="display:flex;justify-content:space-between;margin-top:20px;font-weight:600"><span>Income at least</span><span id="l-mult-v">2.5× rent</span></div>
- <input type="range" min="2" max="3.5" step="0.25" value="2.5" oninput="document.getElementById('l-mult-v').textContent=this.value+'× rent'">
- <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px"><button class="chip sel">Referencing</button><button class="chip sel">Guarantor ok</button><button class="chip">Pets, with cover</button><button class="chip sel">12 months min</button></div>
- <div class="eyebrow" style="margin-top:22px">Verify your listing</div>
- <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px"><button class="chip sel">EPC</button><button class="chip sel">Deposit scheme</button><button class="chip">Gas safety</button><button class="chip sel">Title</button></div>
- <p class="small mute" style="margin-top:8px">Verified homes get the stamp and rank higher.</p>
- <button class="btn" style="margin-top:24px" onclick="renderInterested();go('s-interested')">See who qualifies</button>
- <button class="btn link" onclick="go('s-account')">Back</button>
-</section>
+<section id="s-profile" class="screen"><div class="progress"><i style="width:100%"></i></div><div class="top"><button class="back" onclick="back()">‹</button><span class="eyebrow">4 of 4 · About you</span></div><div class="content">
+ <h2>Your tenant profile</h2><p class="mute small" style="margin-top:6px">What landlords see. Short, like a dating profile, and it sharpens your matches.</p>
+ <div class="lbl">Who's moving in</div><div class="chips" style="margin-top:8px" id="q-house"><button class="chip sel" data-v="Just me">Just me</button><button class="chip" data-v="Couple">Couple</button><button class="chip" data-v="Family">Family</button><button class="chip" data-v="Two sharers">Two sharers</button></div>
+ <div class="lbl">What you do</div><input class="input" style="margin-top:6px" id="q-job" placeholder="e.g. NHS nurse, PhD student, software engineer">
+ <div class="lbl">About you</div><div class="chips" style="margin-top:8px" id="q-life"><button class="chip" data-v="Non-smoker">Non-smoker</button><button class="chip" data-v="Tidy">Tidy</button><button class="chip" data-v="Quiet">Quiet</button><button class="chip" data-v="Works from home">Works from home</button><button class="chip" data-v="Long-term renter">Wants long term</button></div>
+ <div class="lbl">I'm looking for a place that's</div><div class="chips" style="margin-top:8px" id="q-wants"><button class="chip" data-v="Bright">Bright</button><button class="chip" data-v="Near the tube">Near the tube</button><button class="chip" data-v="Near a park">Near a park</button><button class="chip" data-v="Low bills">Low bills</button><button class="chip" data-v="Period building">Period building</button><button class="chip" data-v="Modern">Modern</button><button class="chip" data-v="Furnished">Furnished</button></div>
+ <div class="lbl">Dealbreakers</div><div class="chips" style="margin-top:8px" id="q-deal"><button class="chip" data-v="Far from transport">Far from transport</button><button class="chip" data-v="Higher-crime area">Higher-crime area</button><button class="chip" data-v="Poor energy rating">Poor energy rating</button><button class="chip" data-v="Unfurnished">Unfurnished</button></div>
+ </div><div class="foot"><button class="btn" onclick="P.job=document.getElementById('q-job').value;startSwiping()">Show my homes</button></div></section>
 
-<section id="s-interested" class="screen">
- <header style="padding:24px 24px 10px;display:flex;gap:12px;align-items:flex-start"><button class="btn link" style="width:auto;padding:0 8px 0 0;font-size:22px" onclick="go('s-landlord')">‹</button><div><h2>Qualified and interested</h2><p class="small mute">Everyone here already passes your rules. Reply to one and the others are told.</p></div></header>
- <div class="list" style="flex:1;overflow:auto;padding:6px 24px 24px" id="i-list"></div>
-</section>
+<section id="s-landlord" class="screen"><div class="top"><button class="back" onclick="back()">‹</button><span class="eyebrow">Landlord · List your home</span></div><div class="content">
+ <h2>Your home and your rules, once</h2><p class="mute small" style="margin-top:6px">No agency. You hear only from verified renters who already pass these.</p>
+ <div class="lbl">Postcode</div><input class="input" style="margin-top:6px" id="l-pc" value="E2 7DG">
+ <div class="lbl">Bedrooms</div><div class="chips" style="margin-top:8px" id="l-beds"><button class="chip" data-v="0">Studio</button><button class="chip sel" data-v="1">1</button><button class="chip" data-v="2">2</button><button class="chip" data-v="3">3</button></div>
+ <div class="lbl"><span>Rent</span><span id="l-rent-v">£1,750 a month</span></div><input type="range" min="600" max="5000" step="25" value="1750" oninput="LL.rent=+this.value;document.getElementById('l-rent-v').textContent=gbp(LL.rent)+' a month'">
+ <div class="lbl">Available from</div><div class="chips" style="margin-top:8px" id="l-avail"><button class="chip sel" data-v="2026-11-14">Now</button><button class="chip" data-v="2026-12-01">1 Dec</button><button class="chip" data-v="2027-01-01">1 Jan</button></div>
+ <div class="lbl"><span>Income at least</span><span id="l-mult-v">2.5× rent</span></div><input type="range" min="2" max="3.5" step="0.25" value="2.5" oninput="LL.min_income_multiple=+this.value;document.getElementById('l-mult-v').textContent=this.value+'× rent'">
+ <div class="chips" style="margin-top:8px" id="l-rules"><button class="chip sel" data-k="referencing_required">Referencing</button><button class="chip sel" data-k="guarantor_accepted">Guarantor ok</button><button class="chip" data-k="pets">Pets, with cover</button><button class="chip sel" data-k="furnished">Furnished</button></div>
+ <div class="lbl">Verify your listing</div><div class="chips" style="margin-top:8px"><button class="chip sel">EPC</button><button class="chip sel">Deposit scheme</button><button class="chip sel">Gas safety</button><button class="chip sel">Title</button></div>
+ <p class="small mute" style="margin-top:8px">Checked against the EPC register and Land Registry. Verified homes get the stamp and rank higher.</p>
+ </div><div class="foot"><button class="btn" onclick="publishListing()">Publish and see who qualifies</button></div></section>
 
-<section id="s-swipe" class="screen">
- <header style="display:flex;align-items:center;justify-content:space-between;padding:18px 22px 4px"><div style="font-weight:800;font-size:18px;letter-spacing:-.02em">Project Name</div><span class="badge" id="likes-pill">5 likes left</span></header>
- <p class="small mute" style="padding:0 22px 6px" id="deck-note"></p>
+<section id="s-interested" class="screen"><div class="top"><button class="back" onclick="back()">‹</button><span class="ttl">Your listing</span><span class="badge ok" style="margin-left:auto" id="i-live">Live</span></div>
+ <div class="content" style="padding-top:0"><div class="note" id="i-summary"></div><div class="eyebrow" style="margin-top:18px">Qualified and interested</div><p class="small mute" style="margin-top:4px">Everyone here already passes your rules. Offer a viewing to one; the rest are told.</p><div class="list" style="margin-top:10px" id="i-list"><p class="mute small">Waiting for likes. Open the renter app on another phone and like this home.</p></div></div></section>
+
+<section id="s-swipe" class="screen"><div class="top" style="justify-content:space-between"><div style="display:flex;align-items:center"><button class="back" onclick="back()">‹</button><span class="ttl">Project Name</span></div><span class="badge" id="likes-pill">5 likes left</span></div>
+ <p class="small mute" style="padding:0 20px 6px" id="deck-note"></p>
  <div class="deck" id="deck"></div>
- <div style="display:flex;align-items:center;gap:10px;padding:14px 24px 10px">
-  <button class="act" id="b-rewind" style="width:52px;height:52px" title="Undo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg></button>
-  <button class="act" id="b-nope" style="flex:1;height:56px;color:var(--no)">Pass</button>
-  <button class="act" id="b-like" style="flex:1;height:56px;background:var(--ink);color:#fff;border-color:var(--ink)">Like</button>
+ <div style="display:flex;align-items:center;gap:10px;padding:12px 20px 8px">
+  <button class="act" id="b-rewind" style="width:50px;height:50px" title="Undo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg></button>
+  <button class="act" id="b-nope" style="flex:1;height:54px;color:var(--no)">Pass</button>
+  <button class="act" id="b-like" style="flex:1;height:54px;background:var(--ink);color:#fff;border-color:var(--ink)">Like</button>
  </div>
  <nav style="display:flex;border-top:1px solid var(--line)"><button class="tab on" data-s="s-swipe">Homes</button><button class="tab" data-s="s-matches">Matches <span id="mcount">0</span></button><button class="tab" data-s="s-you">You</button></nav>
- <div class="sheet" id="sheet"><div style="display:flex;justify-content:space-between;align-items:center;padding:18px 22px 8px"><h2 style="font-size:20px" id="sh-title"></h2><button class="btn link" style="width:auto;padding:4px 8px;font-size:22px" onclick="document.getElementById('sheet').classList.remove('on')">×</button></div><div style="flex:1;overflow:auto;padding:0 22px 24px" id="sh-body"></div></div>
+ <div class="sheet" id="sheet"><div style="display:flex;justify-content:space-between;align-items:center;padding:16px 20px 6px"><h2 style="font-size:19px" id="sh-title"></h2><button class="btn link" style="width:auto;padding:4px 8px;font-size:24px" onclick="document.getElementById('sheet').classList.remove('on')">×</button></div><div style="flex:1;overflow:auto;padding:0 20px 24px" id="sh-body"></div></div>
+ <div class="ov" id="ov-feat"><div class="fade"><div class="eyebrow">Like sent</div><h2 style="margin-top:8px">What do you like most?</h2><p class="mute small" style="margin-top:6px">The landlord sees this, and it teaches us your taste.</p><div class="chips" style="margin-top:14px" id="feat-chips"></div></div></div>
 </section>
 
-<section id="s-matches" class="screen">
- <header style="padding:24px 24px 8px;display:flex;justify-content:space-between;align-items:baseline"><h2>Matches</h2><span class="small mute" id="m-cap"></span></header>
- <div class="list" style="flex:1;overflow:auto;padding:4px 24px 24px" id="m-list"></div>
- <nav style="display:flex;border-top:1px solid var(--line)"><button class="tab" data-s="s-swipe">Homes</button><button class="tab on" data-s="s-matches">Matches</button><button class="tab" data-s="s-you">You</button></nav>
-</section>
+<section id="s-matches" class="screen"><div class="top" style="justify-content:space-between"><span class="ttl" style="padding-left:10px">Matches</span><span class="small mute" style="padding-right:10px" id="m-cap"></span></div>
+ <div class="content"><div class="list" id="m-list"></div></div>
+ <nav style="display:flex;border-top:1px solid var(--line)"><button class="tab" data-s="s-swipe">Homes</button><button class="tab on" data-s="s-matches">Matches</button><button class="tab" data-s="s-you">You</button></nav></section>
 
-<section id="s-chat" class="screen">
- <header style="display:flex;align-items:center;gap:12px;padding:18px 20px;border-bottom:1px solid var(--line)"><button class="btn link" style="width:auto;padding:0;font-size:22px" onclick="go('s-matches')">‹</button><div><div style="font-weight:700" id="c-title"></div><div class="small mute" id="c-sub"></div></div></header>
- <div style="flex:1;overflow:auto;padding:16px 18px;display:flex;flex-direction:column;gap:8px" id="c-log"></div>
- <div style="display:flex;gap:8px;padding:0 14px 8px;overflow-x:auto" id="c-slots"></div>
- <form style="display:flex;gap:8px;padding:10px 14px 14px;border-top:1px solid var(--line)" id="c-form"><input class="input" style="padding:11px 14px;font-size:15px" placeholder="Message" id="c-in"><button class="btn" style="width:auto;padding:0 18px">Send</button></form>
-</section>
+<section id="s-chat" class="screen"><div class="top" style="border-bottom:1px solid var(--line)"><button class="back" onclick="back()">‹</button><div><div style="font-weight:700" id="c-title"></div><div class="small mute" id="c-sub"></div></div></div>
+ <div style="flex:1;overflow:auto;padding:14px 16px;display:flex;flex-direction:column;gap:8px" id="c-log"></div>
+ <div class="chips" style="padding:0 12px 8px;flex-wrap:nowrap;overflow-x:auto" id="c-slots"></div>
+ <form style="display:flex;gap:8px;padding:10px 12px calc(12px + env(safe-area-inset-bottom));border-top:1px solid var(--line)" id="c-form"><input class="input" style="padding:11px 14px;font-size:15px" placeholder="Message" id="c-in"><button class="btn" style="width:auto;padding:0 18px">Send</button></form></section>
 
-<section id="s-you" class="screen">
- <header style="padding:24px 24px 8px"><h2 id="you-name">You</h2></header>
- <div style="flex:1;overflow:auto;padding:4px 24px" id="you-card"></div>
- <div style="padding:0 24px 16px"><button class="btn ghost" onclick="go('s-needs')">Edit what I need</button></div>
- <nav style="display:flex;border-top:1px solid var(--line)"><button class="tab" data-s="s-swipe">Homes</button><button class="tab" data-s="s-matches">Matches</button><button class="tab on" data-s="s-you">You</button></nav>
-</section>
+<section id="s-you" class="screen"><div class="top"><span class="ttl" style="padding-left:10px" id="you-name">You</span></div>
+ <div class="content" id="you-card"></div>
+ <div class="foot" style="border:0;padding-top:0"><button class="btn ghost" onclick="go('s-area')">Edit what I need</button></div>
+ <nav style="display:flex;border-top:1px solid var(--line)"><button class="tab" data-s="s-swipe">Homes</button><button class="tab" data-s="s-matches">Matches</button><button class="tab on" data-s="s-you">You</button></nav></section>
 
-<div id="ov" style="display:none;position:absolute;inset:0;z-index:50;background:#fff;flex-direction:column;justify-content:center;padding:32px 28px">
- <div class="fade">
-  <div class="eyebrow">Both said yes</div><h1 style="font-size:44px;margin-top:8px">It's a match.</h1>
-  <p class="mute" style="margin-top:14px;font-size:16px" id="ov-body"></p>
-  <div class="eyebrow" style="margin-top:28px">Book a viewing</div>
-  <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap" id="ov-slots"></div>
-  <button class="btn ghost" style="margin-top:18px" id="ov-chat">Message first</button>
-  <button class="btn link" id="ov-close">Later · the match expires in 24h</button>
- </div>
-</div>
-<div id="ov-no" style="display:none;position:absolute;inset:0;z-index:50;background:#fff;flex-direction:column;justify-content:center;padding:32px 28px">
- <div class="fade"><h2 id="ovn-title"></h2><p class="mute" style="margin-top:12px;font-size:16px" id="ovn-body"></p><button class="btn" style="margin-top:24px" onclick="hide('ov-no')">OK</button></div>
-</div>
+<div id="ov" class="ov"><div class="fade"><div class="eyebrow">Both said yes</div><h1 style="font-size:40px;margin-top:8px">It's a match.</h1><p class="mute" style="margin-top:12px" id="ov-body"></p><div class="eyebrow" style="margin-top:24px">Book a viewing</div><div class="chips" style="margin-top:10px" id="ov-slots"></div><button class="btn ghost" style="margin-top:16px" id="ov-chat">Message first</button><button class="btn link" id="ov-close">Later · the match expires in 24h</button></div></div>
+<div id="ov-no" class="ov"><div class="fade"><h2 id="ovn-title"></h2><p class="mute" style="margin-top:12px" id="ovn-body"></p><button class="btn" style="margin-top:22px" onclick="hide('ov-no')">OK</button></div></div>
 
 </div>
 <script>
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const gbp=n=>'£'+Math.round(n).toLocaleString();
 const show=id=>$('#'+id).style.display='flex', hide=id=>$('#'+id).style.display='none';
-let role='renter', renterId=null, deck=[], history=[], maps={}, matches=[], chats={}, nAvail=0;
-const P={name:'You',budget:1900,bedrooms:1,has_pets:false,work_postcode:'E2 7DG',max_commute_km:8,annual_income:55000,passes_referencing:true,has_guarantor:false,weights:{transport:3,safety:3,green:2,energy:2}};
-function go(id){$$('.screen').forEach(s=>s.classList.remove('on'));$('#'+id).classList.add('on');if(id==='s-matches')renderMatches();if(id==='s-you')renderYou();}
+const qs=new URLSearchParams(location.search);
+let role=qs.get('role')||'renter', renterId=null, deck=[], history=[], matches=[], chats={}, nAvail=0, nav=[], photoIdx={};
+const P={name:qs.get('name')||'',budget:1900,bedrooms:1,has_pets:false,area_postcode:'',radius_km:2,work_postcode:null,max_commute_km:10,move_in:'',annual_income:55000,passes_referencing:true,has_guarantor:false,household:'Just me',job:'',lifestyle:[],wants:[],dealbreakers:[],weights:{transport:3,safety:3,green:2,energy:2}};
+const LL={name:qs.get('name')||'Landlord',postcode:'E2 7DG',bedrooms:1,rent:1750,available_from:'2026-11-14',min_income_multiple:2.5,referencing_required:true,guarantor_accepted:true,pet_fee:-1,furnished:true,verified:true};
+let landlordId=null, listing=null;
+function go(id,push=true){const cur=$('.screen.on');if(push&&cur&&cur.id!==id)nav.push(cur.id);$$('.screen').forEach(s=>s.classList.remove('on'));$('#'+id).classList.add('on');if(id==='s-matches')renderMatches();if(id==='s-you')renderYou();}
+function back(){const prev=nav.pop();if(prev)go(prev,false);else go('s-splash',false)}
 $$('.tab').forEach(t=>t.onclick=()=>go(t.dataset.s));
 function chipGroup(sel,onpick,multi=false){$$(sel+' .chip').forEach(b=>b.onclick=()=>{if(!multi)$$(sel+' .chip').forEach(x=>x.classList.remove('sel'));b.classList.toggle('sel');onpick(b)})}
-chipGroup('#a-role',b=>role=b.dataset.v);chipGroup('#q-beds',b=>P.bedrooms=+b.dataset.v);chipGroup('#q-pets',b=>P.has_pets=b.dataset.v==='1');chipGroup('#q-flags',b=>{P[b.dataset.k]=b.classList.contains('sel');updateVerify()},true);
+const selected=sel=>$$(sel+' .chip.sel').map(b=>b.dataset.v);
+chipGroup('#a-role',b=>role=b.dataset.v);chipGroup('#q-rad',b=>P.radius_km=+b.dataset.v);chipGroup('#q-beds',b=>P.bedrooms=+b.dataset.v);chipGroup('#q-move',b=>P.move_in=b.dataset.v==='asap'?'':b.dataset.v);chipGroup('#q-pets',b=>P.has_pets=b.dataset.v==='1');
+chipGroup('#q-flags',b=>{P[b.dataset.k]=b.classList.contains('sel');updateVerify()},true);chipGroup('#q-house',b=>P.household=b.dataset.v);chipGroup('#q-life',()=>P.lifestyle=selected('#q-life'),true);chipGroup('#q-wants',()=>P.wants=selected('#q-wants'),true);chipGroup('#q-deal',()=>P.dealbreakers=selected('#q-deal'),true);
+chipGroup('#l-beds',b=>LL.bedrooms=+b.dataset.v);chipGroup('#l-avail',b=>LL.available_from=b.dataset.v);chipGroup('#l-rules',b=>{const on=b.classList.contains('sel');if(b.dataset.k==='pets')LL.pet_fee=on?40:-1;else LL[b.dataset.k]=on},true);
 fetch('/api/meta').then(r=>r.json()).then(m=>{$('#splash-meta').textContent=`${m.n_listings.toLocaleString()} homes drawn from ${m.source_dwellings.toLocaleString()} real London dwellings. Rents at ${m.rent_month} ONS levels.`});
+if(P.name){$('#a-name').value=P.name;$('#a-email').value=P.name.toLowerCase().replace(/\s+/g,'')+'@example.com'}
+if(qs.get('role')==='landlord'){$$('#a-role .chip').forEach(b=>b.classList.toggle('sel',b.dataset.v==='landlord'))}
 function updateVerify(){const cap=P.annual_income/(12*2.75);let t;if(P.has_guarantor)t=`With a guarantor, landlords who accept one will consider you up to your budget of ${gbp(P.budget)}.`;else if(cap>=P.budget)t=`Landlords' income rules allow rent up to about ${gbp(cap)} a month. Your budget of ${gbp(P.budget)} is inside that.`;else t=`Landlords' income rules allow rent up to about ${gbp(cap)} a month, below your budget of ${gbp(P.budget)}. Add a guarantor, or we'll show what fits.`;if(!P.passes_referencing)t+=' Homes that require referencing will be hidden.';$('#v-note').textContent=t}
 
 async function createProfile(){const r=await fetch('/api/renters',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(P)}).then(r=>r.json());renterId=r.renter_id;nAvail=r.n_available;return r}
-async function startSwiping(){await createProfile();deck=[];history=[];go('s-swipe');$('#deck-note').textContent=nAvail?`${nAvail} homes already accept your profile. Swipe right if you'd live there.`:'';await refill();}
+async function startSwiping(){await createProfile();deck=[];history=[];go('s-swipe');nav=['s-profile'];$('#deck-note').textContent=nAvail?`${nAvail} homes near ${P.area_postcode.toUpperCase()} already accept your profile.`:'';await refill();pollInbox()}
 async function refill(){if(deck.length>3)return;const more=await fetch(`/api/renters/${renterId}/deck?n=8`).then(r=>r.json());const have=new Set(deck.map(d=>d.id));deck.push(...more.filter(m=>!have.has(m.id)));render();}
 
 const ptalWord={'0':'very poor transport','1a':'very poor transport','1b':'poor transport','2':'poor transport','3':'moderate transport','4':'good transport','5':'very good transport','6a':'excellent transport','6b':'excellent transport'};
 const crimeWord=d=>d>=8?'low crime':d>=5?'average crime':'higher crime';
 const beds=l=>l.bedrooms===0?'Studio':l.bedrooms+'-bed';
+const fmtDate=s=>{if(!s)return 'now';const d=new Date(s);return d<=new Date()?'now':d.toLocaleDateString('en-GB',{day:'numeric',month:'short'})};
 function vsLine(l){const v=l.rent_vs_typical_pct;if(v==null)return '';const b=beds(l).toLowerCase();return v<=-3?`${Math.abs(v)}% below the typical ${l.borough} ${b}`:v>=3?`${v}% above the typical ${l.borough} ${b}`:`About the typical ${l.borough} ${b}`}
-function cardHTML(l){return `<div class="hero" id="map-${l.id}"></div>
+function cardHTML(l){const pi=photoIdx[l.id]||0;return `<div class="photo" style="background-image:url('${l.photos[pi]}')"><div class="dots">${l.photos.map((_,i)=>`<i class="${i===pi?'on':''}"></i>`).join('')}</div><div class="ptag">${l.live?'Listed by '+l.landlord_name+' · just now':'Available '+fmtDate(l.available_from)}</div></div>
  <div class="body">
-  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px"><div style="font-size:22px;font-weight:800;letter-spacing:-.02em;line-height:1.1">${beds(l)} ${l.type_name.toLowerCase()}<br><span style="font-weight:600;font-size:16px;color:var(--mute)">${l.ward}, ${l.outcode}</span></div><div style="text-align:right;white-space:nowrap"><div style="font-size:22px;font-weight:800;letter-spacing:-.02em">${gbp(l.rent)}</div><div class="small mute">a month</div></div></div>
-  <div class="small" style="margin-top:10px">${vsLine(l)}</div>
-  <div class="small" style="margin-top:4px">${Math.round(l.tfarea)} m² · EPC ${l.epc}${l.commute_km!=null?` · ${l.commute_km} km from ${P.work_postcode}`:''}</div>
-  <div class="small" style="margin-top:4px">${ptalWord[l.ptal_level]||'transport n/a'} · ${crimeWord(l.safety_score)} · ${Math.round(l.private_rented_pct)}% renters here</div>
-  <div style="margin-top:auto;padding-top:10px;display:flex;gap:6px;align-items:center"><span class="badge ok">You qualify</span>${l.id%4?'<span class="badge">Verified</span>':''}<span class="small mute" style="margin-left:auto">Tap for details</span></div>
- </div>
- <div class="stamp like">LIKE</div><div class="stamp nope">PASS</div>`}
-function sheetHTML(l){const v=l.id%4!==0;return `
- <div class="eyebrow">Home</div>
- <div class="row"><span>Rent</span><b>${gbp(l.rent)} a month</b></div><div class="row"><span>Compared with borough</span><b>${vsLine(l)}</b></div><div class="row"><span>Size</span><b>${Math.round(l.tfarea)} m²${l.numberrooms?' · '+Math.round(l.numberrooms)+' rooms':''}</b></div><div class="row"><span>Energy</span><b>EPC ${l.epc}</b></div><div class="row"><span>Built</span><b>${l.age_band}</b></div><div class="row"><span>Furnished</span><b>${l.furnished?'Yes':'No'}</b></div><div class="src">Dwelling from Land Registry × EPC (UCL). Rent modelled from ONS Price Index of Private Rents.</div>
- <div class="eyebrow" style="margin-top:22px">Area</div>
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px"><div style="font-size:20px;font-weight:800;letter-spacing:-.02em;line-height:1.1">${beds(l)} ${l.type_name.toLowerCase()}<br><span style="font-weight:600;font-size:15px;color:var(--mute)">${l.ward}, ${l.outcode}</span></div><div style="text-align:right;white-space:nowrap"><div style="font-size:20px;font-weight:800;letter-spacing:-.02em">${gbp(l.rent)}</div><div class="small mute">a month</div></div></div>
+  <div class="small" style="margin-top:8px">${vsLine(l)}</div>
+  <div class="small" style="margin-top:3px">${Math.round(l.tfarea)} m² · EPC ${l.epc} · ${l.furnished?'furnished':'unfurnished'}${l.commute_km!=null?` · ${l.commute_km} km to ${P.work_postcode}`:''}</div>
+  <div class="small" style="margin-top:3px">${ptalWord[l.ptal_level]||'transport n/a'} · ${crimeWord(l.safety_score)}</div>
+  <div style="margin-top:auto;padding-top:8px;display:flex;gap:6px;align-items:center"><span class="badge ok">You qualify</span>${l.verified?'<span class="badge">Verified</span>':''}<span class="small mute" style="margin-left:auto">Tap for details</span></div>
+ </div><div class="stamp like">LIKE</div><div class="stamp nope">PASS</div>`}
+function sheetHTML(l){return `
+ <div class="minimap" id="mm-${l.id}"></div><div class="src">Approximate location. Photos are illustrative for the demo.</div>
+ <div class="eyebrow" style="margin-top:18px">Home</div>
+ <div class="row"><span>Rent</span><b>${gbp(l.rent)} a month</b></div><div class="row"><span>Available</span><b>${fmtDate(l.available_from)}</b></div><div class="row"><span>Compared with borough</span><b>${vsLine(l)}</b></div><div class="row"><span>Size</span><b>${Math.round(l.tfarea)} m²${l.numberrooms?' · '+Math.round(l.numberrooms)+' rooms':''}</b></div><div class="row"><span>Energy</span><b>EPC ${l.epc}</b></div><div class="row"><span>Built</span><b>${l.age_band}</b></div><div class="src">Dwelling from Land Registry × EPC (UCL). Rent modelled from ONS Price Index of Private Rents.</div>
+ <div class="eyebrow" style="margin-top:20px">Area</div>
  <div class="row"><span>Public transport</span><b>PTAL ${l.ptal_level}</b></div><div class="row"><span>Crime, 10 is lowest</span><b>${l.safety_score}/10</b></div><div class="row"><span>Living environment</span><b>${l.environment_score}/10</b></div><div class="row"><span>Who lives here</span><b>${Math.round(l.private_rented_pct)}% rent privately · ${Math.round(l.owned_pct)}% own</b></div><div class="row"><span>${l.borough} rents, 12 months</span><b>${l.borough_rent_growth_pct>0?'+':''}${l.borough_rent_growth_pct}%</b></div><div class="src">TfL PTAL · English Indices of Deprivation 2025 · Census 2021 · ONS</div>
- <div class="eyebrow" style="margin-top:22px">Nearby</div>
+ <div class="eyebrow" style="margin-top:20px">Nearby</div>
  <div class="row"><span>New homes approved within 600 m since 2022</span><b>${l.homes_approved_600m.toLocaleString()}</b></div><div class="row"><span>Planning applications since 2024</span><b>${l.applications_since_2024_600m}</b></div><div class="row"><span>Nearest large scheme</span><b>${l.nearest_big_scheme_homes} homes · ${l.nearest_big_scheme_km} km</b></div>${l.demand_tightness_pct!=null&&!isNaN(l.demand_tightness_pct)?`<div class="row"><span>Demand pressure</span><b>Top ${Math.max(1,100-Math.round(l.demand_tightness_pct))}% of neighbourhoods</b></div>`:''}<div class="src">Foundations, House London planning data${l.demand_tightness_pct!=null&&!isNaN(l.demand_tightness_pct)?' · WhereToBuild, CAGE Warwick (Kulka & Datta)':''}</div>
- <div class="eyebrow" style="margin-top:22px">The landlord asks</div>
- <div class="row"><span>Income at least</span><b>${l.min_income_multiple}× rent · ${gbp(l.min_income_multiple*l.rent*12)} a year</b></div><div class="row"><span>Referencing</span><b>${l.referencing_required?'Required':'Not required'}</b></div><div class="row"><span>Guarantor</span><b>${l.guarantor_accepted?'Accepted':'Not accepted'}</b></div><div class="row"><span>Pets</span><b>${l.pet_fee<0?'No':(l.pet_fee?'Yes, £'+l.pet_fee+' a month cover':'Yes')}</b></div><div class="row"><span>Minimum term</span><b>${l.min_tenancy_months} months</b></div><div class="row"><span>Listing</span><b>${v?'Verified: EPC, deposit scheme, gas safety, title':'EPC on register'}</b></div>
- <div style="margin-top:14px"><span class="badge ok">You pass every rule. Like it and it's a match.</span></div>`}
-function openSheet(l){$('#sh-title').textContent=`${beds(l)} ${l.type_name.toLowerCase()}, ${l.ward}`;$('#sh-body').innerHTML=sheetHTML(l);$('#sheet').classList.add('on')}
+ <div class="eyebrow" style="margin-top:20px">The landlord asks</div>
+ <div class="row"><span>Income at least</span><b>${l.min_income_multiple}× rent · ${gbp(l.min_income_multiple*l.rent*12)} a year</b></div><div class="row"><span>Referencing</span><b>${l.referencing_required?'Required':'Not required'}</b></div><div class="row"><span>Guarantor</span><b>${l.guarantor_accepted?'Accepted':'Not accepted'}</b></div><div class="row"><span>Pets</span><b>${l.pet_fee<0?'No':(l.pet_fee?'Yes, £'+l.pet_fee+' a month cover':'Yes')}</b></div><div class="row"><span>Minimum term</span><b>${l.min_tenancy_months} months</b></div><div class="row"><span>Listing</span><b>${l.verified?'Verified: EPC, deposit scheme, gas safety, title':'EPC on register'}</b></div>
+ <div style="margin-top:12px"><span class="badge ok">You pass every rule. Like it and it's a match.</span></div>`}
+function openSheet(l){$('#sh-title').textContent=`${beds(l)} ${l.type_name.toLowerCase()}, ${l.ward}`;$('#sh-body').innerHTML=sheetHTML(l);$('#sheet').classList.add('on');setTimeout(()=>{const m=L.map('mm-'+l.id,{zoomControl:false,attributionControl:false,dragging:false,scrollWheelZoom:false}).setView([l.lat,l.lon],15);L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(m);L.circle([l.lat,l.lon],{radius:150,color:'#111',weight:2,fillColor:'#111',fillOpacity:.12}).addTo(m)},50)}
 function render(){const d=$('#deck');d.innerHTML='';const showList=deck.slice(0,3).reverse();
- showList.forEach((l,i)=>{const top=i===showList.length-1;const el=document.createElement('div');el.className='card';el.dataset.id=l.id;const depth=showList.length-1-i;el.style.transform=`scale(${1-depth*.04}) translateY(${depth*12}px)`;el.innerHTML=cardHTML(l);d.appendChild(el);
-  setTimeout(()=>{if(maps[l.id]||!document.getElementById('map-'+l.id))return;const m=L.map('map-'+l.id,{zoomControl:false,attributionControl:false,dragging:false,scrollWheelZoom:false,doubleClickZoom:false,touchZoom:false}).setView([l.lat,l.lon],16);L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(m);L.circle([l.lat,l.lon],{radius:110,color:'#111',weight:2,fillColor:'#111',fillOpacity:.12}).addTo(m);maps[l.id]=m;},0);
-  if(top)attachDrag(el,l);});
+ showList.forEach((l,i)=>{const top=i===showList.length-1;const el=document.createElement('div');el.className='card';el.dataset.id=l.id;const depth=showList.length-1-i;el.style.transform=`scale(${1-depth*.04}) translateY(${depth*12}px)`;el.innerHTML=cardHTML(l);d.appendChild(el);if(top)attachDrag(el,l);});
  if(!deck.length)d.innerHTML=emptyHTML();}
-function emptyHTML(){const cap=P.annual_income/(12*2.75);if(nAvail===0&&!P.has_guarantor&&cap<P.budget)return `<div style="position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:24px" class="fade"><h2>Nothing you'd be accepted for yet</h2><p class="mute" style="margin-top:10px">Landlords' income rules allow about ${gbp(cap)} a month on ${gbp(P.annual_income)}. The cheapest ${beds({bedrooms:P.bedrooms}).toLowerCase()} within ${P.max_commute_km} km of ${P.work_postcode} costs more than that.</p><button class="btn" style="margin-top:18px" onclick="P.has_guarantor=true;startSwiping()">Add a guarantor</button><button class="btn ghost" style="margin-top:8px" onclick="go('s-where')">Look further out</button></div>`;
- return `<div style="position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:24px;text-align:center" class="mute">You've seen every home that fits.<br>Widen the distance or budget to see more.</div>`}
+function emptyHTML(){const cap=P.annual_income/(12*2.75);if(nAvail===0&&!P.has_guarantor&&cap<P.budget)return `<div style="position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:20px" class="fade"><h2>Nothing you'd be accepted for yet</h2><p class="mute" style="margin-top:10px">Landlords' income rules allow about ${gbp(cap)} a month on ${gbp(P.annual_income)}. The cheapest ${beds({bedrooms:P.bedrooms}).toLowerCase()} near ${P.area_postcode.toUpperCase()} costs more than that.</p><button class="btn" style="margin-top:18px" onclick="P.has_guarantor=true;startSwiping()">Add a guarantor</button><button class="btn ghost" style="margin-top:8px" onclick="go('s-area')">Change area</button></div>`;
+ return `<div style="position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:24px;text-align:center" class="mute">You've seen every home that fits.<br>Widen the area or budget to see more.</div>`}
 function attachDrag(el,l){let sx=0,sy=0,dx=0,down=false,moved=false;
  el.onpointerdown=e=>{down=true;moved=false;sx=e.clientX;sy=e.clientY;el.classList.add('drag');el.setPointerCapture(e.pointerId)};
  el.onpointermove=e=>{if(!down)return;dx=e.clientX-sx;if(Math.abs(dx)>6||Math.abs(e.clientY-sy)>6)moved=true;el.style.transform=`translateX(${dx}px) rotate(${dx/18}deg)`;el.querySelector('.like').style.opacity=Math.min(1,dx/70);el.querySelector('.nope').style.opacity=Math.min(1,-dx/70)};
- el.onpointerup=e=>{if(!down)return;down=false;el.classList.remove('drag');if(!moved){el.style.transform='';openSheet(l);return}if(dx>100)decide(true);else if(dx<-100)decide(false);else{el.style.transform='';el.querySelectorAll('.stamp').forEach(s=>s.style.opacity=0)}dx=0};}
+ el.onpointerup=e=>{if(!down)return;down=false;el.classList.remove('drag');if(!moved){el.style.transform='';const r=el.getBoundingClientRect();const inPhoto=(e.clientY-r.top)<r.height*.56;if(inPhoto){const n=l.photos.length;photoIdx[l.id]=(((photoIdx[l.id]||0)+((e.clientX-r.left)<r.width/2?-1:1))%n+n)%n;el.innerHTML=cardHTML(l);attachDrag(el,l)}else openSheet(l);return}if(dx>100)decide(true);else if(dx<-100)decide(false);else{el.style.transform='';el.querySelectorAll('.stamp').forEach(s=>s.style.opacity=0)}dx=0};}
 
 const MAX_ACTIVE=3;const activeMatches=()=>matches.filter(m=>!m.released);
 let likesLeft=5;function updateBudget(){$('#likes-pill').textContent=`${likesLeft} like${likesLeft===1?'':'s'} left today`}
 function tell(title,body){$('#ovn-title').textContent=title;$('#ovn-body').textContent=body;show('ov-no')}
 const SLOTS=['Sat 11:00','Sat 14:30','Sun 10:00'];
 function bookViewing(l,slot){l.viewing=slot;l.replied=true;chats[l.id].push({me:true,t:`Can I view ${slot}?`});chats[l.id].push({me:false,t:`${slot} is booked. I'll send the address once referencing starts.`});}
-function releaseMatch(l,why){l.released=true;chats[l.id].push({me:false,t:'No problem. Your slot is released and the home goes back to the queue.'});}
+function releaseMatch(l){l.released=true;chats[l.id].push({me:false,t:'No problem. Your slot is released and the home goes back to the queue.'});}
 function makeOffer(l){l.offered=true;chats[l.id].push({me:true,t:"I'd like to take it. Please start referencing."});chats[l.id].push({me:false,t:'Great. Referencing link sent. Holding deposit is one week, capped by law. Your other matches have been released so no one is kept waiting.'});matches.filter(m=>m!==l&&!m.released).forEach(m=>releaseMatch(m));}
+const FEATURES=['Location','Price','Space','Light and condition','Transport','The building','Everything'];
+function askFeature(){return new Promise(res=>{$('#feat-chips').innerHTML=FEATURES.map(f=>`<button class="chip">${f}</button>`).join('');$$('#feat-chips .chip').forEach(b=>b.onclick=()=>{hide('ov-feat');res(b.textContent)});show('ov-feat')})}
 async function decide(liked){if(!deck.length)return;$('#sheet').classList.remove('on');
  if(liked&&activeMatches().length>=MAX_ACTIVE)return tell(`You're holding ${MAX_ACTIVE} landlords already`,'Each match holds a real home for a real person. Book a viewing, make an offer, or release one before liking another.');
  if(liked&&likesLeft<=0)return tell('No likes left today','Likes are rationed so landlords only hear from people who mean it. They reset at midnight.');
- if(liked){likesLeft--;updateBudget()}
  const l=deck.shift();history.push(l);const el=$('#deck .card:last-child');if(el){el.style.transform=`translate(${liked?520:-520}px, 40px) rotate(${liked?20:-20}deg)`;el.style.opacity=0}
- const r=await fetch(`/api/renters/${renterId}/swipes`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({listing_id:l.id,liked})}).then(r=>r.json());
- if(liked&&r.matched){l.matchedAt=Date.now();l.expiresAt=Date.now()+24*36e5;matches.unshift(l);$('#mcount').textContent=activeMatches().length;chats[l.id]=[{me:false,t:`Thanks for the like. You pass my checks, so you're first in the queue. When could you view?`}];
+ setTimeout(()=>{render();refill()},260);
+ let feature='';if(liked){likesLeft--;updateBudget();feature=await askFeature()}
+ const r=await fetch(`/api/renters/${renterId}/swipes`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({listing_id:l.id,liked,liked_feature:feature})}).then(r=>r.json());
+ if(liked&&r.matched){l.matchedAt=Date.now();l.expiresAt=Date.now()+24*36e5;matches.unshift(l);$('#mcount').textContent=activeMatches().length;chats[l.id]=[{me:false,t:l.live?`Thanks for the like. I can see you pass my checks. Pick a time and I'll confirm.`:`Thanks for the like. You pass my checks, so you're first in the queue. When could you view?`}];
   $('#ov-body').textContent=`You liked the ${beds(l).toLowerCase()} in ${l.ward}, and you already pass every rule the landlord set. No agency, no waiting. ${gbp(l.rent)} a month.`;
-  $('#ov-slots').innerHTML=SLOTS.map(sl=>`<button class="chip" data-slot="${sl}">${sl}</button>`).join('');$$('#ov-slots .chip').forEach(b=>b.onclick=()=>{bookViewing(l,b.dataset.slot);hide('ov');openChat(l)});
-  $('#ov-chat').onclick=()=>{hide('ov');openChat(l)};show('ov')}
- setTimeout(()=>{render();refill()},260)}
+  $('#ov-slots').innerHTML=SLOTS.map(sl=>`<button class="chip">${sl}</button>`).join('');$$('#ov-slots .chip').forEach(b=>b.onclick=()=>{bookViewing(l,b.textContent);hide('ov');openChat(l)});
+  $('#ov-chat').onclick=()=>{hide('ov');openChat(l)};show('ov')}}
 $('#b-like').onclick=()=>decide(true);$('#b-nope').onclick=()=>decide(false);
 $('#b-rewind').onclick=()=>{if(!history.length)return;deck.unshift(history.pop());render()};updateBudget();
 $('#ov-close').onclick=()=>hide('ov');
-document.addEventListener('keydown',e=>{if(!$('#s-swipe').classList.contains('on')||$('#ov').style.display==='flex')return;if(e.key==='ArrowRight')decide(true);if(e.key==='ArrowLeft')decide(false);if(e.key==='Escape')$('#sheet').classList.remove('on')});
+document.addEventListener('keydown',e=>{if(!$('#s-swipe').classList.contains('on')||$('#ov').style.display==='flex'||$('#ov-feat').style.display==='flex')return;if(e.key==='ArrowRight')decide(true);if(e.key==='ArrowLeft')decide(false);if(e.key==='Escape')$('#sheet').classList.remove('on')});
 
 function timeLeft(l){const ms=l.expiresAt-Date.now();if(ms<=0)return 'expired';const h=Math.floor(ms/36e5),m=Math.floor(ms%36e5/6e4);return `${h}h ${String(m).padStart(2,'0')}m`}
 function statusLine(l){if(l.released)return `<span class="badge">Released</span>`;if(l.offered)return `<span class="badge ok">Offer made · referencing</span>`;if(l.viewing)return `<span class="badge ok">Viewing ${l.viewing}</span>`;if(l.replied)return `<span class="badge ok">Replied</span>`;return `<span class="badge warn">Your move · ${timeLeft(l)} left</span>`}
-function renderMatches(){$('#m-cap').textContent=`${activeMatches().length} of ${MAX_ACTIVE} held`;$('#mcount').textContent=activeMatches().length;$('#m-list').innerHTML=matches.length?matches.map(l=>{const c=chats[l.id];const last=c[c.length-1];return `<button onclick="openChatId(${l.id})" style="width:100%;text-align:left;background:#fff;border:1px solid var(--line);border-radius:18px;padding:14px;font:inherit;cursor:pointer"><div style="display:flex;justify-content:space-between;font-weight:700"><span>${beds(l)} · ${l.ward}</span><span>${gbp(l.rent)}</span></div><div style="margin-top:6px;display:flex;justify-content:space-between;align-items:center">${statusLine(l)}${l.released||l.offered?'':`<span class="small mute" onclick="event.stopPropagation();releaseMatch(matches.find(m=>m.id===${l.id}));renderMatches()" style="text-decoration:underline;cursor:pointer">Release</span>`}</div><div class="small mute" style="margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${last.me?'You: ':''}${last.t}</div></button>`}).join(''):'<p class="mute">Like a home and it appears here. Every like is already a yes from the landlord\'s side.</p>'}
+function renderMatches(){$('#m-cap').textContent=`${activeMatches().length} of ${MAX_ACTIVE} held`;$('#mcount').textContent=activeMatches().length;$('#m-list').innerHTML=matches.length?matches.map(l=>{const c=chats[l.id];const last=c[c.length-1];return `<button onclick="openChatId(${l.id})" style="width:100%;text-align:left;background:#fff;border:1px solid var(--line);border-radius:18px;padding:12px;font:inherit;cursor:pointer;display:flex;gap:12px"><div style="width:64px;height:64px;border-radius:12px;background:url('${l.photos[0]}') center/cover;flex:none"></div><div style="min-width:0;flex:1"><div style="display:flex;justify-content:space-between;font-weight:700"><span>${beds(l)} · ${l.ward}</span><span>${gbp(l.rent)}</span></div><div style="margin-top:6px;display:flex;justify-content:space-between;align-items:center">${statusLine(l)}${l.released||l.offered?'':`<span class="small mute" onclick="event.stopPropagation();releaseMatch(matches.find(m=>m.id===${l.id}));renderMatches()" style="text-decoration:underline;cursor:pointer">Release</span>`}</div><div class="small mute" style="margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${last.me?'You: ':''}${last.t}</div></div></button>`}).join(''):'<p class="mute">Like a home and it appears here. Every like is already a yes from the landlord\'s side.</p>'}
 setInterval(()=>{if($('#s-matches').classList.contains('on'))renderMatches()},30000);
 function openChatId(id){openChat(matches.find(m=>m.id===id))}
-let chatL=null;function openChat(l){chatL=l;$('#c-title').textContent=`Landlord · ${l.ward}`;$('#c-sub').textContent=`${beds(l)} ${l.type_name.toLowerCase()} · ${gbp(l.rent)} a month`;go('s-chat');renderChat()}
+let chatL=null;function openChat(l){chatL=l;$('#c-title').textContent=`${l.live?l.landlord_name:'Landlord'} · ${l.ward}`;$('#c-sub').textContent=`${beds(l)} ${l.type_name.toLowerCase()} · ${gbp(l.rent)} a month`;go('s-chat');renderChat()}
 function renderChat(){$('#c-log').innerHTML=chats[chatL.id].map(m=>`<div class="bubble ${m.me?'me':'them'}">${m.t}</div>`).join('');$('#c-log').scrollTop=1e6;
  $('#c-slots').innerHTML=chatL.released?`<span class="badge">Released</span>`:chatL.offered?`<span class="badge ok">Offer made · referencing started</span>`:chatL.viewing?`<span class="badge ok">Viewing ${chatL.viewing}</span> <button class="chip sel" id="c-offer">I'll take it</button>`:SLOTS.map(sl=>`<button class="chip" data-slot="${sl}">${sl}</button>`).join('');$$('#c-slots .chip[data-slot]').forEach(b=>b.onclick=()=>{bookViewing(chatL,b.dataset.slot);renderChat()});const o=$('#c-offer');if(o)o.onclick=()=>{makeOffer(chatL);renderChat()}}
-$('#c-form').onsubmit=e=>{e.preventDefault();const t=$('#c-in').value.trim();if(!t)return;chatL.replied=true;chats[chatL.id].push({me:true,t});$('#c-in').value='';renderChat();setTimeout(()=>{chats[chatL.id].push({me:false,t:["Saturday 11am works. I'll send the address once referencing starts.","Deposit is five weeks' rent, capped by law. Anything else before the viewing?","Bring ID and a payslip and we can move fast."][chats[chatL.id].length%3]});renderChat()},900)}
-const INTERESTED=[{n:'Priya, 29',job:'NHS nurse · £46k',rel:'Replies in 1h · 4 of 4 viewings attended · holding 1 of 3 matches',score:98,tag:'Liked your home today'},{n:'Tom and Aisha, 31',job:'Teacher and designer · £71k',rel:'Replies in 3h · 2 of 2 viewings attended · holding 3 of 3 matches',score:94,tag:'Liked 2h ago'},{n:'Marcus, 24',job:'Graduate analyst · £38k with guarantor',rel:'Replies in 6h · 1 of 2 viewings · 1 no-show',score:71,tag:'Liked yesterday'}];
-function renderInterested(){$('#i-list').innerHTML=INTERESTED.map((r,i)=>`<div class="fade" style="border:1px solid var(--line);border-radius:18px;padding:14px"><div style="display:flex;justify-content:space-between;align-items:flex-start"><div><div style="font-weight:800;font-size:17px">${r.n} <span class="badge ok">Verified</span></div><div class="small mute">${r.job}</div></div><div style="text-align:right"><div style="font-size:24px;font-weight:800;letter-spacing:-.02em">${r.score}</div><div class="small mute" style="margin-top:-4px">reliability</div></div></div><div class="small" style="margin-top:8px">${r.rel}</div><div class="small mute">${r.tag} · passes your income and referencing rules${i===2?', with guarantor':''}</div><div style="display:flex;gap:8px;margin-top:12px"><button class="chip" style="flex:1" onclick="this.textContent='Passed';this.disabled=true">Pass</button><button class="chip sel" style="flex:1" onclick="this.textContent='Viewing offered';this.disabled=true;this.parentElement.firstElementChild.remove()">Offer a viewing</button></div></div>`).join('')}
-function renderYou(){$('#you-name').textContent=P.name;$('#you-card').innerHTML=`<div style="display:flex;gap:6px"><span class="badge ok">Verified renter</span><span class="badge">Replies in 2h</span></div><div class="row" style="margin-top:14px"><span>Viewings attended</span><b>3 of 3</b></div><div class="row"><span>No-shows</span><b>0</b></div><div class="row"><span>Matches held</span><b>${activeMatches().length} of ${MAX_ACTIVE}</b></div><p class="small mute" style="margin-top:8px">Landlords see this before they say yes. Ghosting lowers it.</p><div class="eyebrow" style="margin-top:22px">Looking for</div><div class="row"><span>Home</span><b>${beds({bedrooms:P.bedrooms})} · up to ${gbp(P.budget)} a month</b></div><div class="row"><span>Near</span><b>${P.work_postcode} · within ${P.max_commute_km} km</b></div><div class="eyebrow" style="margin-top:22px">Verified once</div><div class="row"><span>Income</span><b>${gbp(P.annual_income)} a year</b></div><div class="row"><span>Referencing</span><b>${P.passes_referencing?'Clean':'At risk'}</b></div><div class="row"><span>Guarantor</span><b>${P.has_guarantor?'Yes':'No'}</b></div><div class="row"><span>Pets</span><b>${P.has_pets?'Yes':'No'}</b></div>`}
+$('#c-form').onsubmit=e=>{e.preventDefault();const t=$('#c-in').value.trim();if(!t)return;chatL.replied=true;chats[chatL.id].push({me:true,t});$('#c-in').value='';renderChat();if(!chatL.live)setTimeout(()=>{chats[chatL.id].push({me:false,t:["Saturday 11am works. I'll send the address once referencing starts.","Deposit is five weeks' rent, capped by law. Anything else before the viewing?","Bring ID and a payslip and we can move fast."][chats[chatL.id].length%3]});renderChat()},900)}
+// live inbox: landlord's viewing offers arrive here
+let seenOffers=new Set();async function pollInbox(){if(!renterId)return;try{const inbox=await fetch(`/api/renters/${renterId}/inbox`).then(r=>r.json());for(const i of inbox){if(i.status==='viewing_offered'&&!seenOffers.has(i.id)){seenOffers.add(i.id);const l=matches.find(m=>m.id===i.listing_id);if(l){l.viewing=i.slot;l.replied=true;chats[l.id].push({me:false,t:`${i.landlord_name} offered you a viewing: ${i.slot}. Address follows once referencing starts.`});if(chatL===l)renderChat();if($('#s-matches').classList.contains('on'))renderMatches()}}}}catch(e){}setTimeout(pollInbox,3000)}
+function renderYou(){$('#you-name').textContent=P.name||'You';$('#you-card').innerHTML=`<div style="display:flex;gap:6px;flex-wrap:wrap"><span class="badge ok">Verified renter</span><span class="badge">Replies in 2h</span></div><p style="margin-top:12px;font-weight:600">${[P.household,P.job].filter(Boolean).join(' · ')}</p><p class="small mute">${P.lifestyle.join(' · ')}</p>${P.wants.length?`<div class="row"><span>Looking for</span><b>${P.wants.join(', ')}</b></div>`:''}${P.dealbreakers.length?`<div class="row"><span>Dealbreakers</span><b>${P.dealbreakers.join(', ')}</b></div>`:''}<div class="row"><span>Viewings attended</span><b>3 of 3</b></div><div class="row"><span>No-shows</span><b>0</b></div><div class="row"><span>Matches held</span><b>${activeMatches().length} of ${MAX_ACTIVE}</b></div><p class="small mute" style="margin-top:8px">Landlords see this before they say yes. Ghosting lowers it.</p><div class="eyebrow" style="margin-top:20px">Looking for</div><div class="row"><span>Area</span><b>${(P.area_postcode||'').toUpperCase()} · within ${P.radius_km} km</b></div><div class="row"><span>Home</span><b>${beds({bedrooms:P.bedrooms})} · up to ${gbp(P.budget)} a month</b></div><div class="row"><span>Move in</span><b>${P.move_in?fmtDate(P.move_in):'As soon as possible'}</b></div><div class="eyebrow" style="margin-top:20px">Verified once</div><div class="row"><span>Income</span><b>${gbp(P.annual_income)} a year</b></div><div class="row"><span>Referencing</span><b>${P.passes_referencing?'Clean':'At risk'}</b></div><div class="row"><span>Guarantor</span><b>${P.has_guarantor?'Yes':'No'}</b></div><div class="row"><span>Pets</span><b>${P.has_pets?'Yes':'No'}</b></div>`}
+
+// landlord
+async function publishListing(){LL.postcode=$('#l-pc').value;LL.name=$('#a-name').value||LL.name;const r=await fetch('/api/landlords',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(LL)}).then(r=>r.json());if(r.detail){alert(r.detail);return}landlordId=r.landlord_id;listing=r.listing;$('#i-summary').innerHTML=`<b>${beds(listing)} ${listing.type_name.toLowerCase()}, ${listing.ward} ${listing.outcode}</b> · ${gbp(listing.rent)} a month · available ${fmtDate(listing.available_from)}<br><span class="small mute">Rules: income ≥ ${LL.min_income_multiple}× rent${LL.referencing_required?' · referencing':''}${LL.guarantor_accepted?' · guarantor ok':''}${LL.pet_fee>=0?' · pets with cover':''}. Verified listing. Shown first to qualified renters near ${LL.postcode}.</span>`;go('s-interested');pollInterested()}
+async function pollInterested(){if(!landlordId||!$('#s-interested').classList.contains('on')){setTimeout(pollInterested,2000);return}try{const rows=await fetch(`/api/landlords/${landlordId}/interested`).then(r=>r.json());if(rows.length)$('#i-list').innerHTML=rows.map(r=>{const p=r.profile;const cap=p.annual_income/(12*LL.min_income_multiple);return `<div class="fade" style="border:1px solid var(--line);border-radius:18px;padding:14px"><div style="display:flex;justify-content:space-between;align-items:flex-start"><div><div style="font-weight:800;font-size:17px">${p.name||'Renter'} <span class="badge ok">Verified</span></div><div class="small mute">${[p.household,p.job].filter(Boolean).join(' · ')||'Tenant profile'}</div></div><div style="text-align:right"><div style="font-size:22px;font-weight:800;letter-spacing:-.02em">96</div><div class="small mute" style="margin-top:-4px">reliability</div></div></div><div class="small" style="margin-top:8px">${p.lifestyle&&p.lifestyle.length?p.lifestyle.join(' · ')+'<br>':''}Income ${gbp(p.annual_income)} · ${p.passes_referencing?'clean referencing':'referencing at risk'}${p.has_guarantor?' · guarantor':''}${p.has_pets?' · pet':''} · move in ${p.move_in?fmtDate(p.move_in):'asap'}</div><div class="small mute" style="margin-top:4px">Liked ${r.liked_feature?'the '+r.liked_feature.toLowerCase():'your home'} · passes your income rule (${gbp(p.annual_income)} ≥ ${gbp(LL.min_income_multiple*LL.rent*12)}) and referencing</div>${r.status==='viewing_offered'?`<div style="margin-top:10px"><span class="badge ok">Viewing offered · ${r.slot}</span></div>`:r.status==='passed'?`<div style="margin-top:10px"><span class="badge">Passed</span></div>`:`<div style="display:flex;gap:8px;margin-top:12px"><button class="chip" style="flex:1" onclick="decideInterest(${r.interest_id},'pass')">Pass</button><button class="chip sel" style="flex:1" onclick="decideInterest(${r.interest_id},'offer_viewing')">Offer viewing Sat 11:00</button></div>`}</div>`}).join('')}catch(e){}setTimeout(pollInterested,2000)}
+async function decideInterest(iid,action){await fetch(`/api/interests/${iid}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action,slot:'Sat 11:00'})});}
+if(qs.get('role')==='landlord'&&qs.get('name')){go('s-account')}
 </script></body></html>
