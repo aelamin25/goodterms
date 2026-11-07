@@ -12,6 +12,6 @@ Open the link on the projector. It shows two phones: landlord on the left, rente
 
 - Reset, so the renter is the only renter and the landlord the only landlord:
   `sqlite3 chairmatch.sqlite "delete from landlords; delete from interests; delete from listing_media; delete from swipes; delete from renters;"` then restart the server.
-- The area must be in London. A postcode like S1 (Sheffield) is refused on the area screen with a message, so nobody gets an empty deck.
+- Any area works. If someone types a non-London postcode such as S1, the app switches it to the closest London district (SE1) and says so under the field.
 - If the renter picks 4+ bedrooms the landlord form caps at 3 and the match will not fire. Studio to 3 is safe.
 - If the renter sets income very low and has no guarantor, the landlord's rent is capped to what they can afford; the listing may then be far below market. That is fine, say so.

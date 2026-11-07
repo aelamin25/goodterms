@@ -391,10 +391,12 @@ window.dbg={get P(){return P},get LL(){return LL},get deck(){return deck},get ma
 async function continueArea(){const help=$('#q-area-help');const v=$('#q-area').value.trim();P.area_postcode=v;P.work_postcode=$('#q-work').value.trim()||null;
  if(!v){help.innerHTML='<b style="color:var(--accent)">Tell us an area first.</b> A place name or a postcode, like Hackney or N16.';return}
  try{const g=await fetch('/api/geocode?q='+encodeURIComponent(v)).then(r=>r.json());const bad=g.find(x=>!x.found),out=g.find(x=>x.found&&!x.in_london);
-  if(bad){help.innerHTML=`<b style="color:var(--accent)">We can't place "${bad.q}".</b> Try a London place name or postcode, like Hackney or N16.`;return}
-  if(out){help.innerHTML=`<b style="color:var(--accent)">"${out.q}" is outside London.</b> We only cover Greater London for now. Try N16, Hackney, SE15...`;return}
+  const fix=bad||out;
+  if(fix&&fix.suggestion){const fixed=g.map(x=>x===fix?fix.suggestion:x.q).join(', ');$('#q-area').value=fixed;P.area_postcode=fixed;help.innerHTML=`<b style="color:var(--accent)">${fix.q} isn't a London postcode, so we're using ${fix.suggestion}.</b> Go back and change it if you meant somewhere else.`}
+  else if(fix){help.innerHTML=`<b style="color:var(--accent)">We can't place "${fix.q}" in London.</b> Try a London place name or postcode, like Hackney or N16.`;return}
+  else help.textContent='A place name or a postcode. Separate several with commas.';
  }catch(e){}
- help.textContent='A place name or a postcode. Separate several with commas.';go('s-needs');priceGuideR()}
+ go('s-needs');priceGuideR()}
 const presetRole=qs.get('role');
 function setChipK(group,key,on){const b=$(`${group} .chip[data-k="${key}"]`);if(b&&b.classList.contains('sel')!==on)b.click()}
 async function prefillFromRenter(){try{const r=await fetch('/api/renters/latest').then(x=>x.json());if(!r||!r.renter_id)return;

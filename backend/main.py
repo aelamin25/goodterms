@@ -226,8 +226,25 @@ def geocode_check(q: str):
     out = []
     for a in [x.strip() for x in q.split(",") if x.strip()]:
         lat, lon = geocode(a)
-        out.append({"q": a, "lat": lat, "lon": lon, "found": lat is not None,
-                    "in_london": lat is not None and 51.28 <= lat <= 51.70 and -0.52 <= lon <= 0.34})
+        in_london = lat is not None and 51.28 <= lat <= 51.70 and -0.52 <= lon <= 0.34
+        item = {"q": a, "lat": lat, "lon": lon, "found": lat is not None, "in_london": in_london}
+        if not in_london:
+            # Closest-looking London postcode district, so a typo like S1 becomes SE1 instead of a dead end.
+            import difflib
+            L = listings(); cen = L.groupby("outcode")[["lat", "lon"]].mean()
+            cen["d"] = ((cen.lat - 51.5074) * 110.57) ** 2 + ((cen.lon + 0.1278) * 69.4) ** 2
+            outcodes = cen.sort_values("d").index.tolist()  # ties go to the most central district
+            typed = a.upper().replace(" ", "")
+            mt = _re.match(r"^([A-Z]{1,2})(\d{1,2}[A-Z]?)$", typed)
+            cands = []
+            if mt:
+                letters, digits = mt.groups()
+                # same number, and the typed letters appear in order inside the district letters: S1 -> SE1, SW1
+                cands = [o for o in outcodes if _re.match(r"^([A-Z]+)(\d{1,2}[A-Z]?)$", o) and _re.match(r"^([A-Z]+)", o).group(1) != letters
+                         and _re.sub(r"^[A-Z]+", "", o) == digits and _re.search(".*".join(letters), _re.match(r"^([A-Z]+)", o).group(1))]
+            m = cands[:1] or difflib.get_close_matches(typed, outcodes, n=1, cutoff=0.5)
+            if m: item["suggestion"] = m[0]
+        out.append(item)
     return out
 
 @app.get("/api/renters/latest")
