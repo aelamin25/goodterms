@@ -1,152 +1,17 @@
-INFO:     Started server process [69296]
+INFO:     Started server process [69372]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
 INFO:     Uvicorn running on http://127.0.0.1:8765 (Press CTRL+C to quit)
 listings re-priced from the valuation model
 ranker not loaded, using v1 scoring: No module named 'backend.model'
-could not rebuild listing 5998 module 'backend.scoring' has no attribute 'geocode'
-could not rebuild listing 5999 module 'backend.scoring' has no attribute 'geocode'
-INFO:     127.0.0.1:64634 - "GET /api/price_guide?postcode=E2%207DG&bedrooms=1&radius_km=1.5&rent=4475 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:64634 - "GET /api/price_guide?postcode=E2%207DG&bedrooms=1&radius_km=1.5&rent=950 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:64634 - "GET /api/price_guide?postcode=E2%207DG&bedrooms=1&radius_km=1.5&rent=925 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:64634 - "GET /api/price_guide?postcode=E2%207DG&bedrooms=1&radius_km=1.5&rent=3125 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:64634 - "GET /api/price_guide?postcode=E2%207DG&bedrooms=1&radius_km=1.5&rent=2750 HTTP/1.1" 200 OK
-/Users/ahmedelamin/Desktop/Health Hack/chairmatch/backend/scoring.py:97: SettingWithCopyWarning: 
-A value is trying to be set on a copy of a slice from a DataFrame.
-Try using .loc[row_indexer,col_indexer] = value instead
-
-See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-  df["score"] = [preference_score(renter, r, work_lat, work_lon) for r in df.itertuples()]
-/Users/ahmedelamin/Desktop/Health Hack/chairmatch/backend/scoring.py:103: SettingWithCopyWarning: 
-A value is trying to be set on a copy of a slice from a DataFrame.
-Try using .loc[row_indexer,col_indexer] = value instead
-
-See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-  df["score"] = df["score"] + df.live.fillna(False).astype(float) * 1.0
-INFO:     127.0.0.1:64668 - "POST /api/renters HTTP/1.1" 200 OK
-INFO:     127.0.0.1:64676 - "POST /api/landlords HTTP/1.1" 200 OK
-INFO:     127.0.0.1:64679 - "GET /api/landlords/16/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:64676 - "GET /api/landlords/16 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:64679 - "GET /api/landlords/16/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:64676 - "GET /api/landlords/16/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:64679 - "GET /api/landlords/16/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:64676 - "GET /api/landlords/16/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:64679 - "GET /api/landlords/16/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:64676 - "GET /api/landlords/16/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:64684 - "GET /?name=Ahmed HTTP/1.1" 200 OK
-INFO:     127.0.0.1:64684 - "GET /api/meta HTTP/1.1" 200 OK
-INFO:     127.0.0.1:64688 - "GET /api/renters/0/deck HTTP/1.1" 404 Not Found
-INFO:     127.0.0.1:64689 - "GET /api/splash HTTP/1.1" 200 OK
-INFO:     127.0.0.1:64679 - "GET /api/landlords/16/interested HTTP/1.1" 200 OK
-/Users/ahmedelamin/Desktop/Health Hack/chairmatch/backend/scoring.py:97: SettingWithCopyWarning: 
-A value is trying to be set on a copy of a slice from a DataFrame.
-Try using .loc[row_indexer,col_indexer] = value instead
-
-See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-  df["score"] = [preference_score(renter, r, work_lat, work_lon) for r in df.itertuples()]
-/Users/ahmedelamin/Desktop/Health Hack/chairmatch/backend/scoring.py:103: SettingWithCopyWarning: 
-A value is trying to be set on a copy of a slice from a DataFrame.
-Try using .loc[row_indexer,col_indexer] = value instead
-
-See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-  df["score"] = df["score"] + df.live.fillna(False).astype(float) * 1.0
-INFO:     127.0.0.1:64676 - "POST /api/renters HTTP/1.1" 200 OK
-INFO:     127.0.0.1:64679 - "GET /api/landlords/16/interested HTTP/1.1" 200 OK
-/Users/ahmedelamin/Desktop/Health Hack/chairmatch/backend/scoring.py:75: SettingWithCopyWarning: 
-A value is trying to be set on a copy of a slice from a DataFrame.
-Try using .loc[row_indexer,col_indexer] = value instead
-
-See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-  df["commute_km"] = [round(haversine_km(r.lat, r.lon, work_lat, work_lon), 1) for r in df.itertuples()]
-/Users/ahmedelamin/Desktop/Health Hack/chairmatch/backend/scoring.py:97: SettingWithCopyWarning: 
-A value is trying to be set on a copy of a slice from a DataFrame.
-Try using .loc[row_indexer,col_indexer] = value instead
-
-See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-  df["score"] = [preference_score(renter, r, work_lat, work_lon) for r in df.itertuples()]
-/Users/ahmedelamin/Desktop/Health Hack/chairmatch/backend/scoring.py:103: SettingWithCopyWarning: 
-A value is trying to be set on a copy of a slice from a DataFrame.
-Try using .loc[row_indexer,col_indexer] = value instead
-
-See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-  df["score"] = df["score"] + df.live.fillna(False).astype(float) * 1.0
-INFO:     127.0.0.1:64689 - "POST /api/renters HTTP/1.1" 200 OK
-INFO:     127.0.0.1:64676 - "GET /api/landlords/16/interested HTTP/1.1" 200 OK
-/Users/ahmedelamin/Desktop/Health Hack/chairmatch/backend/scoring.py:97: SettingWithCopyWarning: 
-A value is trying to be set on a copy of a slice from a DataFrame.
-Try using .loc[row_indexer,col_indexer] = value instead
-
-See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-  df["score"] = [preference_score(renter, r, work_lat, work_lon) for r in df.itertuples()]
-/Users/ahmedelamin/Desktop/Health Hack/chairmatch/backend/scoring.py:103: SettingWithCopyWarning: 
-A value is trying to be set on a copy of a slice from a DataFrame.
-Try using .loc[row_indexer,col_indexer] = value instead
-
-See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-  df["score"] = df["score"] + df.live.fillna(False).astype(float) * 1.0
-INFO:     127.0.0.1:64679 - "GET /api/renters/57/deck?n=8 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:64676 - "GET /api/renters/57/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:64679 - "GET /api/landlords/16/interested HTTP/1.1" 200 OK
-/Users/ahmedelamin/Desktop/Health Hack/chairmatch/backend/scoring.py:75: SettingWithCopyWarning: 
-A value is trying to be set on a copy of a slice from a DataFrame.
-Try using .loc[row_indexer,col_indexer] = value instead
-
-See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-  df["commute_km"] = [round(haversine_km(r.lat, r.lon, work_lat, work_lon), 1) for r in df.itertuples()]
-/Users/ahmedelamin/Desktop/Health Hack/chairmatch/backend/scoring.py:97: SettingWithCopyWarning: 
-A value is trying to be set on a copy of a slice from a DataFrame.
-Try using .loc[row_indexer,col_indexer] = value instead
-
-See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-  df["score"] = [preference_score(renter, r, work_lat, work_lon) for r in df.itertuples()]
-/Users/ahmedelamin/Desktop/Health Hack/chairmatch/backend/scoring.py:103: SettingWithCopyWarning: 
-A value is trying to be set on a copy of a slice from a DataFrame.
-Try using .loc[row_indexer,col_indexer] = value instead
-
-See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-  df["score"] = df["score"] + df.live.fillna(False).astype(float) * 1.0
-INFO:     127.0.0.1:64689 - "GET /api/renters/58/deck?n=8 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:64689 - "GET /api/renters/58/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:64676 - "GET /api/landlords/16/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:64679 - "GET /api/renters/57/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:64676 - "POST /api/renters/57/swipes HTTP/1.1" 200 OK
-/Users/ahmedelamin/Desktop/Health Hack/chairmatch/backend/scoring.py:97: SettingWithCopyWarning: 
-A value is trying to be set on a copy of a slice from a DataFrame.
-Try using .loc[row_indexer,col_indexer] = value instead
-
-See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-  df["score"] = [preference_score(renter, r, work_lat, work_lon) for r in df.itertuples()]
-/Users/ahmedelamin/Desktop/Health Hack/chairmatch/backend/scoring.py:103: SettingWithCopyWarning: 
-A value is trying to be set on a copy of a slice from a DataFrame.
-Try using .loc[row_indexer,col_indexer] = value instead
-
-See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-  df["score"] = df["score"] + df.live.fillna(False).astype(float) * 1.0
-INFO:     127.0.0.1:64679 - "GET /api/renters/57/deck?n=8 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:64676 - "GET /api/landlords/16/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:64679 - "POST /api/renters/57/swipes HTTP/1.1" 200 OK
-/Users/ahmedelamin/Desktop/Health Hack/chairmatch/backend/scoring.py:97: SettingWithCopyWarning: 
-A value is trying to be set on a copy of a slice from a DataFrame.
-Try using .loc[row_indexer,col_indexer] = value instead
-
-See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-  df["score"] = [preference_score(renter, r, work_lat, work_lon) for r in df.itertuples()]
-/Users/ahmedelamin/Desktop/Health Hack/chairmatch/backend/scoring.py:103: SettingWithCopyWarning: 
-A value is trying to be set on a copy of a slice from a DataFrame.
-Try using .loc[row_indexer,col_indexer] = value instead
-
-See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-  df["score"] = df["score"] + df.live.fillna(False).astype(float) * 1.0
-INFO:     127.0.0.1:64689 - "GET /api/renters/58/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:64676 - "GET /api/renters/57/deck?n=8 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:64679 - "GET /api/renters/57/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:64676 - "GET /api/landlords/16/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:64689 - "GET /api/model HTTP/1.1" 200 OK
-INFO:     127.0.0.1:64689 - "GET /api/renters/58/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:64679 - "GET /api/landlords/16/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:64676 - "GET /api/renters/57/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:64679 - "GET /api/landlords/16/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:64703 - "POST /api/landlords HTTP/1.1" 200 OK
-INFO:     127.0.0.1:64709 - "POST /api/landlords/17/guarantee HTTP/1.1" 200 OK
-INFO:     127.0.0.1:64711 - "POST /api/landlords/17/guarantee HTTP/1.1" 200 OK
-INFO:     127.0.0.1:64713 - "POST /api/landlords/17/guarantee HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64734 - "GET /api/landlords/16/interested HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64734 - "GET /api/renters/57/inbox HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64738 - "GET /api/renters/58/inbox HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64734 - "GET /api/landlords/16/interested HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64734 - "GET /api/renters/57/inbox HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64734 - "GET /api/landlords/16/interested HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64738 - "GET /api/renters/58/inbox HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64734 - "GET /api/landlords/16/interested HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64734 - "GET /api/renters/57/inbox HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64734 - "GET /api/landlords/16/interested HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64740 - "GET /demo.html HTTP/1.1" 200 OK
