@@ -73,7 +73,7 @@ def rank(renter: dict, listings: pd.DataFrame, swiped_ids: set, work_lat=None, w
         df["commute_km"] = [round(haversine_km(r.lat, r.lon, work_lat, work_lon), 1) for r in df.itertuples()]
         near = df[df.commute_km <= max_km]
         df = near if len(near) >= 5 else df[df.commute_km <= max_km * 1.5]
-        funnel.append((f"within {max_km:g} km of {renter.get('work_postcode')}", int(len(df))))
+        funnel.append((f"within {max_km:g} km of your work at {renter.get('work_postcode')}", int(len(df))))
     else:
         df["commute_km"] = np.nan
     ok = [passes_rules(renter, r) for r in df.itertuples()]
