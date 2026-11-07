@@ -4,7 +4,7 @@
 :root{--bg:#f4f2ed;--ink:#17171a;--mute:#6b675f;--accent:#c2532a;--line:#d9d6cf}
 *{box-sizing:border-box}html,body{height:100%}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow:hidden}
 .wrap{min-height:100%;display:flex;flex-direction:column;align-items:center;padding:18px 16px 12px}
-header{display:flex;flex-direction:column;align-items:center;text-align:center;gap:4px;margin-bottom:14px}
+header{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;margin-bottom:18px}
 .wordmark{font-weight:800;letter-spacing:.16em;font-size:11px;text-transform:uppercase;color:var(--mute)}
 h1{margin:0;font-family:"Instrument Serif",Georgia,serif;font-weight:400;font-size:40px;line-height:1.05;letter-spacing:-.01em}h1 em{color:var(--accent);font-style:italic}
 .sub{margin:2px 0 0;font-size:15px;color:var(--mute);max-width:620px}
@@ -14,10 +14,9 @@ h1{margin:0;font-family:"Instrument Serif",Georgia,serif;font-weight:400;font-si
 .chip{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:7px 12px;border-radius:999px;background:var(--ink);color:#fff}
 .chip.r{background:var(--accent)}
 .name{font-weight:700;font-size:17px;min-width:0}
-.name:empty::before{content:"waiting for a name";font-weight:400;color:var(--mute)}
 .device{position:relative;width:412px;height:884px;background:#101012;border-radius:58px;padding:11px;box-shadow:0 40px 90px rgba(0,0,0,.22),0 2px 0 rgba(255,255,255,.15) inset,0 0 0 2px #2a2a2e}
-.device::before{content:"";position:absolute;top:22px;left:50%;transform:translateX(-50%);width:118px;height:34px;background:#000;border-radius:999px;z-index:2}
-.device::after{content:"";position:absolute;bottom:20px;left:50%;transform:translateX(-50%);width:132px;height:5px;background:rgba(255,255,255,.55);border-radius:999px;z-index:2;mix-blend-mode:difference}
+
+
 .device .btn{position:absolute;background:#2a2a2e;border-radius:3px}.device .btn.l{left:-3px;width:3px}.device .btn.r{right:-3px;width:3px;top:220px;height:90px}
 iframe{display:block;width:390px;height:862px;border:0;border-radius:48px;background:#fff}
 .steps{display:flex;gap:6px;align-items:center;font-size:13px;color:var(--mute);height:20px}
@@ -30,27 +29,23 @@ footer a{color:inherit}
 <header>
  <div class="wordmark">GoodTerms</div>
  <h1>One landlord. One renter. <em>Live.</em></h1>
- <p class="sub">Left phone lists a home and sets its rules. Right phone looks for one. The match on the right is real: it only appears because the renter passes the rules on the left.</p>
 </header>
 <div class="stage" id="stage">
  <div class="p">
   <div class="who"><span class="chip">Landlord</span><span class="name" id="n0"></span></div>
-  <div class="device"><span class="btn l" style="top:150px;height:34px"></span><span class="btn l" style="top:200px;height:66px"></span><span class="btn l" style="top:280px;height:66px"></span><span class="btn r"></span><iframe title="Landlord phone" src="/?role=landlord&v=4"></iframe></div>
-  <div class="steps"><b>Postcode and rent</b><i>→</i><b>Rules</b><i>→</i><b>Photos</b><i>→</i><b>Publish</b></div>
+  <div class="device"><span class="btn l" style="top:150px;height:34px"></span><span class="btn l" style="top:200px;height:66px"></span><span class="btn l" style="top:280px;height:66px"></span><span class="btn r"></span><iframe title="Landlord phone" src="/?role=landlord&name=Hassan&demo=1&v=7"></iframe></div>
  </div>
  <div class="p">
   <div class="who"><span class="chip r">Renter</span><span class="name" id="n1"></span></div>
-  <div class="device"><span class="btn l" style="top:150px;height:34px"></span><span class="btn l" style="top:200px;height:66px"></span><span class="btn l" style="top:280px;height:66px"></span><span class="btn r"></span><iframe title="Renter phone" src="/?role=renter&v=4"></iframe></div>
-  <div class="steps"><b>Area and budget</b><i>→</i><b>Checks</b><i>→</i><b>Homes that would accept you</b></div>
+  <div class="device"><span class="btn l" style="top:150px;height:34px"></span><span class="btn l" style="top:200px;height:66px"></span><span class="btn l" style="top:280px;height:66px"></span><span class="btn r"></span><iframe title="Renter phone" src="/?role=renter&name=Ahmed&demo=1&v=7"></iframe></div>
  </div>
 </div>
-<footer>Matched against 969,825 real London dwellings. Rents checked by a gradient-boosted model trained on 1.28 million sales. <a href="/?role=renter">Open on one phone</a></footer>
 </div>
 <script>
 window.addEventListener('message',e=>{const fr=[...document.querySelectorAll('iframe')];const i=fr.findIndex(f=>f.contentWindow===e.source);if(i<0||!e.data)return;document.getElementById('n'+i).textContent=e.data.name||''});
 // Fit both phones on whatever screen this is projected on.
 function fit(){const st=document.getElementById('stage');if(matchMedia('(max-width:900px)').matches){st.style.transform='';return}
- const avail=innerHeight-st.getBoundingClientRect().top-70, need=884+30+20+24, s=Math.min(1,avail/need,(innerWidth-32)/(412*2+56));
+ const avail=innerHeight-st.getBoundingClientRect().top-70, need=884+30+24, s=Math.min(1,avail/need,(innerWidth-32)/(412*2+56));
  st.style.transform=`scale(${s})`;st.style.marginBottom=`${(s-1)*need}px`}
 addEventListener('resize',fit);addEventListener('load',fit);fit();
 </script></body></html>
