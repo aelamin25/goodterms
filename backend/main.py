@@ -70,13 +70,19 @@ class Profile(BaseModel):
     has_pets: bool = False
     weights: dict = {}
 
+import re as _re
 def geocode(pc: str):
+    """Postcode, outcode, or a place name like Chelsea or Peckham Rye."""
     try:
-        q = pc.replace(' ', '')
-        r = requests.get(f"https://api.postcodes.io/postcodes/{q}", timeout=5).json().get("result")
-        if not r:
-            r = requests.get(f"https://api.postcodes.io/outcodes/{q}", timeout=5).json().get("result")
-        return r["latitude"], r["longitude"]
+        q = pc.strip()
+        if _re.fullmatch(r"[A-Za-z]{1,2}\d[A-Za-z\d]?\s*(\d[A-Za-z]{2})?", q):
+            r = requests.get(f"https://api.postcodes.io/postcodes/{q.replace(' ', '')}", timeout=5).json().get("result")
+            if not r: r = requests.get(f"https://api.postcodes.io/outcodes/{q.replace(' ', '')}", timeout=5).json().get("result")
+            if r: return r["latitude"], r["longitude"]
+        pl = requests.get("https://api.postcodes.io/places", params={"q": q, "limit": 5}, timeout=5).json().get("result") or []
+        pl = [p for p in pl if p.get("region") in ("London", "Greater London") or (p.get("county_unitary") or "").endswith("London")] or pl
+        if pl: return pl[0]["latitude"], pl[0]["longitude"]
+        return None, None
     except Exception:
         return None, None
 scoring.geocode = geocode
@@ -173,7 +179,9 @@ def splash():
 @app.post("/api/renters")
 def create_renter(p: Profile):
     prof = p.model_dump(); prof["work_lat"], prof["work_lon"] = geocode(p.work_postcode) if p.work_postcode else (None, None)
-    prof["area_lat"], prof["area_lon"] = geocode(p.area_postcode) if p.area_postcode else (None, None)
+    areas = [a.strip() for a in (p.area_postcode or "").split(",") if a.strip()]
+    pts = [geocode(a) for a in areas]; pts = [(la, lo) for la, lo in pts if la is not None]
+    prof["area_points"] = pts; prof["area_lat"], prof["area_lon"] = (pts[0] if pts else (None, None))
     with db() as c:
         cur = c.execute("INSERT INTO renters(created, profile) VALUES(?,?)", (time.time(), json.dumps(prof)))
         rid = cur.lastrowid

@@ -45,12 +45,14 @@ def rank(renter: dict, listings: pd.DataFrame, swiped_ids: set, work_lat=None, w
     df = listings[~listings.id.isin(swiped_ids)].copy()
     budget = float(renter["budget"]); beds = int(renter["bedrooms"]); max_km = float(renter.get("max_commute_km", 8))
     funnel = [("London homes scanned", int(len(listings)))]
-    if renter.get("area_lat") is not None:
-        df["area_km"] = [haversine_km(r.lat, r.lon, renter["area_lat"], renter["area_lon"]) for r in df.itertuples()]
+    pts = renter.get("area_points") or ([(renter["area_lat"], renter["area_lon"])] if renter.get("area_lat") is not None else [])
+    if pts:
+        df["area_km"] = [min(haversine_km(r.lat, r.lon, la, lo) for la, lo in pts) for r in df.itertuples()]
         rad = float(renter.get("radius_km", 3))
         in_area = df[df.area_km <= rad]
         df = in_area if len(in_area) >= 5 else df[df.area_km <= rad * 2]
         funnel.append((f"within {rad:g} km of {str(renter.get('area_postcode','')).upper()}", int(len(df))))
+    live_rows = df[df.live == True] if "live" in df.columns else df.iloc[0:0]  # a home listed live in this session is never lost to a soft filter
     df = df[df.rent <= budget * 1.05]; funnel.append(("within your budget", int(len(df))))
     ht = renter.get("home_type") or "any"
     if ht in ("flat", "house"):
@@ -76,6 +78,12 @@ def rank(renter: dict, listings: pd.DataFrame, swiped_ids: set, work_lat=None, w
         funnel.append((f"within {max_km:g} km of your work at {renter.get('work_postcode')}", int(len(df))))
     else:
         df["commute_km"] = np.nan
+    if len(live_rows):
+        lr = live_rows[(live_rows.rent <= budget * 1.05) & ~live_rows.id.isin(df.id)].copy()
+        if len(lr):
+            if "commute_km" not in lr.columns or lr.commute_km.isna().all():
+                lr["commute_km"] = [round(haversine_km(r.lat, r.lon, work_lat, work_lon), 1) if work_lat is not None else np.nan for r in lr.itertuples()]
+            df = pd.concat([df, lr])
     ok = [passes_rules(renter, r) for r in df.itertuples()]
     df["eligible"] = [o for o, _ in ok]; df["block_reason"] = [r for _, r in ok]
     df = df[df.eligible]; funnel.append(("whose landlord would accept you", int(len(df))))

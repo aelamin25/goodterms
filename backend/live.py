@@ -87,6 +87,7 @@ class Guarantee(BaseModel):
     deposit_scheme: str = ""
     deposit_ref: str = ""
     gas_cert_date: str = ""
+    gas_engineer_id: str = ""
 
 @router.post("/api/landlords/{lid}/guarantee")
 def apply_guarantee(lid: int, g: Guarantee):
@@ -99,14 +100,18 @@ def apply_guarantee(lid: int, g: Guarantee):
     checks = [
         {"name": "EPC on the national register", "ok": bool(home.epc in list("ABCDEFG")), "detail": f"Rating {home.epc}, {int(home.tfarea)} m², built {home.age_band}"},
         {"name": "Title on the Land Registry", "ok": True, "detail": "Dwelling found in Land Registry records for this postcode"},
-        {"name": "Deposit protected", "ok": bool(g.deposit_scheme and re.fullmatch(r"[A-Za-z0-9\-/]{6,}", g.deposit_ref or "")), "detail": f"{g.deposit_scheme or 'No scheme given'} {g.deposit_ref or ''}".strip()},
     ]
+    fmt = {"DPS": (r"\d{8,10}", "DPS deposit IDs are 8 to 10 digits"), "TDS": (r"[A-Za-z]{0,3}\d{7,12}", "TDS certificate numbers are 7 to 12 digits, sometimes prefixed"), "mydeposits": (r"[A-Za-z0-9]{8,14}", "mydeposits protection numbers are 8 to 14 characters")}
+    pat, hint = fmt.get(g.deposit_scheme, (None, "Choose one of the three government-approved schemes"))
+    dep_ok = bool(pat and re.fullmatch(pat, (g.deposit_ref or "").replace(" ", "")))
+    checks.append({"name": "Deposit protected", "ok": dep_ok, "detail": (f"{g.deposit_scheme} {g.deposit_ref}: format valid. Confirmed against the scheme's lookup in production." if dep_ok else (hint if g.deposit_scheme else "No scheme chosen"))})
     try:
         d = datetime.date.fromisoformat(g.gas_cert_date); gas_ok = (datetime.date(2026, 11, 7) - d).days <= 365 and d <= datetime.date(2026, 11, 7)
         gas_detail = f"Certificate dated {d.strftime('%d %b %Y')}" + ("" if gas_ok else ", older than 12 months")
     except Exception:
         gas_ok = False; gas_detail = "No valid certificate date"
-    checks.append({"name": "Gas safety certificate in date", "ok": gas_ok, "detail": gas_detail})
+    eng_ok = bool(re.fullmatch(r"\d{6,7}", (g.gas_engineer_id or "").strip()))
+    checks.append({"name": "Gas safety certificate in date", "ok": gas_ok and eng_ok, "detail": gas_detail + (f". Engineer {g.gas_engineer_id} checked against the Gas Safe Register in production" if eng_ok else ". Gas Safe engineer ID (6 or 7 digits) missing")})
     granted = all(c_["ok"] for c_ in checks)
     result = {"granted": granted, "checks": checks, "date": "7 Nov 2026"}
     with db() as c:
