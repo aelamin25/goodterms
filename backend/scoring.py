@@ -1,0 +1,55 @@
+"""Scoring: v1 weighted preference score + lawful landlord rules check. v2 (LightGBM) plugs in here."""
+import math, numpy as np, pandas as pd
+
+def haversine_km(lat1, lon1, lat2, lon2):
+    p = math.pi / 180
+    a = 0.5 - math.cos((lat2 - lat1) * p) / 2 + math.cos(lat1 * p) * math.cos(lat2 * p) * (1 - math.cos((lon2 - lon1) * p)) / 2
+    return 12742 * math.asin(math.sqrt(a))
+
+def passes_rules(renter: dict, l: pd.Series) -> tuple[bool, str]:
+    """Landlord side: lawful gates only. Returns (ok, reason_if_not)."""
+    income = float(renter.get("annual_income", 0))
+    if income < l.min_income_multiple * l.rent * 12 and not renter.get("has_guarantor"):
+        return False, "income"
+    if renter.get("has_guarantor") and not l.guarantor_accepted and income < l.min_income_multiple * l.rent * 12:
+        return False, "guarantor"
+    if l.referencing_required and not renter.get("passes_referencing", True):
+        return False, "referencing"
+    if renter.get("has_pets") and l.pet_fee < 0:
+        return False, "pets"
+    return True, ""
+
+def preference_score(renter: dict, l: pd.Series, work_lat=None, work_lon=None) -> float:
+    """0..1 how much this renter should like this listing (v1 hand weights)."""
+    budget = float(renter["budget"])
+    over = max(0.0, (l.rent - budget) / budget)
+    price = math.exp(-6 * over) if over > 0 else 1.0 - 0.15 * (budget - l.rent) / budget  # cheaper than budget is fine, slightly less exciting
+    beds = 1.0 if l.bedrooms == renter["bedrooms"] else (0.6 if abs(l.bedrooms - renter["bedrooms"]) == 1 else 0.15)
+    if work_lat is not None:
+        km = haversine_km(l.lat, l.lon, work_lat, work_lon)
+        commute = math.exp(-km / max(2.0, float(renter.get("max_commute_km", 8))))
+    else:
+        commute = 0.7
+    w = renter.get("weights", {})
+    wt, ws, wg, we = (float(w.get(k, 1)) for k in ("transport", "safety", "green", "energy"))
+    epc_pts = {"A": 1, "B": 0.9, "C": 0.75, "D": 0.5, "E": 0.3, "F": 0.15, "G": 0.05}.get(l.epc, 0.5)
+    nbhd = (wt * l.transport_score / 10 + ws * l.safety_score / 10 + wg * l.environment_score / 10 + we * epc_pts) / max(1e-6, wt + ws + wg + we)
+    size = min(1.0, l.tfarea / (35 + 20 * max(1, renter["bedrooms"])))
+    return float(0.35 * price + 0.2 * beds + 0.2 * commute + 0.15 * nbhd + 0.1 * size)
+
+def rank(renter: dict, listings: pd.DataFrame, swiped_ids: set, work_lat=None, work_lon=None, liked: pd.DataFrame | None = None, model=None) -> pd.DataFrame:
+    df = listings[~listings.id.isin(swiped_ids)].copy()
+    hard = df.bedrooms.between(renter["bedrooms"] - 1, renter["bedrooms"] + 1) & (df.rent <= float(renter["budget"]) * 1.25)
+    df = df[hard] if hard.sum() >= 20 else df
+    if model is not None:
+        from backend.model import predict
+        df["score"] = predict(model, renter, df, work_lat, work_lon, liked)
+    else:
+        df["score"] = [preference_score(renter, r, work_lat, work_lon) for r in df.itertuples()]
+    if liked is not None and len(liked) >= 3:  # taste adaptation: nudge toward liked boroughs/types
+        bonus = df.borough.isin(liked.borough).astype(float) * 0.05 + df.propertytype.isin(liked.propertytype).astype(float) * 0.03
+        df["score"] = df["score"] + bonus
+    ok = [passes_rules(renter, r) for r in df.itertuples()]
+    df["eligible"] = [o for o, _ in ok]; df["block_reason"] = [r for _, r in ok]
+    df["score"] = df["score"] + df["eligible"].astype(float) * 0.12  # homes you'd be accepted for come first
+    return df.sort_values("score", ascending=False)
