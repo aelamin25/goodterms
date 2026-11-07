@@ -45,8 +45,15 @@ Foundations (foreman.house-london.uk, House London), the House London Data Asset
 - `scripts/` data pipeline: fetch homes, build listings, enrich, train the price model
 - `data/processed/` the listings table and the trained model (raw inputs are not committed; the scripts fetch them)
 
-## Deploy for a week or a year
-`render.yaml` and `Dockerfile` are included. Connect this repo to Render (free tier) and it builds itself. Or run `./run.sh` on any machine and put a tunnel in front of it.
+## Put it online permanently, in two minutes
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/aelamin25/goodterms)
+
+1. Click the button, sign in to Render with GitHub (free).
+2. Accept the blueprint. It builds from the Dockerfile and gives you a permanent `https://goodterms-….onrender.com` address.
+3. Share that link. It works from any phone, anywhere, with no laptop involved.
+
+The free tier sleeps after 15 minutes idle and takes about a minute to wake, so open the link once before you go on stage. Two phones side by side: add `/demo.html` to the address.
 
 ## Team
 Ahmed Elamin, Hassan. Built with Claude Code. House London #3.
