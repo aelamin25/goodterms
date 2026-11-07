@@ -137,6 +137,30 @@ def price_guide(postcode: str, bedrooms: int = 1, radius_km: float = 1.5, budget
         out["renters_on_app_who_qualify"] = n_ok
     return out
 
+@app.get("/api/nudge")
+def nudge(postcode: str, bedrooms: int, budget: float, radius_km: float = 2):
+    """Only when a budget is unrealistic for an area: real alternatives from the stock. Smaller home here, or same home nearby."""
+    lat, lon = geocode(postcode)
+    L = listings()
+    if lat is None: return {"error": "postcode not found"}
+    km = np.hypot((L.lat - lat) * 110.57, (L.lon - lon) * 69.4)
+    here = L[(L.bedrooms == bedrooms) & (km <= radius_km)]
+    share = float((here.rent <= budget).mean()) if len(here) else 0.0
+    out = {"share_here": round(share * 100), "n_here": int(len(here)), "unrealistic": bool(len(here) >= 5 and share < 0.15)}
+    if not out["unrealistic"]: return out
+    alts = []
+    if bedrooms > 0:
+        smaller = L[(L.bedrooms == bedrooms - 1) & (km <= radius_km)]
+        if len(smaller) >= 5 and (smaller.rent <= budget).mean() >= 0.3:
+            alts.append({"kind": "smaller", "bedrooms": bedrooms - 1, "share": round(float((smaller.rent <= budget).mean()) * 100), "typical": int(smaller.rent.median())})
+    near = L[(L.bedrooms == bedrooms) & (km > radius_km) & (km <= 7)].assign(km=km)
+    g = near.groupby("outcode").agg(n=("rent", "size"), share=("rent", lambda r: (r <= budget).mean()), typical=("rent", "median"), dist=("km", "median"))
+    g = g[(g.n >= 5) & (g.share >= 0.3)].sort_values(["share", "dist"], ascending=[False, True]).head(3)
+    for oc, r in g.iterrows():
+        alts.append({"kind": "area", "outcode": oc, "share": round(float(r.share) * 100), "typical": int(r.typical), "km": round(float(r.dist), 1)})
+    out["alternatives"] = alts
+    return out
+
 @app.get("/api/splash")
 def splash():
     picks = listings().sample(3, random_state=int(time.time()) // 60)
