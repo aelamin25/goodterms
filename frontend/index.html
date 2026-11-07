@@ -4,129 +4,118 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
-:root{--ink:#111;--mute:#737373;--line:#e8e6e1;--bg:#f4f2ed;--paper:#fff;--ok:#1c7c4d;--warn:#b7791f;--no:#c0392b}
+:root{--ink:#111;--mute:#6f6f6f;--line:#e9e7e2;--bg:#f4f2ed;--paper:#fff;--ok:#1c7c4d;--okbg:#e6f3ec;--warn:#9a6a12;--warnbg:#fbf1dc;--no:#c0392b}
 *{box-sizing:border-box;margin:0}html,body{height:100%}
-body{background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui;-webkit-font-smoothing:antialiased;font-size:15px;line-height:1.4}
+body{background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui;-webkit-font-smoothing:antialiased;font-size:15px;line-height:1.45}
 .phone{width:min(430px,100vw);height:min(900px,100vh);margin:0 auto;position:relative;display:flex;flex-direction:column;overflow:hidden;background:var(--paper)}
 @media(min-width:480px){.phone{height:min(880px,calc(100vh - 32px));margin-top:16px;border-radius:40px;border:1px solid #d9d6cf;box-shadow:0 30px 80px rgba(0,0,0,.12)}}
 .screen{position:absolute;inset:0;display:none;flex-direction:column;background:var(--paper)}.screen.on{display:flex}
-h1{font-size:30px;font-weight:800;letter-spacing:-.02em;line-height:1.1}h2{font-size:24px;font-weight:800;letter-spacing:-.02em;line-height:1.15}
+h1{font-size:34px;font-weight:800;letter-spacing:-.03em;line-height:1.05}h2{font-size:26px;font-weight:800;letter-spacing:-.02em;line-height:1.15}
 .mute{color:var(--mute)}.small{font-size:13px}.eyebrow{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
-.btn{display:block;width:100%;border:0;border-radius:999px;padding:15px 18px;font:inherit;font-weight:700;font-size:16px;background:var(--ink);color:#fff;cursor:pointer}
+.btn{display:block;width:100%;border:0;border-radius:999px;padding:16px 18px;font:inherit;font-weight:700;font-size:16px;background:var(--ink);color:#fff;cursor:pointer}
 .btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--ink)}.btn.link{background:none;color:var(--mute);font-weight:600;padding:10px}
-.chip{display:inline-block;border:1.5px solid var(--line);border-radius:999px;padding:9px 14px;font:inherit;font-weight:600;font-size:14px;background:#fff;color:var(--ink);cursor:pointer}
+.chip{display:inline-block;border:1.5px solid var(--line);border-radius:999px;padding:10px 16px;font:inherit;font-weight:600;font-size:15px;background:#fff;color:var(--ink);cursor:pointer}
 .chip.sel{border-color:var(--ink);background:var(--ink);color:#fff}
 .pad{padding:28px 24px}.stack>*+*{margin-top:12px}
-input[type=range]{width:100%;accent-color:var(--ink);height:28px}
+input[type=range]{width:100%;accent-color:var(--ink);height:30px}
 .input{width:100%;border:1.5px solid var(--line);border-radius:14px;padding:14px 16px;font:inherit;font-size:17px;font-weight:600;outline:none}.input:focus{border-color:var(--ink)}
 .progress{height:3px;background:var(--line)}.progress i{display:block;height:100%;background:var(--ink)}
-.deck{position:relative;flex:1;margin:10px 16px 0}
-.card{position:absolute;inset:0;border-radius:24px;overflow:hidden;background:#fff;border:1px solid var(--line);box-shadow:0 18px 50px rgba(0,0,0,.14);touch-action:none;user-select:none;transition:transform .3s cubic-bezier(.2,.8,.2,1),opacity .3s;display:flex;flex-direction:column}
+.deck{position:relative;flex:1;margin:8px 16px 0}
+.card{position:absolute;inset:0;border-radius:24px;overflow:hidden;background:#fff;border:1px solid var(--line);box-shadow:0 18px 50px rgba(0,0,0,.14);touch-action:none;user-select:none;transition:transform .3s cubic-bezier(.2,.8,.2,1),opacity .3s;display:flex;flex-direction:column;cursor:pointer}
 .card.drag{transition:none}
-.hero{height:46%;position:relative;background:#eee;flex:none}.hero .leaflet-container{width:100%;height:100%;background:#eee;filter:saturate(.35) contrast(1.02)}
-.body{flex:1;padding:16px 18px 14px;display:flex;flex-direction:column;overflow:hidden}
-.tabs{display:flex;gap:14px;border-bottom:1px solid var(--line);margin:0 -18px;padding:0 18px}.tabs span{padding:10px 0;font-size:12px;font-weight:700;color:var(--mute);border-bottom:2px solid transparent;cursor:pointer}.tabs span.on{color:var(--ink);border-color:var(--ink)}
-.panel{display:none;padding-top:12px;flex:1;overflow:auto}.panel.on{display:block}
-.row{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:8px 0;border-bottom:1px solid var(--line);font-size:14px}.row:last-child{border:0}.row b{font-weight:700;text-align:right}.src{font-size:11px;color:var(--mute);margin-top:10px}
-.stamp{position:absolute;top:22px;padding:6px 14px;border:3px solid;border-radius:8px;font-weight:800;font-size:26px;letter-spacing:.06em;opacity:0;z-index:5;background:rgba(255,255,255,.85)}
+.hero{height:54%;position:relative;background:#eee;flex:none}.hero .leaflet-container{width:100%;height:100%;background:#eee;filter:saturate(.3) contrast(1.02)}
+.body{flex:1;padding:16px 20px 18px;display:flex;flex-direction:column}
+.stamp{position:absolute;top:22px;padding:6px 14px;border:3px solid;border-radius:8px;font-weight:800;font-size:26px;letter-spacing:.06em;opacity:0;z-index:5;background:rgba(255,255,255,.9)}
 .like{left:20px;color:var(--ok);border-color:var(--ok);transform:rotate(-12deg)}.nope{right:20px;color:var(--no);border-color:var(--no);transform:rotate(12deg)}
-.act{width:58px;height:58px;border-radius:50%;border:1.5px solid var(--line);background:#fff;display:grid;place-items:center;cursor:pointer;transition:transform .1s}.act:active{transform:scale(.92)}.act.main{width:68px;height:68px}.act svg{width:26px;height:26px}
+.act{border-radius:999px;border:1.5px solid var(--line);background:#fff;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;font:inherit;font-weight:700;font-size:16px;transition:transform .1s}.act:active{transform:scale(.96)}
 .tab{flex:1;text-align:center;padding:12px 0 14px;color:var(--mute);font-size:12px;font-weight:600;background:none;border:0;font-family:inherit;cursor:pointer}.tab.on{color:var(--ink)}
-.badge{display:inline-block;font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;background:#f1efe9}.badge.ok{background:#e6f3ec;color:var(--ok)}.badge.warn{background:#fbf1dc;color:var(--warn)}
+.badge{display:inline-block;font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;background:#f1efe9}.badge.ok{background:var(--okbg);color:var(--ok)}.badge.warn{background:var(--warnbg);color:var(--warn)}
+.row{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px}.row:last-child{border:0}.row b{font-weight:700;text-align:right}.src{font-size:11px;color:var(--mute);margin-top:8px}
 .fade{animation:fade .3s ease both}@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-.pop{animation:pop .45s cubic-bezier(.2,1.2,.3,1) both}@keyframes pop{from{transform:scale(.92);opacity:0}to{transform:scale(1);opacity:1}}
+.sheet{position:absolute;left:0;right:0;bottom:0;top:12%;background:#fff;border-radius:24px 24px 0 0;box-shadow:0 -10px 40px rgba(0,0,0,.18);z-index:40;display:none;flex-direction:column;animation:up .25s ease both}.sheet.on{display:flex}@keyframes up{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
 .bubble{max-width:82%;padding:10px 14px;border-radius:18px;font-size:14px}.me{background:var(--ink);color:#fff;margin-left:auto}.them{background:#f1efe9}
 .list>*+*{margin-top:10px}
+.note{background:#f7f6f2;border-radius:14px;padding:12px 14px;font-size:14px}
 </style></head>
 <body><div class="phone">
 
 <section id="s-splash" class="screen on pad" style="justify-content:flex-end">
  <div class="fade">
-  <div class="eyebrow">London rentals</div>
-  <h1 style="font-size:40px;margin-top:10px">Project Name</h1>
-  <p class="mute" style="margin-top:14px;font-size:17px">Swipe real London homes you'd actually be accepted for. Landlords set their rules once. No agency in between.</p>
-  <button class="btn" style="margin-top:28px" onclick="go('s-role')">Get started</button>
+  <div class="eyebrow">London rentals, without the agency</div>
+  <h1 style="margin-top:10px">Project Name</h1>
+  <p style="margin-top:16px;font-size:17px;line-height:1.5">You verify once. Landlords set their rules once.<br>You only see homes you'd be accepted for.<br>Landlords only hear from people who qualify.</p>
+  <button class="btn" style="margin-top:28px" onclick="go('s-account')">Get started</button>
   <p class="small mute" style="margin-top:14px" id="splash-meta"></p>
  </div>
 </section>
 
-<section id="s-role" class="screen pad" style="justify-content:center">
- <h2>I want to</h2>
+<section id="s-account" class="screen pad" style="justify-content:center">
+ <h2>Create your account</h2>
  <div class="stack" style="margin-top:18px">
-  <button class="btn ghost" style="text-align:left;padding:18px;border-radius:18px" onclick="role='renter';go('s-q1')"><div style="font-size:17px">Find a place to rent</div><div class="small mute" style="font-weight:500;margin-top:4px">Set what you want. See only homes where you'd pass the landlord's checks.</div></button>
-  <button class="btn ghost" style="text-align:left;padding:18px;border-radius:18px" onclick="role='landlord';go('s-landlord')"><div style="font-size:17px">Rent out my place</div><div class="small mute" style="font-weight:500;margin-top:4px">Set your rules once. Hear only from verified renters who already qualify.</div></button>
+  <input class="input" id="a-name" placeholder="Your name" value="Ahmed">
+  <input class="input" id="a-email" placeholder="Email" value="ahmed@example.com" type="email">
  </div>
+ <div class="eyebrow" style="margin-top:26px">I'm here to</div>
+ <div style="display:flex;gap:8px;margin-top:10px" id="a-role"><button class="chip sel" data-v="renter">Rent a home</button><button class="chip" data-v="landlord">Let my home</button></div>
+ <button class="btn" style="margin-top:26px" onclick="P.name=document.getElementById('a-name').value||'You';go(role==='landlord'?'s-landlord':'s-needs')">Continue</button>
 </section>
 
-<section id="s-q1" class="screen"><div class="progress"><i style="width:20%"></i></div><div class="pad" style="flex:1;display:flex;flex-direction:column;justify-content:center">
- <div class="eyebrow">Budget</div><h2 style="margin-top:8px">How much a month?</h2>
- <div style="font-size:52px;font-weight:800;letter-spacing:-.03em;margin-top:20px" id="q-budget-v">£1,900</div>
- <input type="range" min="700" max="5000" step="50" value="1900" id="q-budget" oninput="P.budget=+this.value;document.getElementById('q-budget-v').textContent=gbp(P.budget)">
- <p class="small mute">Typical London one-bed is about £1,700 to £2,100 depending on borough (ONS, Sep 2026).</p>
- <button class="btn" style="margin-top:28px" onclick="go('s-q2')">Continue</button></div></section>
+<section id="s-needs" class="screen"><div class="progress"><i style="width:33%"></i></div><div class="pad" style="flex:1;display:flex;flex-direction:column;justify-content:center">
+ <div class="eyebrow">1 of 3</div><h2 style="margin-top:8px">What do you need?</h2>
+ <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:22px"><span style="font-weight:600">Budget</span><span style="font-size:30px;font-weight:800;letter-spacing:-.03em" id="q-budget-v">£1,900</span></div>
+ <input type="range" min="700" max="5000" step="50" value="1900" oninput="P.budget=+this.value;document.getElementById('q-budget-v').textContent=gbp(P.budget)">
+ <div style="font-weight:600;margin-top:16px">Bedrooms</div>
+ <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px" id="q-beds"><button class="chip" data-v="0">Studio</button><button class="chip sel" data-v="1">1</button><button class="chip" data-v="2">2</button><button class="chip" data-v="3">3</button><button class="chip" data-v="4">4+</button></div>
+ <div style="font-weight:600;margin-top:16px">Pets</div>
+ <div style="display:flex;gap:8px;margin-top:8px" id="q-pets"><button class="chip sel" data-v="0">No</button><button class="chip" data-v="1">Yes</button></div>
+ <button class="btn" style="margin-top:28px" onclick="go('s-where')">Continue</button></div></section>
 
-<section id="s-q2" class="screen"><div class="progress"><i style="width:40%"></i></div><div class="pad" style="flex:1;display:flex;flex-direction:column;justify-content:center">
- <div class="eyebrow">Space</div><h2 style="margin-top:8px">How many bedrooms?</h2>
- <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:18px" id="q-beds"><button class="chip" data-v="0">Studio</button><button class="chip sel" data-v="1">1</button><button class="chip" data-v="2">2</button><button class="chip" data-v="3">3</button><button class="chip" data-v="4">4+</button></div>
- <h2 style="margin-top:28px;font-size:18px">Pets?</h2>
- <div style="display:flex;gap:8px;margin-top:12px" id="q-pets"><button class="chip sel" data-v="0">No</button><button class="chip" data-v="1">Yes</button></div>
- <button class="btn" style="margin-top:28px" onclick="go('s-q3')">Continue</button></div></section>
-
-<section id="s-q3" class="screen"><div class="progress"><i style="width:60%"></i></div><div class="pad" style="flex:1;display:flex;flex-direction:column;justify-content:center">
- <div class="eyebrow">Location</div><h2 style="margin-top:8px">Where do you need to get to?</h2>
+<section id="s-where" class="screen"><div class="progress"><i style="width:66%"></i></div><div class="pad" style="flex:1;display:flex;flex-direction:column;justify-content:center">
+ <div class="eyebrow">2 of 3</div><h2 style="margin-top:8px">Where do you need to be?</h2>
+ <p class="mute" style="margin-top:6px">Work, uni, family. We only show homes within reach.</p>
  <input class="input" style="margin-top:18px" id="q-work" value="E2 7DG" placeholder="Postcode">
  <div style="display:flex;justify-content:space-between;margin-top:18px;font-weight:600"><span>Within</span><span id="q-km-v">8 km</span></div>
- <input type="range" min="2" max="25" value="8" id="q-km" oninput="P.max_commute_km=+this.value;document.getElementById('q-km-v').textContent=this.value+' km'">
- <button class="btn" style="margin-top:28px" onclick="P.work_postcode=document.getElementById('q-work').value;go('s-q4')">Continue</button></div></section>
+ <input type="range" min="2" max="25" value="8" oninput="P.max_commute_km=+this.value;document.getElementById('q-km-v').textContent=this.value+' km'">
+ <button class="btn" style="margin-top:28px" onclick="P.work_postcode=document.getElementById('q-work').value;go('s-verify');updateVerify()">Continue</button></div></section>
 
-<section id="s-q4" class="screen"><div class="progress"><i style="width:80%"></i></div><div class="pad" style="flex:1;display:flex;flex-direction:column;justify-content:center">
- <div class="eyebrow">Priorities</div><h2 style="margin-top:8px">What matters most?</h2>
- <div class="stack" style="margin-top:18px" id="q-w">
-  <div><div style="display:flex;justify-content:space-between;font-weight:600"><span>Transport</span><span data-v="transport">4</span></div><input type="range" min="0" max="5" value="4" data-k="transport"></div>
-  <div><div style="display:flex;justify-content:space-between;font-weight:600"><span>Low crime</span><span data-v="safety">3</span></div><input type="range" min="0" max="5" value="3" data-k="safety"></div>
-  <div><div style="display:flex;justify-content:space-between;font-weight:600"><span>Green, quiet streets</span><span data-v="green">2</span></div><input type="range" min="0" max="5" value="2" data-k="green"></div>
-  <div><div style="display:flex;justify-content:space-between;font-weight:600"><span>Low energy bills</span><span data-v="energy">2</span></div><input type="range" min="0" max="5" value="2" data-k="energy"></div>
- </div>
- <button class="btn" style="margin-top:28px" onclick="go('s-q5')">Continue</button></div></section>
-
-<section id="s-q5" class="screen"><div class="progress"><i style="width:100%"></i></div><div class="pad" style="flex:1;display:flex;flex-direction:column;justify-content:center">
- <div class="eyebrow">Verification</div><h2 style="margin-top:8px">What landlords check</h2>
- <p class="mute" style="margin-top:8px">Landlords don't pick on vibes. They check these. We only show homes where you'd pass, so nobody's time is wasted.</p>
- <div style="display:flex;justify-content:space-between;margin-top:18px;font-weight:600"><span>Household income</span><span id="q-inc-v">£55,000 / yr</span></div>
- <input type="range" min="15000" max="200000" step="1000" value="55000" id="q-inc" oninput="P.annual_income=+this.value;document.getElementById('q-inc-v').textContent=gbp(P.annual_income)+' / yr'">
- <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px" id="q-flags"><button class="chip sel" data-k="passes_referencing">I'd pass referencing</button><button class="chip" data-k="has_guarantor">I have a guarantor</button></div>
- <p class="small mute" style="margin-top:12px">A guarantor covers students and lower incomes. Referencing means no CCJs and a clean rental history.</p>
- <button class="btn" style="margin-top:24px" onclick="startSwiping()">Show me homes</button></div></section>
+<section id="s-verify" class="screen"><div class="progress"><i style="width:100%"></i></div><div class="pad" style="flex:1;display:flex;flex-direction:column;justify-content:center">
+ <div class="eyebrow">3 of 3 · verify once</div><h2 style="margin-top:8px">What landlords check</h2>
+ <p class="mute" style="margin-top:6px">Instead of an agency checking this for every home, you do it once here.</p>
+ <div style="display:flex;justify-content:space-between;margin-top:20px;font-weight:600"><span>Household income</span><span id="q-inc-v">£55,000 a year</span></div>
+ <input type="range" min="0" max="200000" step="1000" value="55000" oninput="P.annual_income=+this.value;document.getElementById('q-inc-v').textContent=gbp(P.annual_income)+' a year';updateVerify()">
+ <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px" id="q-flags"><button class="chip sel" data-k="passes_referencing">Clean referencing</button><button class="chip" data-k="has_guarantor">I have a guarantor</button></div>
+ <div class="note" style="margin-top:16px" id="v-note"></div>
+ <button class="btn" style="margin-top:22px" onclick="startSwiping()">Show my homes</button></div></section>
 
 <section id="s-landlord" class="screen pad" style="justify-content:center">
- <div class="eyebrow">Landlord</div><h2 style="margin-top:8px">Your rules, once.</h2>
- <p class="mute" style="margin-top:8px">Only what the law lets you check. Renters who pass can match with you. No blanket bans on benefits, children or pets.</p>
- <div style="display:flex;justify-content:space-between;margin-top:18px;font-weight:600"><span>Income at least</span><span id="l-mult-v">2.5× rent</span></div>
+ <div class="eyebrow">Landlord</div><h2 style="margin-top:8px">Set your rules once</h2>
+ <p class="mute" style="margin-top:6px">No agency, no viewings for people who'd never pass. You hear only from verified renters who meet these.</p>
+ <div style="display:flex;justify-content:space-between;margin-top:20px;font-weight:600"><span>Income at least</span><span id="l-mult-v">2.5× rent</span></div>
  <input type="range" min="2" max="3.5" step="0.25" value="2.5" oninput="document.getElementById('l-mult-v').textContent=this.value+'× rent'">
- <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px"><button class="chip sel">Referencing required</button><button class="chip sel">Guarantor accepted</button><button class="chip">Pets, £40/mo cover</button><button class="chip sel">12-month minimum</button></div>
- <div class="eyebrow" style="margin-top:22px">Verified listing</div>
- <p class="small mute" style="margin-top:6px">Upload EPC, deposit protection, gas safety and title. Verified homes rank higher and renters see the stamp.</p>
- <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px"><button class="chip sel">EPC on register</button><button class="chip sel">Deposit scheme</button><button class="chip">Gas safety</button><button class="chip sel">Land Registry title</button></div>
- <button class="btn" style="margin-top:28px" onclick="renderInterested();go('s-interested')">See who's interested</button>
- <button class="btn link" onclick="go('s-role')">Back</button>
+ <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px"><button class="chip sel">Referencing</button><button class="chip sel">Guarantor ok</button><button class="chip">Pets, with cover</button><button class="chip sel">12 months min</button></div>
+ <div class="eyebrow" style="margin-top:22px">Verify your listing</div>
+ <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px"><button class="chip sel">EPC</button><button class="chip sel">Deposit scheme</button><button class="chip">Gas safety</button><button class="chip sel">Title</button></div>
+ <p class="small mute" style="margin-top:8px">Verified homes get the stamp and rank higher.</p>
+ <button class="btn" style="margin-top:24px" onclick="renderInterested();go('s-interested')">See who qualifies</button>
+ <button class="btn link" onclick="go('s-account')">Back</button>
 </section>
 
 <section id="s-interested" class="screen">
- <header style="padding:24px 24px 10px;display:flex;gap:12px;align-items:flex-start"><button class="btn link" style="width:auto;padding:0 8px 0 0;font-size:22px" onclick="go('s-landlord')">‹</button><div><h2>Interested and qualified</h2><p class="small mute">Only renters who pass your rules can like your home. Sorted by reliability. A renter can hold at most 3 matches, and an offer elsewhere releases yours automatically.</p></div></header>
+ <header style="padding:24px 24px 10px;display:flex;gap:12px;align-items:flex-start"><button class="btn link" style="width:auto;padding:0 8px 0 0;font-size:22px" onclick="go('s-landlord')">‹</button><div><h2>Qualified and interested</h2><p class="small mute">Everyone here already passes your rules. Reply to one and the others are told.</p></div></header>
  <div class="list" style="flex:1;overflow:auto;padding:6px 24px 24px" id="i-list"></div>
 </section>
 
 <section id="s-swipe" class="screen">
- <header style="display:flex;align-items:center;justify-content:space-between;padding:18px 22px 6px"><div style="font-weight:800;font-size:18px;letter-spacing:-.02em">Project Name</div><div style="display:flex;gap:6px"><span class="badge" id="likes-pill">5 likes left</span><span class="badge" id="super-pill">1 super</span></div></header>
+ <header style="display:flex;align-items:center;justify-content:space-between;padding:18px 22px 4px"><div style="font-weight:800;font-size:18px;letter-spacing:-.02em">Project Name</div><span class="badge" id="likes-pill">5 likes left</span></header>
+ <p class="small mute" style="padding:0 22px 6px" id="deck-note"></p>
  <div class="deck" id="deck"></div>
- <div style="display:flex;justify-content:center;align-items:center;gap:14px;padding:16px 0 6px">
-  <button class="act" id="b-rewind" title="Undo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg></button>
-  <button class="act main" id="b-nope" title="Pass" style="color:var(--no)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
-  <button class="act main" id="b-like" title="Like" style="color:var(--ok)"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7-4.6-9.3-9A5.4 5.4 0 0 1 12 6.5 5.4 5.4 0 0 1 21.3 12C19 16.4 12 21 12 21z"/></svg></button>
-  <button class="act" id="b-super" title="Super like: I can view this week"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9z"/></svg></button>
+ <div style="display:flex;align-items:center;gap:10px;padding:14px 24px 10px">
+  <button class="act" id="b-rewind" style="width:52px;height:52px" title="Undo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg></button>
+  <button class="act" id="b-nope" style="flex:1;height:56px;color:var(--no)">Pass</button>
+  <button class="act" id="b-like" style="flex:1;height:56px;background:var(--ink);color:#fff;border-color:var(--ink)">Like</button>
  </div>
- <p class="small mute" style="text-align:center;padding-bottom:6px">5 likes a day. A like means "I'd move in here."</p>
  <nav style="display:flex;border-top:1px solid var(--line)"><button class="tab on" data-s="s-swipe">Homes</button><button class="tab" data-s="s-matches">Matches <span id="mcount">0</span></button><button class="tab" data-s="s-you">You</button></nav>
+ <div class="sheet" id="sheet"><div style="display:flex;justify-content:space-between;align-items:center;padding:18px 22px 8px"><h2 style="font-size:20px" id="sh-title"></h2><button class="btn link" style="width:auto;padding:4px 8px;font-size:22px" onclick="document.getElementById('sheet').classList.remove('on')">×</button></div><div style="flex:1;overflow:auto;padding:0 22px 24px" id="sh-body"></div></div>
 </section>
 
 <section id="s-matches" class="screen">
@@ -143,24 +132,24 @@ input[type=range]{width:100%;accent-color:var(--ink);height:28px}
 </section>
 
 <section id="s-you" class="screen">
- <header style="padding:24px 24px 8px"><h2>You</h2></header>
+ <header style="padding:24px 24px 8px"><h2 id="you-name">You</h2></header>
  <div style="flex:1;overflow:auto;padding:4px 24px" id="you-card"></div>
- <div style="padding:0 24px 16px"><button class="btn ghost" onclick="go('s-q1')">Edit preferences</button></div>
+ <div style="padding:0 24px 16px"><button class="btn ghost" onclick="go('s-needs')">Edit what I need</button></div>
  <nav style="display:flex;border-top:1px solid var(--line)"><button class="tab" data-s="s-swipe">Homes</button><button class="tab" data-s="s-matches">Matches</button><button class="tab on" data-s="s-you">You</button></nav>
 </section>
 
-<div id="ov" class="hidden" style="display:none;position:absolute;inset:0;z-index:50;background:#fff;flex-direction:column;justify-content:center;padding:32px 28px">
- <div class="pop">
+<div id="ov" style="display:none;position:absolute;inset:0;z-index:50;background:#fff;flex-direction:column;justify-content:center;padding:32px 28px">
+ <div class="fade">
   <div class="eyebrow">Both said yes</div><h1 style="font-size:44px;margin-top:8px">It's a match.</h1>
   <p class="mute" style="margin-top:14px;font-size:16px" id="ov-body"></p>
-  <div class="eyebrow" style="margin-top:28px">Your move · book a viewing</div>
+  <div class="eyebrow" style="margin-top:28px">Book a viewing</div>
   <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap" id="ov-slots"></div>
-  <button class="btn ghost" style="margin-top:18px" id="ov-chat">Send a message instead</button>
-  <button class="btn link" id="ov-close">Keep swiping · match expires in 24h</button>
+  <button class="btn ghost" style="margin-top:18px" id="ov-chat">Message first</button>
+  <button class="btn link" id="ov-close">Later · the match expires in 24h</button>
  </div>
 </div>
 <div id="ov-no" style="display:none;position:absolute;inset:0;z-index:50;background:#fff;flex-direction:column;justify-content:center;padding:32px 28px">
- <div class="pop"><div class="eyebrow">Not a match</div><h2 style="margin-top:8px" id="ovn-title">Liked, but the rules block it</h2><p class="mute" style="margin-top:12px;font-size:16px" id="ovn-body"></p><button class="btn" style="margin-top:24px" onclick="hide('ov-no')">Keep swiping</button></div>
+ <div class="fade"><h2 id="ovn-title"></h2><p class="mute" style="margin-top:12px;font-size:16px" id="ovn-body"></p><button class="btn" style="margin-top:24px" onclick="hide('ov-no')">OK</button></div>
 </div>
 
 </div>
@@ -168,82 +157,88 @@ input[type=range]{width:100%;accent-color:var(--ink);height:28px}
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const gbp=n=>'£'+Math.round(n).toLocaleString();
 const show=id=>$('#'+id).style.display='flex', hide=id=>$('#'+id).style.display='none';
-let role='renter', renterId=null, deck=[], history=[], maps={}, matches=[], chats={}, panelIdx={};
-const P={name:'You',budget:1900,bedrooms:1,has_pets:false,work_postcode:'E2 7DG',max_commute_km:8,annual_income:55000,passes_referencing:true,has_guarantor:false,weights:{transport:4,safety:3,green:2,energy:2}};
+let role='renter', renterId=null, deck=[], history=[], maps={}, matches=[], chats={}, nAvail=0;
+const P={name:'You',budget:1900,bedrooms:1,has_pets:false,work_postcode:'E2 7DG',max_commute_km:8,annual_income:55000,passes_referencing:true,has_guarantor:false,weights:{transport:3,safety:3,green:2,energy:2}};
 function go(id){$$('.screen').forEach(s=>s.classList.remove('on'));$('#'+id).classList.add('on');if(id==='s-matches')renderMatches();if(id==='s-you')renderYou();}
 $$('.tab').forEach(t=>t.onclick=()=>go(t.dataset.s));
 function chipGroup(sel,onpick,multi=false){$$(sel+' .chip').forEach(b=>b.onclick=()=>{if(!multi)$$(sel+' .chip').forEach(x=>x.classList.remove('sel'));b.classList.toggle('sel');onpick(b)})}
-chipGroup('#q-beds',b=>P.bedrooms=+b.dataset.v);chipGroup('#q-pets',b=>P.has_pets=b.dataset.v==='1');chipGroup('#q-flags',b=>P[b.dataset.k]=b.classList.contains('sel'),true);
-$$('#q-w input').forEach(r=>r.oninput=()=>{P.weights[r.dataset.k]=+r.value;$(`#q-w [data-v=${r.dataset.k}]`).textContent=r.value});
+chipGroup('#a-role',b=>role=b.dataset.v);chipGroup('#q-beds',b=>P.bedrooms=+b.dataset.v);chipGroup('#q-pets',b=>P.has_pets=b.dataset.v==='1');chipGroup('#q-flags',b=>{P[b.dataset.k]=b.classList.contains('sel');updateVerify()},true);
 fetch('/api/meta').then(r=>r.json()).then(m=>{$('#splash-meta').textContent=`${m.n_listings.toLocaleString()} homes drawn from ${m.source_dwellings.toLocaleString()} real London dwellings. Rents at ${m.rent_month} ONS levels.`});
+function updateVerify(){const cap=P.annual_income/(12*2.75);let t;if(P.has_guarantor)t=`With a guarantor, landlords who accept one will consider you up to your budget of ${gbp(P.budget)}.`;else if(cap>=P.budget)t=`Landlords' income rules allow rent up to about ${gbp(cap)} a month. Your budget of ${gbp(P.budget)} is inside that.`;else t=`Landlords' income rules allow rent up to about ${gbp(cap)} a month, below your budget of ${gbp(P.budget)}. Add a guarantor, or we'll show what fits.`;if(!P.passes_referencing)t+=' Homes that require referencing will be hidden.';$('#v-note').textContent=t}
 
-async function startSwiping(){const r=await fetch('/api/renters',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(P)}).then(r=>r.json());renterId=r.renter_id;deck=[];history=[];go('s-swipe');await refill();}
+async function createProfile(){const r=await fetch('/api/renters',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(P)}).then(r=>r.json());renterId=r.renter_id;nAvail=r.n_available;return r}
+async function startSwiping(){await createProfile();deck=[];history=[];go('s-swipe');$('#deck-note').textContent=nAvail?`${nAvail} homes already accept your profile. Swipe right if you'd live there.`:'';await refill();}
 async function refill(){if(deck.length>3)return;const more=await fetch(`/api/renters/${renterId}/deck?n=8`).then(r=>r.json());const have=new Set(deck.map(d=>d.id));deck.push(...more.filter(m=>!have.has(m.id)));render();}
 
-const blockText={income:"your income is below their multiple of the rent",guarantor:"they don't accept guarantors",referencing:"they require referencing",pets:"they don't take pets"};
-const ptalWord={'0':'Very poor','1a':'Very poor','1b':'Very poor','2':'Poor','3':'Moderate','4':'Good','5':'Very good','6a':'Excellent','6b':'Excellent'};
-const dec=d=>d==null?'n/a':`${d}/10`;
-function pct(v){return v==null||isNaN(v)?'n/a':Math.round(v)+'%'}
-function panelsHTML(l){const beds=l.bedrooms===0?'Studio':l.bedrooms+'-bed';const vs=l.rent_vs_typical_pct;const vsText=vs==null?'':(vs<=-3?`${Math.abs(vs)}% below`:vs>=3?`${vs}% above`:'about') + ` the typical ${l.borough} ${beds.toLowerCase()} (${gbp(l.borough_typical_rent)})`;
- const home=`<div class="row"><span>Rent</span><b>${gbp(l.rent)} / month</b></div><div class="row"><span class="small mute">${vsText}</span><span></span></div><div class="row"><span>Size</span><b>${Math.round(l.tfarea)} m² · ${l.numberrooms?Math.round(l.numberrooms)+' rooms':''}</b></div><div class="row"><span>Energy</span><b>EPC ${l.epc}</b></div><div class="row"><span>Built</span><b>${l.age_band}</b></div><div class="row"><span>Furnished</span><b>${l.furnished?'Yes':'No'}</b></div>${l.commute_km!=null?`<div class="row"><span>From ${P.work_postcode}</span><b>${l.commute_km} km</b></div>`:''}<div class="src">Dwelling from Land Registry × EPC (UCL). Rent modelled from ONS Price Index of Private Rents.</div>`;
- const area=`<div class="row"><span>Public transport</span><b>PTAL ${l.ptal_level} · ${ptalWord[l.ptal_level]||''}</b></div><div class="row"><span>Crime (10 = lowest)</span><b>${dec(l.safety_score)}</b></div><div class="row"><span>Living environment</span><b>${dec(l.environment_score)}</b></div><div class="row"><span>Barriers to housing</span><b>${dec(l.housing_barriers_decile)}</b></div><div class="row"><span>Who lives here</span><b>${pct(l.private_rented_pct)} private rent · ${pct(l.owned_pct)} own · ${pct(l.social_rented_pct)} social</b></div><div class="row"><span>${l.borough} rents, 12 months</span><b>${l.borough_rent_growth_pct>0?'+':''}${l.borough_rent_growth_pct}%</b></div><div class="src">TfL PTAL · English Indices of Deprivation 2025 · Census 2021 · ONS</div>`;
- const nearby=`<div class="row"><span>New homes approved within 600 m since 2022</span><b>${l.homes_approved_600m.toLocaleString()}</b></div><div class="row"><span>Planning applications nearby since 2024</span><b>${l.applications_since_2024_600m}</b></div><div class="row"><span>Nearest large scheme</span><b>${l.nearest_big_scheme_homes} homes · ${l.nearest_big_scheme_km} km</b></div><div class="row"><span class="small mute" style="text-align:left">${l.nearest_big_scheme_desc||''}</span></div>${l.demand_tightness_pct!=null&&!isNaN(l.demand_tightness_pct)?`<div class="row"><span>Demand pressure</span><b>Top ${Math.max(1,100-Math.round(l.demand_tightness_pct))}% of neighbourhoods</b></div>`:''}<div class="src">Foundations, House London planning data${l.demand_tightness_pct!=null&&!isNaN(l.demand_tightness_pct)?' · WhereToBuild, CAGE Warwick (Kulka & Datta)':''}</div>`;
- const rules=`<div class="row"><span>Income at least</span><b>${l.min_income_multiple}× rent · ${gbp(l.min_income_multiple*l.rent*12)} / yr</b></div><div class="row"><span>Referencing</span><b>${l.referencing_required?'Required':'Not required'}</b></div><div class="row"><span>Guarantor</span><b>${l.guarantor_accepted?'Accepted':'Not accepted'}</b></div><div class="row"><span>Pets</span><b>${l.pet_fee<0?'No':(l.pet_fee?'Yes, £'+l.pet_fee+'/mo cover':'Yes')}</b></div><div class="row"><span>Minimum term</span><b>${l.min_tenancy_months} months</b></div><div class="row"><span>Landlord rating</span><b>${landlordRating(l)} / 5 · ${landlordTenancies(l)} tenancies</b></div><div class="row"><span>Listing checks</span><b>${isVerified(l)?'EPC on register · deposit scheme · gas safety · Land Registry title':'EPC on register only'}</b></div><div style="margin-top:12px"><span class="badge ${l.eligible?'ok':'warn'}">${l.eligible?'You pass. Like it and it\'s a match.':'You may not pass: '+(blockText[l.block_reason]||l.block_reason)}</span></div>`;
- return [home,area,nearby,rules]}
-function cardHTML(l){const beds=l.bedrooms===0?'Studio':l.bedrooms+'-bed';const title=`${beds} ${l.type_name.toLowerCase()}`;const p=panelsHTML(l);
- return `<div class="hero" id="map-${l.id}"></div>
+const ptalWord={'0':'very poor transport','1a':'very poor transport','1b':'poor transport','2':'poor transport','3':'moderate transport','4':'good transport','5':'very good transport','6a':'excellent transport','6b':'excellent transport'};
+const crimeWord=d=>d>=8?'low crime':d>=5?'average crime':'higher crime';
+const beds=l=>l.bedrooms===0?'Studio':l.bedrooms+'-bed';
+function vsLine(l){const v=l.rent_vs_typical_pct;if(v==null)return '';const b=beds(l).toLowerCase();return v<=-3?`${Math.abs(v)}% below the typical ${l.borough} ${b}`:v>=3?`${v}% above the typical ${l.borough} ${b}`:`About the typical ${l.borough} ${b}`}
+function cardHTML(l){return `<div class="hero" id="map-${l.id}"></div>
  <div class="body">
-  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px"><div><div style="font-size:21px;font-weight:800;letter-spacing:-.02em;line-height:1.1">${title}, ${l.ward}</div><div class="small mute" style="margin-top:3px">${l.outcode} · ${l.borough}${l.commute_km!=null?' · '+l.commute_km+' km from you':''}</div></div><div style="text-align:right;white-space:nowrap"><div style="font-size:21px;font-weight:800;letter-spacing:-.02em">${gbp(l.rent)}</div><div class="small mute">per month</div></div></div>
-  <div style="margin-top:8px"><span class="badge ${l.eligible?'ok':'warn'}">${l.eligible?'You qualify':'Rules may block'}</span> ${isVerified(l)?'<span class="badge">Verified listing</span>':''} <span class="badge">${Math.round(l.tfarea)} m²</span> <span class="badge">EPC ${l.epc}</span> <span class="badge">PTAL ${l.ptal_level}</span></div>
-  <div class="tabs" style="margin-top:10px"><span class="on" data-p="0">Home</span><span data-p="1">Area</span><span data-p="2">Nearby</span><span data-p="3">Rules</span></div>
-  ${p.map((h,i)=>`<div class="panel ${i===0?'on':''}" data-p="${i}">${h}</div>`).join('')}
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px"><div style="font-size:22px;font-weight:800;letter-spacing:-.02em;line-height:1.1">${beds(l)} ${l.type_name.toLowerCase()}<br><span style="font-weight:600;font-size:16px;color:var(--mute)">${l.ward}, ${l.outcode}</span></div><div style="text-align:right;white-space:nowrap"><div style="font-size:22px;font-weight:800;letter-spacing:-.02em">${gbp(l.rent)}</div><div class="small mute">a month</div></div></div>
+  <div class="small" style="margin-top:10px">${vsLine(l)}</div>
+  <div class="small" style="margin-top:4px">${Math.round(l.tfarea)} m² · EPC ${l.epc}${l.commute_km!=null?` · ${l.commute_km} km from ${P.work_postcode}`:''}</div>
+  <div class="small" style="margin-top:4px">${ptalWord[l.ptal_level]||'transport n/a'} · ${crimeWord(l.safety_score)} · ${Math.round(l.private_rented_pct)}% renters here</div>
+  <div style="margin-top:auto;padding-top:10px;display:flex;gap:6px;align-items:center"><span class="badge ok">You pass this landlord's rules</span>${l.id%4?'<span class="badge">Verified</span>':''}<span class="small mute" style="margin-left:auto">Tap for details</span></div>
  </div>
  <div class="stamp like">LIKE</div><div class="stamp nope">PASS</div>`}
+function sheetHTML(l){const v=l.id%4!==0;return `
+ <div class="eyebrow">Home</div>
+ <div class="row"><span>Rent</span><b>${gbp(l.rent)} a month</b></div><div class="row"><span>Compared with borough</span><b>${vsLine(l)}</b></div><div class="row"><span>Size</span><b>${Math.round(l.tfarea)} m²${l.numberrooms?' · '+Math.round(l.numberrooms)+' rooms':''}</b></div><div class="row"><span>Energy</span><b>EPC ${l.epc}</b></div><div class="row"><span>Built</span><b>${l.age_band}</b></div><div class="row"><span>Furnished</span><b>${l.furnished?'Yes':'No'}</b></div><div class="src">Dwelling from Land Registry × EPC (UCL). Rent modelled from ONS Price Index of Private Rents.</div>
+ <div class="eyebrow" style="margin-top:22px">Area</div>
+ <div class="row"><span>Public transport</span><b>PTAL ${l.ptal_level}</b></div><div class="row"><span>Crime, 10 is lowest</span><b>${l.safety_score}/10</b></div><div class="row"><span>Living environment</span><b>${l.environment_score}/10</b></div><div class="row"><span>Who lives here</span><b>${Math.round(l.private_rented_pct)}% rent privately · ${Math.round(l.owned_pct)}% own</b></div><div class="row"><span>${l.borough} rents, 12 months</span><b>${l.borough_rent_growth_pct>0?'+':''}${l.borough_rent_growth_pct}%</b></div><div class="src">TfL PTAL · English Indices of Deprivation 2025 · Census 2021 · ONS</div>
+ <div class="eyebrow" style="margin-top:22px">Nearby</div>
+ <div class="row"><span>New homes approved within 600 m since 2022</span><b>${l.homes_approved_600m.toLocaleString()}</b></div><div class="row"><span>Planning applications since 2024</span><b>${l.applications_since_2024_600m}</b></div><div class="row"><span>Nearest large scheme</span><b>${l.nearest_big_scheme_homes} homes · ${l.nearest_big_scheme_km} km</b></div>${l.demand_tightness_pct!=null&&!isNaN(l.demand_tightness_pct)?`<div class="row"><span>Demand pressure</span><b>Top ${Math.max(1,100-Math.round(l.demand_tightness_pct))}% of neighbourhoods</b></div>`:''}<div class="src">Foundations, House London planning data${l.demand_tightness_pct!=null&&!isNaN(l.demand_tightness_pct)?' · WhereToBuild, CAGE Warwick (Kulka & Datta)':''}</div>
+ <div class="eyebrow" style="margin-top:22px">The landlord asks</div>
+ <div class="row"><span>Income at least</span><b>${l.min_income_multiple}× rent · ${gbp(l.min_income_multiple*l.rent*12)} a year</b></div><div class="row"><span>Referencing</span><b>${l.referencing_required?'Required':'Not required'}</b></div><div class="row"><span>Guarantor</span><b>${l.guarantor_accepted?'Accepted':'Not accepted'}</b></div><div class="row"><span>Pets</span><b>${l.pet_fee<0?'No':(l.pet_fee?'Yes, £'+l.pet_fee+' a month cover':'Yes')}</b></div><div class="row"><span>Minimum term</span><b>${l.min_tenancy_months} months</b></div><div class="row"><span>Listing</span><b>${v?'Verified: EPC, deposit scheme, gas safety, title':'EPC on register'}</b></div>
+ <div style="margin-top:14px"><span class="badge ok">You pass every rule. Like it and it's a match.</span></div>`}
+function openSheet(l){$('#sh-title').textContent=`${beds(l)} ${l.type_name.toLowerCase()}, ${l.ward}`;$('#sh-body').innerHTML=sheetHTML(l);$('#sheet').classList.add('on')}
 function render(){const d=$('#deck');d.innerHTML='';const showList=deck.slice(0,3).reverse();
  showList.forEach((l,i)=>{const top=i===showList.length-1;const el=document.createElement('div');el.className='card';el.dataset.id=l.id;const depth=showList.length-1-i;el.style.transform=`scale(${1-depth*.04}) translateY(${depth*12}px)`;el.innerHTML=cardHTML(l);d.appendChild(el);
-  el.querySelectorAll('.tabs span').forEach(t=>t.onpointerdown=e=>{e.stopPropagation();setPanel(el,l,+t.dataset.p)});
   setTimeout(()=>{if(maps[l.id]||!document.getElementById('map-'+l.id))return;const m=L.map('map-'+l.id,{zoomControl:false,attributionControl:false,dragging:false,scrollWheelZoom:false,doubleClickZoom:false,touchZoom:false}).setView([l.lat,l.lon],16);L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(m);L.circle([l.lat,l.lon],{radius:110,color:'#111',weight:2,fillColor:'#111',fillOpacity:.12}).addTo(m);maps[l.id]=m;},0);
   if(top)attachDrag(el,l);});
- if(!deck.length)d.innerHTML='<div style="position:absolute;inset:0;display:grid;place-items:center;text-align:center" class="mute">No more homes match.<br>Loosen your budget or distance.</div>';}
-function setPanel(el,l,i){panelIdx[l.id]=i;el.querySelectorAll('.panel').forEach(p=>p.classList.toggle('on',+p.dataset.p===i));el.querySelectorAll('.tabs span').forEach(t=>t.classList.toggle('on',+t.dataset.p===i));}
+ if(!deck.length)d.innerHTML=emptyHTML();}
+function emptyHTML(){const cap=P.annual_income/(12*2.75);if(nAvail===0&&!P.has_guarantor&&cap<P.budget)return `<div style="position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:24px" class="fade"><h2>Nothing you'd be accepted for yet</h2><p class="mute" style="margin-top:10px">Landlords' income rules allow about ${gbp(cap)} a month on ${gbp(P.annual_income)}. The cheapest ${beds({bedrooms:P.bedrooms}).toLowerCase()} within ${P.max_commute_km} km of ${P.work_postcode} costs more than that.</p><button class="btn" style="margin-top:18px" onclick="P.has_guarantor=true;startSwiping()">Add a guarantor</button><button class="btn ghost" style="margin-top:8px" onclick="go('s-where')">Look further out</button></div>`;
+ return `<div style="position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:24px;text-align:center" class="mute">You've seen every home that fits.<br>Widen the distance or budget to see more.</div>`}
 function attachDrag(el,l){let sx=0,sy=0,dx=0,down=false,moved=false;
- el.onpointerdown=e=>{if(e.target.closest('.panel'))return;down=true;moved=false;sx=e.clientX;sy=e.clientY;el.classList.add('drag');el.setPointerCapture(e.pointerId)};
+ el.onpointerdown=e=>{down=true;moved=false;sx=e.clientX;sy=e.clientY;el.classList.add('drag');el.setPointerCapture(e.pointerId)};
  el.onpointermove=e=>{if(!down)return;dx=e.clientX-sx;if(Math.abs(dx)>6||Math.abs(e.clientY-sy)>6)moved=true;el.style.transform=`translateX(${dx}px) rotate(${dx/18}deg)`;el.querySelector('.like').style.opacity=Math.min(1,dx/70);el.querySelector('.nope').style.opacity=Math.min(1,-dx/70)};
- el.onpointerup=e=>{if(!down)return;down=false;el.classList.remove('drag');if(!moved){el.style.transform='';return}if(dx>100)decide(true);else if(dx<-100)decide(false);else{el.style.transform='';el.querySelectorAll('.stamp').forEach(s=>s.style.opacity=0)}dx=0};}
+ el.onpointerup=e=>{if(!down)return;down=false;el.classList.remove('drag');if(!moved){el.style.transform='';openSheet(l);return}if(dx>100)decide(true);else if(dx<-100)decide(false);else{el.style.transform='';el.querySelectorAll('.stamp').forEach(s=>s.style.opacity=0)}dx=0};}
 
 const MAX_ACTIVE=3;const activeMatches=()=>matches.filter(m=>!m.released);
-const isVerified=l=>l.id%4!==0; const landlordRating=l=>(4.2+((l.id*7)%9)/10).toFixed(1); const landlordTenancies=l=>3+(l.id*13)%20;
-function releaseMatch(l,why){l.released=true;chats[l.id].push({me:false,t:why==='offer'?'Understood, good luck with the move. Your slot is released and the home goes back to the queue.':'No problem. Your slot is released and the home goes back to the queue.'});}
-function makeOffer(l){l.offered=true;chats[l.id].push({me:true,t:"I'd like to take it. Please start referencing."});chats[l.id].push({me:false,t:'Great. Referencing link sent. Holding deposit is one week, capped by law. Your other matches have been released so no one is kept waiting.'});matches.filter(m=>m!==l&&!m.released).forEach(m=>releaseMatch(m,'offer'));}
-let likesLeft=5,supersLeft=1;function updateBudget(){$('#likes-pill').textContent=`${likesLeft} like${likesLeft===1?'':'s'} left`;$('#super-pill').textContent=`${supersLeft} super`}
-function outOfLikes(){$('#ovn-title').textContent='No likes left today';$('#ovn-body').textContent=`Likes are rationed so landlords only hear from people who mean it. You still have ${supersLeft} super-like. Likes reset at midnight.`;show('ov-no')}
+let likesLeft=5;function updateBudget(){$('#likes-pill').textContent=`${likesLeft} like${likesLeft===1?'':'s'} left today`}
+function tell(title,body){$('#ovn-title').textContent=title;$('#ovn-body').textContent=body;show('ov-no')}
 const SLOTS=['Sat 11:00','Sat 14:30','Sun 10:00'];
-function bookViewing(l,slot){l.viewing=slot;l.replied=true;chats[l.id].push({me:true,t:`Can I view ${slot}?`});chats[l.id].push({me:false,t:`${slot} is booked. I'll send the address once referencing starts. Let me know if you can't make it.`});}
-function atCap(){$('#ovn-title').textContent=`You're holding ${MAX_ACTIVE} landlords already`;$('#ovn-body').textContent=`Each match holds a real home off the market for a real person. Book a viewing, make an offer, or release a match before you like another.`;show('ov-no')}
-async function decide(liked,superlike=false){if(!deck.length)return;if(liked&&activeMatches().length>=MAX_ACTIVE)return atCap();if(liked&&!superlike&&likesLeft<=0)return outOfLikes();if(superlike&&supersLeft<=0)return outOfLikes();if(liked){superlike?supersLeft--:likesLeft--;updateBudget()}
- const l=deck.shift();history.push(l);const el=$('#deck .card:last-child');if(el){el.style.transform=`translate(${liked?520:-520}px, ${superlike?-260:40}px) rotate(${liked?20:-20}deg)`;el.style.opacity=0}
+function bookViewing(l,slot){l.viewing=slot;l.replied=true;chats[l.id].push({me:true,t:`Can I view ${slot}?`});chats[l.id].push({me:false,t:`${slot} is booked. I'll send the address once referencing starts.`});}
+function releaseMatch(l,why){l.released=true;chats[l.id].push({me:false,t:'No problem. Your slot is released and the home goes back to the queue.'});}
+function makeOffer(l){l.offered=true;chats[l.id].push({me:true,t:"I'd like to take it. Please start referencing."});chats[l.id].push({me:false,t:'Great. Referencing link sent. Holding deposit is one week, capped by law. Your other matches have been released so no one is kept waiting.'});matches.filter(m=>m!==l&&!m.released).forEach(m=>releaseMatch(m));}
+async function decide(liked){if(!deck.length)return;$('#sheet').classList.remove('on');
+ if(liked&&activeMatches().length>=MAX_ACTIVE)return tell(`You're holding ${MAX_ACTIVE} landlords already`,'Each match holds a real home for a real person. Book a viewing, make an offer, or release one before liking another.');
+ if(liked&&likesLeft<=0)return tell('No likes left today','Likes are rationed so landlords only hear from people who mean it. They reset at midnight.');
+ if(liked){likesLeft--;updateBudget()}
+ const l=deck.shift();history.push(l);const el=$('#deck .card:last-child');if(el){el.style.transform=`translate(${liked?520:-520}px, 40px) rotate(${liked?20:-20}deg)`;el.style.opacity=0}
  const r=await fetch(`/api/renters/${renterId}/swipes`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({listing_id:l.id,liked})}).then(r=>r.json());
- if(liked&&r.matched){l.matchedAt=Date.now();l.expiresAt=Date.now()+24*36e5;matches.unshift(l);$('#mcount').textContent=matches.length;chats[l.id]=[{me:false,t:`Thanks for the ${superlike?'super-like':'like'}. You pass my checks, so you're first in the queue. When could you view?`}];
-  $('#ov-body').textContent=`You liked the ${l.bedrooms===0?'studio':l.bedrooms+'-bed'} in ${l.ward} and you pass every rule the landlord set. ${gbp(l.rent)} a month.`;
+ if(liked&&r.matched){l.matchedAt=Date.now();l.expiresAt=Date.now()+24*36e5;matches.unshift(l);$('#mcount').textContent=activeMatches().length;chats[l.id]=[{me:false,t:`Thanks for the like. You pass my checks, so you're first in the queue. When could you view?`}];
+  $('#ov-body').textContent=`You liked the ${beds(l).toLowerCase()} in ${l.ward}, and you already pass every rule the landlord set. No agency, no waiting. ${gbp(l.rent)} a month.`;
   $('#ov-slots').innerHTML=SLOTS.map(sl=>`<button class="chip" data-slot="${sl}">${sl}</button>`).join('');$$('#ov-slots .chip').forEach(b=>b.onclick=()=>{bookViewing(l,b.dataset.slot);hide('ov');openChat(l)});
   $('#ov-chat').onclick=()=>{hide('ov');openChat(l)};show('ov')}
- else if(liked){$('#ovn-title').textContent='Liked, but the rules block it';$('#ovn-body').textContent=`You liked it, but ${blockText[r.block_reason]||r.block_reason}. Through an agency you'd never hear back. Here you know in a second.`;show('ov-no')}
  setTimeout(()=>{render();refill()},260)}
-$('#b-like').onclick=()=>decide(true);$('#b-nope').onclick=()=>decide(false);$('#b-super').onclick=()=>decide(true,true);
+$('#b-like').onclick=()=>decide(true);$('#b-nope').onclick=()=>decide(false);
 $('#b-rewind').onclick=()=>{if(!history.length)return;deck.unshift(history.pop());render()};updateBudget();
 $('#ov-close').onclick=()=>hide('ov');
-document.addEventListener('keydown',e=>{if(!$('#s-swipe').classList.contains('on')||$('#ov').style.display==='flex')return;if(e.key==='ArrowRight')decide(true);if(e.key==='ArrowLeft')decide(false);if(e.key==='ArrowUp')decide(true,true)});
+document.addEventListener('keydown',e=>{if(!$('#s-swipe').classList.contains('on')||$('#ov').style.display==='flex')return;if(e.key==='ArrowRight')decide(true);if(e.key==='ArrowLeft')decide(false);if(e.key==='Escape')$('#sheet').classList.remove('on')});
 
 function timeLeft(l){const ms=l.expiresAt-Date.now();if(ms<=0)return 'expired';const h=Math.floor(ms/36e5),m=Math.floor(ms%36e5/6e4);return `${h}h ${String(m).padStart(2,'0')}m`}
-function statusLine(l){if(l.released)return `<span class="badge">Released</span>`;if(l.offered)return `<span class="badge ok">Offer made · referencing</span>`;if(l.viewing)return `<span class="badge ok">Viewing booked · ${l.viewing}</span>`;if(l.replied)return `<span class="badge ok">Replied · landlord's turn</span>`;return `<span class="badge warn">Your move · ${timeLeft(l)} left</span>`}
-function renderMatches(){$('#m-cap').textContent=`${activeMatches().length} of ${MAX_ACTIVE} slots used`;$('#m-list').innerHTML=matches.length?matches.map(l=>{const c=chats[l.id];const last=c[c.length-1];return `<button onclick="openChatId(${l.id})" style="width:100%;text-align:left;background:#fff;border:1px solid var(--line);border-radius:18px;padding:14px;font:inherit;cursor:pointer"><div style="display:flex;justify-content:space-between;font-weight:700"><span>${l.bedrooms===0?'Studio':l.bedrooms+'-bed'} · ${l.ward}</span><span>${gbp(l.rent)}</span></div><div style="margin-top:6px;display:flex;justify-content:space-between;align-items:center">${statusLine(l)}${l.released||l.offered?'':`<span class="small mute" onclick="event.stopPropagation();releaseMatch(matches.find(m=>m.id===${l.id}));renderMatches()" style="text-decoration:underline;cursor:pointer">Release</span>`}</div><div class="small mute" style="margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${last.me?'You: ':''}${last.t}</div></button>`}).join(''):'<p class="mute">Like a home you qualify for and it appears here.</p>'}
+function statusLine(l){if(l.released)return `<span class="badge">Released</span>`;if(l.offered)return `<span class="badge ok">Offer made · referencing</span>`;if(l.viewing)return `<span class="badge ok">Viewing ${l.viewing}</span>`;if(l.replied)return `<span class="badge ok">Replied</span>`;return `<span class="badge warn">Your move · ${timeLeft(l)} left</span>`}
+function renderMatches(){$('#m-cap').textContent=`${activeMatches().length} of ${MAX_ACTIVE} held`;$('#mcount').textContent=activeMatches().length;$('#m-list').innerHTML=matches.length?matches.map(l=>{const c=chats[l.id];const last=c[c.length-1];return `<button onclick="openChatId(${l.id})" style="width:100%;text-align:left;background:#fff;border:1px solid var(--line);border-radius:18px;padding:14px;font:inherit;cursor:pointer"><div style="display:flex;justify-content:space-between;font-weight:700"><span>${beds(l)} · ${l.ward}</span><span>${gbp(l.rent)}</span></div><div style="margin-top:6px;display:flex;justify-content:space-between;align-items:center">${statusLine(l)}${l.released||l.offered?'':`<span class="small mute" onclick="event.stopPropagation();releaseMatch(matches.find(m=>m.id===${l.id}));renderMatches()" style="text-decoration:underline;cursor:pointer">Release</span>`}</div><div class="small mute" style="margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${last.me?'You: ':''}${last.t}</div></button>`}).join(''):'<p class="mute">Like a home and it appears here. Every like is already a yes from the landlord\'s side.</p>'}
 setInterval(()=>{if($('#s-matches').classList.contains('on'))renderMatches()},30000);
 function openChatId(id){openChat(matches.find(m=>m.id===id))}
-let chatL=null;function openChat(l){chatL=l;$('#c-title').textContent=`Landlord · ${l.ward}`;$('#c-sub').textContent=`${l.bedrooms===0?'Studio':l.bedrooms+'-bed'} ${l.type_name.toLowerCase()} · ${gbp(l.rent)} / month`;go('s-chat');renderChat()}
+let chatL=null;function openChat(l){chatL=l;$('#c-title').textContent=`Landlord · ${l.ward}`;$('#c-sub').textContent=`${beds(l)} ${l.type_name.toLowerCase()} · ${gbp(l.rent)} a month`;go('s-chat');renderChat()}
 function renderChat(){$('#c-log').innerHTML=chats[chatL.id].map(m=>`<div class="bubble ${m.me?'me':'them'}">${m.t}</div>`).join('');$('#c-log').scrollTop=1e6;
  $('#c-slots').innerHTML=chatL.released?`<span class="badge">Released</span>`:chatL.offered?`<span class="badge ok">Offer made · referencing started</span>`:chatL.viewing?`<span class="badge ok">Viewing ${chatL.viewing}</span> <button class="chip sel" id="c-offer">I'll take it</button>`:SLOTS.map(sl=>`<button class="chip" data-slot="${sl}">${sl}</button>`).join('');$$('#c-slots .chip[data-slot]').forEach(b=>b.onclick=()=>{bookViewing(chatL,b.dataset.slot);renderChat()});const o=$('#c-offer');if(o)o.onclick=()=>{makeOffer(chatL);renderChat()}}
 $('#c-form').onsubmit=e=>{e.preventDefault();const t=$('#c-in').value.trim();if(!t)return;chatL.replied=true;chats[chatL.id].push({me:true,t});$('#c-in').value='';renderChat();setTimeout(()=>{chats[chatL.id].push({me:false,t:["Saturday 11am works. I'll send the address once referencing starts.","Deposit is five weeks' rent, capped by law. Anything else before the viewing?","Bring ID and a payslip and we can move fast."][chats[chatL.id].length%3]});renderChat()},900)}
-const INTERESTED=[{n:'Priya, 29',job:'NHS nurse · £46k',rel:'Replies in 1h · 4 of 4 viewings attended · holding 1 of 3 matches',score:98,tag:'Super-liked your home'},{n:'Tom and Aisha, 31',job:'Teacher and designer · £71k',rel:'Replies in 3h · 2 of 2 viewings attended · holding 3 of 3 matches',score:94,tag:'Liked 2h ago'},{n:'Marcus, 24',job:'Graduate analyst · £38k with guarantor',rel:'Replies in 6h · 1 of 2 viewings · 1 no-show · holding 0 of 3',score:71,tag:'Liked yesterday'}];
-function renderInterested(){$('#i-list').innerHTML=INTERESTED.map((r,i)=>`<div class="fade" style="border:1px solid var(--line);border-radius:18px;padding:14px"><div style="display:flex;justify-content:space-between;align-items:flex-start"><div><div style="font-weight:800;font-size:17px">${r.n} <span class="badge ok">Verified</span></div><div class="small mute">${r.job}</div></div><div style="text-align:right"><div style="font-size:24px;font-weight:800;letter-spacing:-.02em">${r.score}</div><div class="small mute" style="margin-top:-4px">reliability</div></div></div><div class="small" style="margin-top:8px">${r.rel}</div><div class="small mute">${r.tag} · passes income and referencing${i===2?', with guarantor':''}</div><div style="display:flex;gap:8px;margin-top:12px"><button class="chip" style="flex:1" onclick="this.textContent='Passed';this.disabled=true">Pass</button><button class="chip sel" style="flex:1" onclick="this.textContent='Matched · viewing request sent';this.disabled=true;this.parentElement.firstElementChild.remove()">Accept</button></div></div>`).join('')}
-function renderYou(){$('#you-card').innerHTML=`<div style="display:flex;gap:6px"><span class="badge ok">Verified renter</span><span class="badge">Replies in 2h</span></div><div class="row" style="margin-top:14px"><span>Viewings attended</span><b>3 of 3</b></div><div class="row"><span>No-shows</span><b>0</b></div><div class="row"><span>Expired matches</span><b>0</b></div><div class="row"><span>Active matches</span><b>${activeMatches().length} of ${MAX_ACTIVE}</b></div><p class="small mute" style="margin-top:8px">Landlords see this before they say yes. Ghosting lowers it.</p><div class="eyebrow" style="margin-top:22px">Looking for</div><div class="row"><span>Home</span><b>${P.bedrooms===0?'Studio':P.bedrooms+'-bed'} · up to ${gbp(P.budget)} / month</b></div><div class="row"><span>Near</span><b>${P.work_postcode} · within ${P.max_commute_km} km</b></div><div class="eyebrow" style="margin-top:22px">Landlords see</div><div class="row"><span>Income</span><b>${gbp(P.annual_income)} / yr</b></div><div class="row"><span>Referencing</span><b>${P.passes_referencing?'Would pass':'At risk'}</b></div><div class="row"><span>Guarantor</span><b>${P.has_guarantor?'Yes':'No'}</b></div><div class="row"><span>Pets</span><b>${P.has_pets?'Yes':'No'}</b></div>`}
+const INTERESTED=[{n:'Priya, 29',job:'NHS nurse · £46k',rel:'Replies in 1h · 4 of 4 viewings attended · holding 1 of 3 matches',score:98,tag:'Liked your home today'},{n:'Tom and Aisha, 31',job:'Teacher and designer · £71k',rel:'Replies in 3h · 2 of 2 viewings attended · holding 3 of 3 matches',score:94,tag:'Liked 2h ago'},{n:'Marcus, 24',job:'Graduate analyst · £38k with guarantor',rel:'Replies in 6h · 1 of 2 viewings · 1 no-show',score:71,tag:'Liked yesterday'}];
+function renderInterested(){$('#i-list').innerHTML=INTERESTED.map((r,i)=>`<div class="fade" style="border:1px solid var(--line);border-radius:18px;padding:14px"><div style="display:flex;justify-content:space-between;align-items:flex-start"><div><div style="font-weight:800;font-size:17px">${r.n} <span class="badge ok">Verified</span></div><div class="small mute">${r.job}</div></div><div style="text-align:right"><div style="font-size:24px;font-weight:800;letter-spacing:-.02em">${r.score}</div><div class="small mute" style="margin-top:-4px">reliability</div></div></div><div class="small" style="margin-top:8px">${r.rel}</div><div class="small mute">${r.tag} · passes your income and referencing rules${i===2?', with guarantor':''}</div><div style="display:flex;gap:8px;margin-top:12px"><button class="chip" style="flex:1" onclick="this.textContent='Passed';this.disabled=true">Pass</button><button class="chip sel" style="flex:1" onclick="this.textContent='Viewing offered';this.disabled=true;this.parentElement.firstElementChild.remove()">Offer a viewing</button></div></div>`).join('')}
+function renderYou(){$('#you-name').textContent=P.name;$('#you-card').innerHTML=`<div style="display:flex;gap:6px"><span class="badge ok">Verified renter</span><span class="badge">Replies in 2h</span></div><div class="row" style="margin-top:14px"><span>Viewings attended</span><b>3 of 3</b></div><div class="row"><span>No-shows</span><b>0</b></div><div class="row"><span>Matches held</span><b>${activeMatches().length} of ${MAX_ACTIVE}</b></div><p class="small mute" style="margin-top:8px">Landlords see this before they say yes. Ghosting lowers it.</p><div class="eyebrow" style="margin-top:22px">Looking for</div><div class="row"><span>Home</span><b>${beds({bedrooms:P.bedrooms})} · up to ${gbp(P.budget)} a month</b></div><div class="row"><span>Near</span><b>${P.work_postcode} · within ${P.max_commute_km} km</b></div><div class="eyebrow" style="margin-top:22px">Verified once</div><div class="row"><span>Income</span><b>${gbp(P.annual_income)} a year</b></div><div class="row"><span>Referencing</span><b>${P.passes_referencing?'Clean':'At risk'}</b></div><div class="row"><span>Guarantor</span><b>${P.has_guarantor?'Yes':'No'}</b></div><div class="row"><span>Pets</span><b>${P.has_pets?'Yes':'No'}</b></div>`}
 </script></body></html>

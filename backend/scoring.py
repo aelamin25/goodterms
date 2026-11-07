@@ -38,18 +38,35 @@ def preference_score(renter: dict, l: pd.Series, work_lat=None, work_lon=None) -
     return float(0.35 * price + 0.2 * beds + 0.2 * commute + 0.15 * nbhd + 0.1 * size)
 
 def rank(renter: dict, listings: pd.DataFrame, swiped_ids: set, work_lat=None, work_lon=None, liked: pd.DataFrame | None = None, model=None) -> pd.DataFrame:
+    """Only homes the renter can actually get: within budget, right size, within reach, and passing the
+    landlord's rules. Relax size and distance only when the strict deck is thin, never budget or rules."""
     df = listings[~listings.id.isin(swiped_ids)].copy()
-    hard = df.bedrooms.between(renter["bedrooms"] - 1, renter["bedrooms"] + 1) & (df.rent <= float(renter["budget"]) * 1.25)
-    df = df[hard] if hard.sum() >= 20 else df
+    budget = float(renter["budget"]); beds = int(renter["bedrooms"]); max_km = float(renter.get("max_commute_km", 8))
+    df = df[df.rent <= budget * 1.05]
+    ok = [passes_rules(renter, r) for r in df.itertuples()]
+    df["eligible"] = [o for o, _ in ok]; df["block_reason"] = [r for _, r in ok]
+    df = df[df.eligible]
+    if work_lat is not None:
+        df["commute_km"] = [round(haversine_km(r.lat, r.lon, work_lat, work_lon), 1) for r in df.itertuples()]
+    else:
+        df["commute_km"] = np.nan
+    strict = df[(df.bedrooms == beds) & ((df.commute_km <= max_km) | df.commute_km.isna())]
+    if len(strict) < 15:  # relax one notch, size first then distance
+        strict = df[(df.bedrooms.between(beds, beds + 1)) & ((df.commute_km <= max_km * 1.5) | df.commute_km.isna())]
+    df = strict if len(strict) >= 5 else df
+    if df.empty:
+        return df
     if model is not None:
         from backend.model import predict
         df["score"] = predict(model, renter, df, work_lat, work_lon, liked)
     else:
         df["score"] = [preference_score(renter, r, work_lat, work_lon) for r in df.itertuples()]
-    if liked is not None and len(liked) >= 3:  # taste adaptation: nudge toward liked boroughs/types
+    if liked is not None and len(liked) >= 2:  # taste adaptation from this renter's own likes
         bonus = df.borough.isin(liked.borough).astype(float) * 0.05 + df.propertytype.isin(liked.propertytype).astype(float) * 0.03
+        bonus += (1 - (df.tfarea - liked.tfarea.mean()).abs() / max(20.0, liked.tfarea.mean())).clip(0, 1) * 0.04
         df["score"] = df["score"] + bonus
-    ok = [passes_rules(renter, r) for r in df.itertuples()]
-    df["eligible"] = [o for o, _ in ok]; df["block_reason"] = [r for _, r in ok]
-    df["score"] = df["score"] + df["eligible"].astype(float) * 0.12  # homes you'd be accepted for come first
     return df.sort_values("score", ascending=False)
+
+def max_rent_for(renter: dict, multiple: float = 2.75) -> float:
+    """Rent a typical landlord's income rule allows, before any guarantor."""
+    return float(renter.get("annual_income", 0)) / (12 * multiple)

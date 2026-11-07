@@ -55,7 +55,9 @@ def create_renter(p: Profile):
     prof = p.model_dump(); prof["work_lat"], prof["work_lon"] = geocode(p.work_postcode) if p.work_postcode else (None, None)
     with db() as c:
         cur = c.execute("INSERT INTO renters(created, profile) VALUES(?,?)", (time.time(), json.dumps(prof)))
-        return {"renter_id": cur.lastrowid, "profile": prof}
+        rid = cur.lastrowid
+    swiped = set(); ranked = scoring.rank(prof, LISTINGS, swiped, prof.get("work_lat"), prof.get("work_lon"), None, MODEL)
+    return {"renter_id": rid, "profile": prof, "n_available": int(len(ranked)), "max_rent_income_rule": round(scoring.max_rent_for(prof))}
 
 def _renter(rid):
     with db() as c:
@@ -74,8 +76,9 @@ def deck(rid: int, n: int = 10):
     liked = LISTINGS[LISTINGS.id.isin(liked_ids)]
     ranked = scoring.rank(prof, LISTINGS, swiped, prof.get("work_lat"), prof.get("work_lon"), liked, MODEL)
     cols = [c for c in ["id","borough","ward","outcode","lat","lon","type_name","propertytype","bedrooms","tfarea","numberrooms","epc","age_band","rent","transport_score","safety_score","environment_score","imd_decile","housing_barriers_decile","pet_fee","furnished","min_tenancy_months","min_income_multiple","referencing_required","guarantor_accepted","area_label","score","eligible","block_reason","homes_approved_600m","schemes_approved_600m","applications_since_2024_600m","nearest_big_scheme_km","nearest_big_scheme_homes","nearest_big_scheme_desc","private_rented_pct","social_rented_pct","owned_pct","ptal_level","borough_typical_rent","rent_vs_typical_pct","borough_rent_growth_pct","demand_tightness","demand_tightness_pct"] if c in ranked.columns]
+    if ranked.empty: return []
+    cols = cols + (["commute_km"] if "commute_km" in ranked.columns else [])
     out = ranked.head(n)[cols].copy()
-    if prof.get("work_lat"): out["commute_km"] = [round(scoring.haversine_km(r.lat, r.lon, prof["work_lat"], prof["work_lon"]), 1) for r in out.itertuples()]
     return json.loads(out.to_json(orient="records"))
 
 class Swipe(BaseModel):
