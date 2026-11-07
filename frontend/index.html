@@ -132,6 +132,12 @@ input[type=range]{width:100%;accent-color:var(--brand);height:30px}
  <div class="row"><span>postcodes.io</span><b>Postcode to place.</b></div>
  <p class="small mute" style="margin-top:14px">Photos are illustrative. Landlord rules and training swipes are simulated. Rents are modelled, not advertised.</p>
 </div></section>
+<section id="s-scan" class="screen"><div class="content" style="display:flex;flex-direction:column;justify-content:center">
+ <div class="eyebrow" style="color:var(--brand)">Matching</div><h2 style="margin-top:8px" id="scan-title">Scanning London</h2>
+ <div class="progress" style="margin-top:14px;height:6px;border-radius:6px"><i id="scan-bar" style="width:0;transition:width .5s"></i></div>
+ <div style="margin-top:18px" id="scan-steps"></div>
+ <p class="small mute" style="margin-top:18px">Ranked by a model trained on 1.28m real London sales, then by what you said matters.</p>
+</div></section>
 <section id="s-swipe" class="screen"><div class="top" style="justify-content:space-between"><div style="display:flex;align-items:center"><button class="back" onclick="back()">‹</button><span class="ttl">Project Name</span></div><span class="badge" id="likes-pill">5 likes left</span></div>
  <p class="small mute" style="padding:0 20px 6px" id="deck-note"></p>
  <div class="deck" id="deck"></div>
@@ -192,7 +198,7 @@ function priceGuideL(){debounce(async()=>{const pc=$('#l-pc').value.trim();if(!p
 function updateVerify(){const cap=P.annual_income/(12*2.75);let t;if(P.has_guarantor)t=`With a guarantor, landlords who accept one will consider you up to your budget of ${gbp(P.budget)}.`;else if(cap>=P.budget)t=`Landlords' income rules allow rent up to about ${gbp(cap)} a month. Your budget of ${gbp(P.budget)} is inside that.`;else t=`Landlords' income rules allow rent up to about ${gbp(cap)} a month, below your budget of ${gbp(P.budget)}. Add a guarantor, or we'll show what fits.`;if(!P.passes_referencing)t+=' Homes that require referencing will be hidden.';$('#v-note').textContent=t}
 
 async function createProfile(){const r=await fetch('/api/renters',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(P)}).then(r=>r.json());renterId=r.renter_id;nAvail=r.n_available;return r}
-async function startSwiping(){await createProfile();deck=[];history=[];go('s-swipe');nav=['s-profile'];$('#deck-note').textContent=nAvail?`${nAvail} homes near ${P.area_postcode.toUpperCase()} already accept your profile.`:'';await refill();pollInbox()}
+async function startSwiping(){go('s-scan');$('#scan-steps').innerHTML='';$('#scan-bar').style.width='5%';const r=await createProfile();const steps=[["London homes in our data",r.source_dwellings],...(r.funnel||[])];for(let i=0;i<steps.length;i++){await new Promise(res=>setTimeout(res,i?520:300));const [label,n]=steps[i];$('#scan-steps').insertAdjacentHTML('beforeend',`<div class="row fade"><span>${label}</span><b style="color:${i===steps.length-1?'var(--brand)':'inherit'}">${Number(n).toLocaleString()}</b></div>`);$('#scan-bar').style.width=Math.round((i+1)/steps.length*100)+'%'}$('#scan-title').textContent=nAvail?`${nAvail} homes would say yes`:'Nothing fits yet';await new Promise(res=>setTimeout(res,700));deck=[];history=[];go('s-swipe');nav=['s-profile'];$('#deck-note').textContent=nAvail?`${nAvail} homes near ${P.area_postcode.toUpperCase()} already accept your profile.`:'';await refill();pollInbox()}
 async function refill(){if(deck.length>3)return;const more=await fetch(`/api/renters/${renterId}/deck?n=8`).then(r=>r.json());const have=new Set(deck.map(d=>d.id));deck.push(...more.filter(m=>!have.has(m.id)));render();}
 
 const ptalWord={'0':'very poor transport','1a':'very poor transport','1b':'poor transport','2':'poor transport','3':'moderate transport','4':'good transport','5':'very good transport','6a':'excellent transport','6b':'excellent transport'};
@@ -232,7 +238,7 @@ function attachDrag(el,l){let sx=0,sy=0,dx=0,down=false,moved=false;
  el.onpointermove=e=>{if(!down)return;dx=e.clientX-sx;if(Math.abs(dx)>6||Math.abs(e.clientY-sy)>6)moved=true;el.style.transform=`translateX(${dx}px) rotate(${dx/18}deg)`;el.querySelector('.like').style.opacity=Math.min(1,dx/70);el.querySelector('.nope').style.opacity=Math.min(1,-dx/70)};
  el.onpointerup=e=>{if(!down)return;down=false;el.classList.remove('drag');if(!moved){el.style.transform='';openSheet(l);return}if(dx>100)decide(true);else if(dx<-100)decide(false);else{el.style.transform='';el.querySelectorAll('.stamp').forEach(s=>s.style.opacity=0)}dx=0};}
 
-const MAX_ACTIVE=3;const activeMatches=()=>matches.filter(m=>!m.released);
+const MAX_ACTIVE=5;const activeMatches=()=>matches.filter(m=>!m.released);
 let likesLeft=5;function updateBudget(){$('#likes-pill').textContent=`${likesLeft} like${likesLeft===1?'':'s'} left today`}
 function tell(title,body){$('#ovn-title').textContent=title;$('#ovn-body').textContent=body;show('ov-no')}
 const SLOTS=['Sat 11:00','Sat 14:30','Sun 10:00'];

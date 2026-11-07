@@ -1,312 +1,81 @@
-INFO:     Started server process [66255]
+INFO:     Started server process [67280]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
 INFO:     Uvicorn running on http://127.0.0.1:8765 (Press CTRL+C to quit)
 listings re-priced from the valuation model
 ranker not loaded, using v1 scoring: No module named 'backend.model'
-INFO:     127.0.0.1:62595 - "GET /api/model HTTP/1.1" 200 OK
-INFO:     127.0.0.1:62610 - "GET /api/model HTTP/1.1" 200 OK
-INFO:     127.0.0.1:62624 - "GET /api/model HTTP/1.1" 200 OK
-INFO:     127.0.0.1:62628 - "GET /demo.html HTTP/1.1" 200 OK
-INFO:     127.0.0.1:62630 - "GET /demo.html HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:62630 - "GET /?name=Hassan HTTP/1.1" 200 OK
-INFO:     127.0.0.1:62634 - "GET /?name=Ahmed HTTP/1.1" 200 OK
-INFO:     127.0.0.1:62634 - "GET /api/meta HTTP/1.1" 200 OK
-INFO:     127.0.0.1:62630 - "GET /api/renters/0/deck HTTP/1.1" 404 Not Found
-INFO:     127.0.0.1:62634 - "GET /api/meta HTTP/1.1" 200 OK
-INFO:     127.0.0.1:62636 - "GET /api/splash HTTP/1.1" 200 OK
-INFO:     127.0.0.1:62634 - "GET /api/splash HTTP/1.1" 200 OK
-INFO:     127.0.0.1:62638 - "GET /api/renters/0/deck HTTP/1.1" 404 Not Found
-INFO:     127.0.0.1:62650 - "GET /demo.html HTTP/1.1" 200 OK
-INFO:     127.0.0.1:62650 - "GET /?name=Hassan HTTP/1.1" 200 OK
-INFO:     127.0.0.1:62651 - "GET /?name=Ahmed HTTP/1.1" 200 OK
-INFO:     127.0.0.1:62650 - "GET /api/meta HTTP/1.1" 200 OK
-INFO:     127.0.0.1:62653 - "GET /api/meta HTTP/1.1" 200 OK
-INFO:     127.0.0.1:62652 - "GET /api/splash HTTP/1.1" 200 OK
-INFO:     127.0.0.1:62651 - "GET /api/renters/0/deck HTTP/1.1" 404 Not Found
-INFO:     127.0.0.1:62655 - "GET /api/splash HTTP/1.1" 200 OK
-INFO:     127.0.0.1:62654 - "GET /api/renters/0/deck HTTP/1.1" 404 Not Found
-INFO:     127.0.0.1:62706 - "GET /api/price_guide?postcode=E2%207DG&bedrooms=1&radius_km=1.5&rent=1750 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:62799 - "GET /api/price_guide?postcode=SW3&bedrooms=2&radius_km=1.5&rent=1750 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:62802 - "GET /api/price_guide?postcode=SW3&bedrooms=0&radius_km=1.5&rent=1750 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:62799 - "GET /api/price_guide?postcode=SW3&bedrooms=2&radius_km=1.5&rent=1750 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:62802 - "GET /api/price_guide?postcode=SW3&bedrooms=2&radius_km=1.5&rent=2425 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:62846 - "GET /api/price_guide?postcode=SW3&bedrooms=2&radius_km=1.5&rent=2525 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:62857 - "GET /api/price_guide?postcode=SW3&bedrooms=2&radius_km=1.5&rent=2350 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:62846 - "GET /api/price_guide?postcode=SW3&bedrooms=2&radius_km=1.5&rent=2775 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:62857 - "GET /api/price_guide?postcode=SW3&bedrooms=2&radius_km=1.5&rent=2750 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:62846 - "GET /api/price_guide?postcode=SW3&bedrooms=2&radius_km=1.5&rent=2725 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:62906 - "GET /api/price_guide?postcode=SW3&bedrooms=2&radius_km=1.5&rent=3900 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:62918 - "GET /demo.html HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:62922 - "GET /?name=Hassan HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:62918 - "GET /?name=Ahmed HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:62918 - "GET /api/meta HTTP/1.1" 200 OK
-INFO:     127.0.0.1:62922 - "GET /api/renters/0/deck HTTP/1.1" 404 Not Found
-INFO:     127.0.0.1:62924 - "GET /api/splash HTTP/1.1" 200 OK
-INFO:     127.0.0.1:62918 - "GET /api/meta HTTP/1.1" 200 OK
-INFO:     127.0.0.1:62922 - "GET /api/splash HTTP/1.1" 200 OK
-INFO:     127.0.0.1:62926 - "GET /api/renters/0/deck HTTP/1.1" 404 Not Found
-INFO:     127.0.0.1:62906 - "GET /api/price_guide?postcode=SW3&bedrooms=2&radius_km=1.5&rent=800 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:62906 - "GET /api/price_guide?postcode=SW3&bedrooms=2&radius_km=1.5&rent=2300 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:62906 - "GET /api/price_guide?postcode=SW3&bedrooms=2&radius_km=1.5&rent=2550 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:62906 - "GET /api/price_guide?postcode=SW3&bedrooms=2&radius_km=1.5&rent=2625 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:62906 - "GET /api/price_guide?postcode=SW3&bedrooms=3&radius_km=1.5&rent=2625 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:62906 - "GET /api/price_guide?postcode=SW3&bedrooms=1&radius_km=1.5&rent=2625 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:62906 - "GET /api/price_guide?postcode=SW3&bedrooms=2&radius_km=1.5&rent=2625 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:62906 - "GET /api/price_guide?postcode=SW3&bedrooms=2&radius_km=1.5&rent=3575 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63012 - "GET /api/price_guide?postcode=SW3&bedrooms=2&radius_km=1.5&rent=2250 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "POST /api/landlords HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/price_guide?postcode=SW3&bedrooms=1&radius_km=1&budget=1900 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "POST /api/renters HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/deck?n=8 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "POST /api/renters/40/swipes HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "POST /api/renters/40/swipes HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/deck?n=8 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "POST /api/renters/40/swipes HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/landlords/6/interested HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63141 - "GET /?name=Ahmed HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63141 - "GET /api/meta HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63143 - "GET /api/renters/0/deck HTTP/1.1" 404 Not Found
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63145 - "GET /api/splash HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-/Users/ahmedelamin/Desktop/Health Hack/chairmatch/backend/scoring.py:72: SettingWithCopyWarning: 
+INFO:     127.0.0.1:63340 - "GET /api/renters/42/inbox HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63340 - "GET /api/renters/42/inbox HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63340 - "GET /api/renters/42/inbox HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63340 - "GET /api/renters/42/inbox HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63340 - "GET /api/renters/42/inbox HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63340 - "GET /api/renters/42/inbox HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63340 - "GET /api/renters/42/inbox HTTP/1.1" 200 OK
+/Users/ahmedelamin/Desktop/Health Hack/chairmatch/backend/scoring.py:79: SettingWithCopyWarning: 
 A value is trying to be set on a copy of a slice from a DataFrame.
 Try using .loc[row_indexer,col_indexer] = value instead
 
 See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
   df["score"] = [preference_score(renter, r, work_lat, work_lon) for r in df.itertuples()]
-/Users/ahmedelamin/Desktop/Health Hack/chairmatch/backend/scoring.py:78: SettingWithCopyWarning: 
+/Users/ahmedelamin/Desktop/Health Hack/chairmatch/backend/scoring.py:85: SettingWithCopyWarning: 
 A value is trying to be set on a copy of a slice from a DataFrame.
 Try using .loc[row_indexer,col_indexer] = value instead
 
 See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
   df["score"] = df["score"] + df.live.fillna(False).astype(float) * 1.0
-INFO:     127.0.0.1:63145 - "POST /api/renters HTTP/1.1" 200 OK
-/Users/ahmedelamin/Desktop/Health Hack/chairmatch/backend/scoring.py:72: SettingWithCopyWarning: 
+INFO:     127.0.0.1:63344 - "POST /api/renters HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63340 - "GET /api/renters/42/inbox HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63340 - "GET /api/renters/42/inbox HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63340 - "GET /api/renters/42/inbox HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63340 - "GET /api/renters/42/inbox HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63340 - "GET /api/renters/42/inbox HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63340 - "GET /api/renters/42/inbox HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63340 - "GET /api/renters/42/inbox HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63340 - "GET /api/renters/42/inbox HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63361 - "GET /?name=Ahmed HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63361 - "GET /api/meta HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63364 - "GET /api/renters/0/deck HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:63365 - "GET /api/splash HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63340 - "GET /api/renters/42/inbox HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63340 - "GET /api/renters/42/inbox HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63340 - "GET /api/renters/42/inbox HTTP/1.1" 200 OK
+/Users/ahmedelamin/Desktop/Health Hack/chairmatch/backend/scoring.py:79: SettingWithCopyWarning: 
 A value is trying to be set on a copy of a slice from a DataFrame.
 Try using .loc[row_indexer,col_indexer] = value instead
 
 See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
   df["score"] = [preference_score(renter, r, work_lat, work_lon) for r in df.itertuples()]
-/Users/ahmedelamin/Desktop/Health Hack/chairmatch/backend/scoring.py:78: SettingWithCopyWarning: 
+/Users/ahmedelamin/Desktop/Health Hack/chairmatch/backend/scoring.py:85: SettingWithCopyWarning: 
 A value is trying to be set on a copy of a slice from a DataFrame.
 Try using .loc[row_indexer,col_indexer] = value instead
 
 See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
   df["score"] = df["score"] + df.live.fillna(False).astype(float) * 1.0
-INFO:     127.0.0.1:63145 - "GET /api/renters/41/deck?n=8 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63145 - "GET /api/renters/41/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63145 - "GET /api/renters/41/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63145 - "GET /api/price_guide?postcode=SW3%205RN&bedrooms=2&radius_km=1.5&rent=2900 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63024 - "GET /api/renters/40/inbox HTTP/1.1" 200 OK
-INFO:     127.0.0.1:63145 - "GET /api/renters/41/inbox HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63365 - "POST /api/renters HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63340 - "GET /api/renters/42/inbox HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63340 - "GET /api/renters/42/inbox HTTP/1.1" 200 OK
+/Users/ahmedelamin/Desktop/Health Hack/chairmatch/backend/scoring.py:79: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df["score"] = [preference_score(renter, r, work_lat, work_lon) for r in df.itertuples()]
+/Users/ahmedelamin/Desktop/Health Hack/chairmatch/backend/scoring.py:85: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df["score"] = df["score"] + df.live.fillna(False).astype(float) * 1.0
+INFO:     127.0.0.1:63365 - "GET /api/renters/44/deck?n=8 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63365 - "GET /api/renters/44/inbox HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63340 - "GET /api/renters/42/inbox HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63340 - "GET /api/renters/42/inbox HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63365 - "GET /demo.html HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63365 - "GET /?name=Hassan HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63375 - "GET /?name=Ahmed HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63365 - "GET /api/meta HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63375 - "GET /api/renters/0/deck HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:63365 - "GET /api/meta HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63379 - "GET /api/renters/0/deck HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:63377 - "GET /api/splash HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63379 - "GET /api/splash HTTP/1.1" 200 OK

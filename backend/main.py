@@ -150,7 +150,7 @@ def create_renter(p: Profile):
         cur = c.execute("INSERT INTO renters(created, profile) VALUES(?,?)", (time.time(), json.dumps(prof)))
         rid = cur.lastrowid
     swiped = set(); ranked = scoring.rank(prof, listings(), swiped, prof.get("work_lat"), prof.get("work_lon"), None, MODEL)
-    return {"renter_id": rid, "profile": prof, "n_available": int(len(ranked)), "max_rent_income_rule": round(scoring.max_rent_for(prof))}
+    return {"renter_id": rid, "profile": prof, "n_available": int(len(ranked)), "max_rent_income_rule": round(scoring.max_rent_for(prof)), "funnel": scoring.LAST_FUNNEL.get("last", []), "source_dwellings": META["source_dwellings"]}
 
 def _renter(rid):
     with db() as c:

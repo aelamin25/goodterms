@@ -1,6 +1,8 @@
 """Scoring: v1 weighted preference score + lawful landlord rules check. v2 (LightGBM) plugs in here."""
 import math, numpy as np, pandas as pd
 
+LAST_FUNNEL = {}
+
 def haversine_km(lat1, lon1, lat2, lon2):
     p = math.pi / 180
     a = 0.5 - math.cos((lat2 - lat1) * p) / 2 + math.cos(lat1 * p) * math.cos(lat2 * p) * (1 - math.cos((lon2 - lon1) * p)) / 2
@@ -42,27 +44,32 @@ def rank(renter: dict, listings: pd.DataFrame, swiped_ids: set, work_lat=None, w
     landlord's rules. Relax size and distance only when the strict deck is thin, never budget or rules."""
     df = listings[~listings.id.isin(swiped_ids)].copy()
     budget = float(renter["budget"]); beds = int(renter["bedrooms"]); max_km = float(renter.get("max_commute_km", 8))
-    df = df[df.rent <= budget * 1.05]
-    ok = [passes_rules(renter, r) for r in df.itertuples()]
-    df["eligible"] = [o for o, _ in ok]; df["block_reason"] = [r for _, r in ok]
-    df = df[df.eligible]
-    if work_lat is not None:
-        df["commute_km"] = [round(haversine_km(r.lat, r.lon, work_lat, work_lon), 1) for r in df.itertuples()]
-    else:
-        df["commute_km"] = np.nan
+    funnel = [("London homes scanned", int(len(listings)))]
     if renter.get("area_lat") is not None:
         df["area_km"] = [haversine_km(r.lat, r.lon, renter["area_lat"], renter["area_lon"]) for r in df.itertuples()]
         rad = float(renter.get("radius_km", 3))
         in_area = df[df.area_km <= rad]
         df = in_area if len(in_area) >= 5 else df[df.area_km <= rad * 2]
+        funnel.append((f"within {rad:g} km of {str(renter.get('area_postcode','')).upper()}", int(len(df))))
+    df = df[df.rent <= budget * 1.05]; funnel.append(("within your budget", int(len(df))))
+    size = df[df.bedrooms == beds]
+    df = size if len(size) >= 5 else df[df.bedrooms.between(beds, beds + 1)]; funnel.append(("the right size", int(len(df))))
     if renter.get("move_in") and "available_from" in df.columns:
         want = pd.Timestamp(renter["move_in"]); avail = pd.to_datetime(df.available_from, errors="coerce")
         ok_date = (avail <= want + pd.Timedelta(days=21)) & (avail >= want - pd.Timedelta(days=60))
         df = df[ok_date | avail.isna()] if ok_date.sum() >= 5 else df
-    strict = df[(df.bedrooms == beds) & ((df.commute_km <= max_km) | df.commute_km.isna())]
-    if len(strict) < 15:  # relax one notch, size first then distance
-        strict = df[(df.bedrooms.between(beds, beds + 1)) & ((df.commute_km <= max_km * 1.5) | df.commute_km.isna())]
-    df = strict if len(strict) >= 5 else df
+        funnel.append(("available for your move-in", int(len(df))))
+    if work_lat is not None:
+        df["commute_km"] = [round(haversine_km(r.lat, r.lon, work_lat, work_lon), 1) for r in df.itertuples()]
+        near = df[df.commute_km <= max_km]
+        df = near if len(near) >= 5 else df[df.commute_km <= max_km * 1.5]
+        funnel.append((f"within {max_km:g} km of {renter.get('work_postcode')}", int(len(df))))
+    else:
+        df["commute_km"] = np.nan
+    ok = [passes_rules(renter, r) for r in df.itertuples()]
+    df["eligible"] = [o for o, _ in ok]; df["block_reason"] = [r for _, r in ok]
+    df = df[df.eligible]; funnel.append(("whose landlord would accept you", int(len(df))))
+    LAST_FUNNEL[id(renter) if False else "last"] = funnel
     if df.empty:
         return df
     if model is not None:
