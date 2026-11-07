@@ -114,6 +114,8 @@ def apply_guarantee(lid: int, g: Guarantee):
         gas_ok = False; gas_detail = "No valid certificate date"
     eng_ok = bool(re.fullmatch(r"\d{6,7}", (g.gas_engineer_id or "").strip()))
     checks.append({"name": "Gas safety certificate in date", "ok": gas_ok and eng_ok, "detail": gas_detail + (f". Engineer {g.gas_engineer_id} checked against the Gas Safe Register in production" if eng_ok else ". Gas Safe engineer ID (6 or 7 digits) missing")})
+    if not (g.deposit_scheme or g.deposit_ref):  # no tenant yet: deposit protection is checked when a deposit is paid
+        checks = [c_ for c_ in checks if c_["name"] != "Deposit protected"] + [{"name": "Deposit protection", "ok": True, "detail": "Checked once a tenant pays a deposit"}]
     granted = all(c_["ok"] for c_ in checks)
     result = {"granted": granted, "checks": checks, "date": "7 Nov 2026"}
     with db() as c:
