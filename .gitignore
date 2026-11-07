@@ -1,0 +1,6 @@
+data/raw/
+data/processed/*.csv
+*.sqlite
+__pycache__/
+.DS_Store
+wheretobuild*
