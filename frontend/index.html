@@ -120,7 +120,7 @@ input[type=range]{width:100%;accent-color:var(--brand);height:30px}
  <div class="lbl">Available from</div><div class="chips" style="margin-top:8px" id="l-avail"><button class="chip sel" data-v="2026-11-14">Now</button><button class="chip" data-v="2026-12-01">1 Dec</button><button class="chip" data-v="2027-01-01">1 Jan</button></div>
  <div class="lbl"><span>Income at least</span><span id="l-mult-v">2.5× rent</span></div><input type="range" min="2" max="3.5" step="0.25" value="2.5" oninput="LL.min_income_multiple=+this.value;document.getElementById('l-mult-v').textContent=this.value+'× rent'">
  <div class="chips" style="margin-top:8px" id="l-rules"><button class="chip sel" data-k="referencing_required">Referencing</button><button class="chip sel" data-k="guarantor_accepted">Guarantor ok</button><button class="chip" data-k="pets">Pets, with cover</button><button class="chip sel" data-k="furnished">Furnished</button></div>
- <div class="lbl">Verify your listing</div><div class="chips" style="margin-top:8px"><button class="chip sel">EPC</button><button class="chip sel">Deposit scheme</button><button class="chip sel">Gas safety</button><button class="chip sel">Title</button></div>
+ <div class="lbl">Verify your listing</div><div class="chips" style="margin-top:8px"><button class="chip sel">EPC</button><button class="chip sel">Deposit scheme</button><button class="chip">Gas safety</button><button class="chip sel">Title</button></div>
  <p class="small mute" style="margin-top:8px">Checked against the EPC register and Land Registry. Verified homes get the stamp and rank higher.</p>
  </div><div class="foot"><button class="btn" onclick="publishListing()">Publish and see who qualifies</button></div></section>
 

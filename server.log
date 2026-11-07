@@ -71,3 +71,45 @@ INFO:     127.0.0.1:63804 - "GET /api/renters/0/deck HTTP/1.1" 404 Not Found
 INFO:     127.0.0.1:63807 - "GET /api/meta HTTP/1.1" 200 OK
 INFO:     127.0.0.1:63785 - "GET /api/splash HTTP/1.1" 200 OK
 INFO:     127.0.0.1:63786 - "GET /api/renters/0/deck HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:63814 - "GET /?name=Ahmed HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63814 - "GET /api/meta HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63818 - "GET /api/splash HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63817 - "GET /api/renters/0/deck HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:63817 - "GET /api/price_guide?postcode=SW3&bedrooms=2&radius_km=2&budget=1600 HTTP/1.1" 200 OK
+/Users/ahmedelamin/Desktop/Health Hack/chairmatch/backend/scoring.py:79: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df["score"] = [preference_score(renter, r, work_lat, work_lon) for r in df.itertuples()]
+/Users/ahmedelamin/Desktop/Health Hack/chairmatch/backend/scoring.py:85: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df["score"] = df["score"] + df.live.fillna(False).astype(float) * 1.0
+INFO:     127.0.0.1:63817 - "POST /api/renters HTTP/1.1" 200 OK
+/Users/ahmedelamin/Desktop/Health Hack/chairmatch/backend/scoring.py:79: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df["score"] = [preference_score(renter, r, work_lat, work_lon) for r in df.itertuples()]
+/Users/ahmedelamin/Desktop/Health Hack/chairmatch/backend/scoring.py:85: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df["score"] = df["score"] + df.live.fillna(False).astype(float) * 1.0
+INFO:     127.0.0.1:63817 - "GET /api/renters/49/deck?n=8 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63817 - "GET /api/renters/49/inbox HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63817 - "GET /api/renters/49/inbox HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63817 - "GET /demo.html HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63817 - "GET /?name=Ahmed HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63834 - "GET /?name=Hassan HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63834 - "GET /api/meta HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63817 - "GET /api/renters/0/deck HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:63836 - "GET /api/splash HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63834 - "GET /api/meta HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63838 - "GET /api/renters/0/deck HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:63817 - "GET /api/splash HTTP/1.1" 200 OK
