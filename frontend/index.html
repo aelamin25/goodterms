@@ -42,22 +42,28 @@ input[type=range]{width:100%;accent-color:var(--ink);height:30px}
 .bubble{max-width:82%;padding:10px 14px;border-radius:18px;font-size:14px}.me{background:var(--ink);color:#fff;margin-left:auto}.them{background:#f1efe9}
 .list>*+*{margin-top:10px}.note{background:#f7f6f2;border-radius:14px;padding:12px 14px;font-size:14px}
 .ov{display:none;position:absolute;inset:0;z-index:50;background:#fff;flex-direction:column;justify-content:center;padding:28px 24px}
+.fan{position:relative;height:230px;margin:0 0 18px}.fc{position:absolute;left:50%;top:0;width:210px;height:210px;margin-left:-105px;border-radius:20px;background:#ddd center/cover;box-shadow:0 14px 34px rgba(0,0,0,.18);border:3px solid #fff;animation:fanin .7s cubic-bezier(.2,.9,.3,1.1) both}
+.fc.a{transform:rotate(-12deg) translate(-44px,14px);animation-delay:.05s}.fc.b{transform:rotate(9deg) translate(40px,10px);animation-delay:.15s}.fc.c{transform:rotate(-2deg);animation-delay:.25s}
+@keyframes fanin{from{opacity:0;transform:translateY(40px) scale(.9)}}
+.ftag{position:absolute;left:12px;bottom:12px;background:rgba(17,17,17,.8);color:#fff;font-size:12px;font-weight:700;padding:6px 10px;border-radius:999px}
 .minimap{height:150px;border-radius:14px;overflow:hidden;margin-top:10px}.minimap .leaflet-container{height:100%;filter:saturate(.3)}
 </style></head>
 <body><div class="phone">
 
-<section id="s-splash" class="screen on"><div class="content" style="display:flex;flex-direction:column;justify-content:flex-end">
- <div class="fade"><div class="eyebrow">London rentals, without the agency</div><h1 style="margin-top:10px">Project Name</h1>
- <p style="margin-top:14px;font-size:16px;line-height:1.5">You verify once. Landlords set their rules once.<br>You only see homes you'd be accepted for.<br>Landlords only hear from people who qualify.</p>
- <p class="small mute" style="margin-top:12px" id="splash-meta"></p></div></div>
- <div class="foot" style="border:0"><button class="btn" onclick="go('s-account')">Get started</button></div></section>
+<section id="s-splash" class="screen on"><div class="content" style="display:flex;flex-direction:column;justify-content:flex-end;padding-bottom:8px">
+ <div class="fan" id="fan"><div class="fc a"></div><div class="fc b"></div><div class="fc c"><span class="ftag" id="ftag">1-bed · Hackney · £1,820</span></div></div>
+ <div class="fade"><div class="eyebrow">Project Name</div><h1 style="margin-top:8px">Find a home that says yes back.</h1>
+ <p class="mute" style="margin-top:12px;font-size:15px;line-height:1.5">Swipe real London homes you'd actually be accepted for. Landlords set their rules once and hear only from people who qualify. No agency in the middle.</p>
+ <p class="small mute" style="margin-top:10px" id="splash-meta"></p></div></div>
+ <div class="foot" style="border:0;display:grid;gap:8px"><button class="btn" onclick="pickRole('renter')">I'm looking for a home</button><button class="btn ghost" onclick="pickRole('landlord')">I have a home to rent out</button></div></section>
 
 <section id="s-account" class="screen"><div class="top"><button class="back" onclick="back()">‹</button></div><div class="content">
- <h2>Create your account</h2>
+ <span class="badge" id="role-badge"></span>
+ <h2 style="margin-top:10px">Create your account</h2>
  <div class="lbl">Name</div><input class="input" id="a-name" placeholder="Your name" style="margin-top:6px">
  <div class="lbl">Email</div><input class="input" id="a-email" placeholder="you@example.com" type="email" style="margin-top:6px">
- <div class="lbl">I'm here to</div><div class="chips" style="margin-top:8px" id="a-role"><button class="chip sel" data-v="renter">Rent a home</button><button class="chip" data-v="landlord">Let my home</button></div>
- </div><div class="foot"><button class="btn" onclick="P.name=document.getElementById('a-name').value||'You';go(role==='landlord'?'s-landlord':'s-area')">Continue</button></div></section>
+ <p class="small mute" style="margin-top:14px">No password needed for the demo. Change role on the first screen.</p>
+ </div><div class="foot"><button class="btn" id="a-continue" onclick="P.name=document.getElementById('a-name').value||'You';LL.name=P.name;go(role==='landlord'?'s-landlord':'s-area')">Continue</button></div></section>
 
 <section id="s-area" class="screen"><div class="progress"><i style="width:25%"></i></div><div class="top"><button class="back" onclick="back()">‹</button><span class="eyebrow">1 of 4 · Area</span></div><div class="content">
  <h2>Where do you want to live?</h2><p class="mute small" style="margin-top:6px">Postcode, outcode or station area. This comes first, like it does for you.</p>
@@ -92,8 +98,8 @@ input[type=range]{width:100%;accent-color:var(--ink);height:30px}
  </div><div class="foot"><button class="btn" onclick="P.job=document.getElementById('q-job').value;startSwiping()">Show my homes</button></div></section>
 
 <section id="s-landlord" class="screen"><div class="top"><button class="back" onclick="back()">‹</button><span class="eyebrow">Landlord · List your home</span></div><div class="content">
- <h2>Your home and your rules, once</h2><p class="mute small" style="margin-top:6px">No agency. You hear only from verified renters who already pass these.</p>
- <div class="lbl">Postcode</div><input class="input" style="margin-top:6px" id="l-pc" value="E2 7DG">
+ <h2>The home you're renting out</h2><p class="mute small" style="margin-top:6px">Set your rules once. No agency. You hear only from verified renters who already pass them.</p>
+ <div class="lbl">Where is it? Postcode</div><input class="input" style="margin-top:6px" id="l-pc" value="E2 7DG">
  <div class="lbl">Bedrooms</div><div class="chips" style="margin-top:8px" id="l-beds"><button class="chip" data-v="0">Studio</button><button class="chip sel" data-v="1">1</button><button class="chip" data-v="2">2</button><button class="chip" data-v="3">3</button></div>
  <div class="lbl"><span>Rent</span><span id="l-rent-v">£1,750 a month</span></div><input type="range" min="600" max="5000" step="25" value="1750" oninput="LL.rent=+this.value;document.getElementById('l-rent-v').textContent=gbp(LL.rent)+' a month'">
  <div class="lbl">Available from</div><div class="chips" style="margin-top:8px" id="l-avail"><button class="chip sel" data-v="2026-11-14">Now</button><button class="chip" data-v="2026-12-01">1 Dec</button><button class="chip" data-v="2027-01-01">1 Jan</button></div>
@@ -151,12 +157,14 @@ function back(){const prev=nav.pop();if(prev)go(prev,false);else go('s-splash',f
 $$('.tab').forEach(t=>t.onclick=()=>go(t.dataset.s));
 function chipGroup(sel,onpick,multi=false){$$(sel+' .chip').forEach(b=>b.onclick=()=>{if(!multi)$$(sel+' .chip').forEach(x=>x.classList.remove('sel'));b.classList.toggle('sel');onpick(b)})}
 const selected=sel=>$$(sel+' .chip.sel').map(b=>b.dataset.v);
-chipGroup('#a-role',b=>role=b.dataset.v);chipGroup('#q-rad',b=>P.radius_km=+b.dataset.v);chipGroup('#q-beds',b=>P.bedrooms=+b.dataset.v);chipGroup('#q-move',b=>P.move_in=b.dataset.v==='asap'?'':b.dataset.v);chipGroup('#q-pets',b=>P.has_pets=b.dataset.v==='1');
+function pickRole(r){userRole=r;$('#role-badge').textContent=r==='landlord'?'Renting out a home':'Looking for a home';$('#a-continue').textContent=r==='landlord'?'Continue as landlord':'Continue as renter';try{parent.postMessage({role:r,name:$('#a-name').value},'*')}catch(e){}go('s-account')}
+$('#a-name').addEventListener('input',()=>{try{parent.postMessage({role:userRole,name:$('#a-name').value},'*')}catch(e){}});chipGroup('#q-rad',b=>P.radius_km=+b.dataset.v);chipGroup('#q-beds',b=>P.bedrooms=+b.dataset.v);chipGroup('#q-move',b=>P.move_in=b.dataset.v==='asap'?'':b.dataset.v);chipGroup('#q-pets',b=>P.has_pets=b.dataset.v==='1');
 chipGroup('#q-flags',b=>{P[b.dataset.k]=b.classList.contains('sel');updateVerify()},true);chipGroup('#q-house',b=>P.household=b.dataset.v);chipGroup('#q-life',()=>P.lifestyle=selected('#q-life'),true);chipGroup('#q-wants',()=>P.wants=selected('#q-wants'),true);chipGroup('#q-deal',()=>P.dealbreakers=selected('#q-deal'),true);
 chipGroup('#l-beds',b=>LL.bedrooms=+b.dataset.v);chipGroup('#l-avail',b=>LL.available_from=b.dataset.v);chipGroup('#l-rules',b=>{const on=b.classList.contains('sel');if(b.dataset.k==='pets')LL.pet_fee=on?40:-1;else LL[b.dataset.k]=on},true);
 fetch('/api/meta').then(r=>r.json()).then(m=>{$('#splash-meta').textContent=`${m.n_listings.toLocaleString()} homes drawn from ${m.source_dwellings.toLocaleString()} real London dwellings. Rents at ${m.rent_month} ONS levels.`});
 if(P.name){$('#a-name').value=P.name;$('#a-email').value=P.name.toLowerCase().replace(/\s+/g,'')+'@example.com'}
-if(qs.get('role')==='landlord'){$$('#a-role .chip').forEach(b=>b.classList.toggle('sel',b.dataset.v==='landlord'))}
+(async()=>{try{const r=await fetch('/api/renters/0/deck').catch(()=>null)}catch(e){}})();
+fetch('/api/splash').then(r=>r.json()).then(d=>{['a','b','c'].forEach((k,i)=>{const el=$('.fc.'+k);if(d[i])el.style.backgroundImage=`url('${d[i].photo}')`});if(d[2])$('#ftag').textContent=`${d[2].bedrooms===0?'Studio':d[2].bedrooms+'-bed'} · ${d[2].ward} · ${gbp(d[2].rent)}`}).catch(()=>{});
 function updateVerify(){const cap=P.annual_income/(12*2.75);let t;if(P.has_guarantor)t=`With a guarantor, landlords who accept one will consider you up to your budget of ${gbp(P.budget)}.`;else if(cap>=P.budget)t=`Landlords' income rules allow rent up to about ${gbp(cap)} a month. Your budget of ${gbp(P.budget)} is inside that.`;else t=`Landlords' income rules allow rent up to about ${gbp(cap)} a month, below your budget of ${gbp(P.budget)}. Add a guarantor, or we'll show what fits.`;if(!P.passes_referencing)t+=' Homes that require referencing will be hidden.';$('#v-note').textContent=t}
 
 async function createProfile(){const r=await fetch('/api/renters',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(P)}).then(r=>r.json());renterId=r.renter_id;nAvail=r.n_available;return r}
@@ -241,5 +249,5 @@ async function publishListing(){LL.postcode=$('#l-pc').value;LL.name=$('#a-name'
 async function pollInterested(){if(!landlordId||!$('#s-interested').classList.contains('on')){setTimeout(pollInterested,2000);return}try{const rows=await fetch(`/api/landlords/${landlordId}/interested`).then(r=>r.json());if(rows.length)$('#i-list').innerHTML=rows.map(r=>{const p=r.profile;const cap=p.annual_income/(12*LL.min_income_multiple);return `<div class="fade" style="border:1px solid var(--line);border-radius:18px;padding:14px"><div style="display:flex;justify-content:space-between;align-items:flex-start"><div><div style="font-weight:800;font-size:17px">${p.name||'Renter'} <span class="badge ok">Verified</span></div><div class="small mute">${[p.household,p.job].filter(Boolean).join(' · ')||'Tenant profile'}</div></div><div style="text-align:right"><div style="font-size:22px;font-weight:800;letter-spacing:-.02em">96</div><div class="small mute" style="margin-top:-4px">reliability</div></div></div><div class="small" style="margin-top:8px">${p.lifestyle&&p.lifestyle.length?p.lifestyle.join(' · ')+'<br>':''}Income ${gbp(p.annual_income)} · ${p.passes_referencing?'clean referencing':'referencing at risk'}${p.has_guarantor?' · guarantor':''}${p.has_pets?' · pet':''} · move in ${p.move_in?fmtDate(p.move_in):'asap'}</div><div class="small mute" style="margin-top:4px">Liked ${r.liked_feature?'the '+r.liked_feature.toLowerCase():'your home'} · passes your income rule (${gbp(p.annual_income)} ≥ ${gbp(LL.min_income_multiple*LL.rent*12)}) and referencing</div>${r.status==='viewing_offered'?`<div style="margin-top:10px"><span class="badge ok">Viewing offered · ${r.slot}</span></div>`:r.status==='passed'?`<div style="margin-top:10px"><span class="badge">Passed</span></div>`:`<div style="display:flex;gap:8px;margin-top:12px"><button class="chip" style="flex:1" onclick="decideInterest(${r.interest_id},'pass')">Pass</button><button class="chip sel" style="flex:1" onclick="decideInterest(${r.interest_id},'offer_viewing')">Offer viewing Sat 11:00</button></div>`}</div>`}).join('')}catch(e){}setTimeout(pollInterested,2000)}
 async function decideInterest(iid,action){await fetch(`/api/interests/${iid}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action,slot:'Sat 11:00'})});}
 window.dbg={get P(){return P},get LL(){return LL},get deck(){return deck},get matches(){return matches},get chats(){return chats},get landlordId(){return landlordId},setLikes(v){likesLeft=v},decide,startSwiping,publishListing,decideInterest};
-if(qs.get('role')==='landlord'&&qs.get('name')){go('s-account')}
+if(qs.get('role')){pickRole(qs.get('role'));nav=['s-splash']}
 </script></body></html>

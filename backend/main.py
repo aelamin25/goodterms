@@ -72,6 +72,11 @@ scoring.geocode = geocode
 def meta():
     return {**META, "ranker": "lightgbm" if MODEL is not None else "v1-weighted", "boroughs": sorted(LISTINGS.borough.unique().tolist())}
 
+@app.get("/api/splash")
+def splash():
+    picks = listings().sample(3, random_state=int(time.time()) // 60)
+    return [{"photo": photos_for(int(r.id))[0], "bedrooms": int(r.bedrooms), "ward": r.ward, "rent": int(r.rent)} for r in picks.itertuples()]
+
 @app.post("/api/renters")
 def create_renter(p: Profile):
     prof = p.model_dump(); prof["work_lat"], prof["work_lon"] = geocode(p.work_postcode) if p.work_postcode else (None, None)
